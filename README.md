@@ -4,6 +4,7 @@ utility for helping interpretation and storage of interpretation results of sequ
 Consists of DB (sqlite), python backend, and some kind of webapp frontend (AngularJS with a Flask REST backend? (this is used for GenApp)).
 
 Main functionality:
+
 -Show contents of SQLITE-db containing variant interpretations.
 
 -Enter new patients and variant interpretations into DB.
