@@ -3,17 +3,18 @@ sqlite3 Intervar.db
 
 #lage tabeller:
 CREATE TABLE patient_info(
-patient_ID VARCHAR(10) PRIMARY KEY NOT NULL,
+patient_ID VARCHAR(10) PRIMARY KEY,
 clinical_info TEXT,
 family_ID INT,
 sex CHAR(1) CHECK(Sex in ('M', 'F')),
 panel INT,
+sbs VARCHAR(12),
 FOREIGN KEY(panel) REFERENCES panels(ID)
+FOREIGN KEY(sbs) REFERENCES panels(runs)
 );
 
 CREATE TABLE panels(
-ID INT PRIMARY KEY,
-panel_name VARCHAR(30) NOT NULL
+panel_name VARCHAR(30) PRIMARY KEY
 );
 
 CREATE TABLE QC(
@@ -60,7 +61,7 @@ HS_PENALTY_50X INT,
 HS_PENALTY_100X INT,
 AT_DROPOUT INT,
 GC_DROPOUT INT,
-FOREIGN KEY(SAMPLE_NAME) REFERENCES patient_info(patient_ID),
+FOREIGN KEY(SAMPLE_NAME) REFERENCES patient_info(patient_ID)
 );
 
 CREATE TABLE runs(
@@ -69,16 +70,166 @@ date DATETIME
 );
 
 CREATE TABLE raw_variants(
-ID INT PRIMARY KEY,
 chr VARCHAR(5),
 start INT,
 stop INT,
 ref VARCHAR(50),
 alt VARCHAR(50),
 hg VARCHAR(10) DEFAULT 'hg19',
-UNIQUE(Chr, Start, Stop, ref, alt)
+PRIMARY KEY (Chr, Start, Stop, ref, alt)
 );
 
+CREATE TABLE interpretations();
 
+CREATE TABLE alamut_annotation(
+gene VARCHAR(25),
+geneId INT,
+chrom VARCHAR(5),
+transcript VARCHAR(32),
+strand INT,
+protein VARCHAR(32),
+Uniprot VARCHAR(32),
+varType VARCHAR(32),
+codingEffect VARCHAR(32),
+varLocation VARCHAR(25),
+assembly VARCHAR(8),
+gDNAstart INT,
+gDNAend INT,
+gNomen VARCHAR(32),
+cDNAstart INT,
+cDNAend INT,
+cNomen VARCHAR(32),
+pNomen VARCHAR(32),
+alt_pNomen VARCHAR(32),
+exon INT,
+intron INT,
+omimId INT,
+pathogenicityClass VARCHAR(32),
+distNearestSS INT,
+nearestSSType VARCHAR(16),
+wtSSFScore REAL,
+wtMaxEntScore REAL,
+wtNNSScore REAL,
+wtGSScore REAL,
+wtHSFScore REAL,
+varSSFScore REAL,
+varMaxEntScore REAL,
+varNNSScore REAL,
+varGSScore REAL,
+varHSFScore REAL,
+nearestSSChange REAL,
+localSpliceEffect VARCHAR(50),
+proteinDomain1 VARCHAR(68),
+proteinDomain2 VARCHAR(68),
+proteinDomain3 VARCHAR(68),
+proteinDomain4 VARCHAR(68),
+rsId VARCHAR(25),
+rsValidated VARCHAR(5),
+rsSuspect VARCHAR(5),
+rsValidations VARCHAR(32),
+rsValidationNumber INT,
+rsAncestralAllele VARCHAR(12),
+rsHeterozygosity REAL,
+rsClinicalSignificance VARCHAR(32),
+rsMAF REAL,
+rsMAFAllele VARCHAR(32),
+rsMAFCount INT,
+exacQuality VARCHAR(32),
+exacFilter VARCHAR(32),
+exacAlleleCount INT,
+exacAllFreq REAL,
+exacAFRFreq REAL,
+exacAMRFreq REAL,
+exacEASFreq REAL,
+exacSASFreq REAL,
+exacNFEFreq REAL,
+exacFINFreq REAL,
+exacOTHFreq REAL,
+exacDP VARCHAR(32),
+espRefEACount INT,
+espRefAACount INT,
+espRefAllCount INT,
+espAltEACount INT,
+espAltAACount INT,
+espAltAllCount INT,
+espEAMAF REAL,
+espAAMAF REAL,
+espAllMAF REAL,
+espEAAAF REAL,
+espAAAAF REAL,
+espAllAAF REAL,
+espAvgReadDepth VARCHAR(32),
+hgmdId VARCHAR(32),
+hgmdPhenotype VARCHAR(96),
+hgmdWebLink VARCHAR(96),
+hgmdPubMedId INT,
+hgmdSubCategory VARCHAR(16),
+clinVarIds VARCHAR(32),
+clinVarOrigins VARCHAR(32),
+clinVarMethods VARCHAR(32),
+clinVarClinSignifs VARCHAR(32),
+clinVarReviewStatus INT,
+clinVarPhenotypes VARCHAR(96),
+cosmicIds VARCHAR(32),
+cosmicTissues VARCHAR(96),
+substType VARCHAR(32),
+wtNuc VARCHAR(32),
+varNuc VARCHAR(32),
+nucChange VARCHAR(32),
+phastCons REAL,
+phyloP REAL,
+wtAA_1 VARCHAR(6),
+wtAA_3 VARCHAR(6),
+wtCodon VARCHAR(6),
+wtCodonFreq REAL,
+varAA_1 VARCHAR(3),
+varAA_3 VARCHAR(6),
+varCodon VARCHAR(6),
+varCodonFreq REAL,
+posAA INT,
+nOrthos INT,
+conservedOrthos INT,
+conservedDistSpecies VARCHAR(68),
+BLOSUM45 INT,
+BLOSUM62 INT,
+BLOSUM80 INT,
+wtAAcomposition INT,
+varAAcomposition REAL,
+wtAApolarity REAL,
+varAApolarity REAL,
+wtAAvolume INT,
+varAAvolume INT,
+granthamDist INT,
+AGVGDclass VARCHAR(32),
+AGVGDgv REAL,
+AGVGDgd REAL,
+SIFTprediction VARCHAR(68),
+SIFTweight INT,
+SIFTmedian REAL,
+PPH2prediction VARCHAR(68),
+PPH2class VARCHAR(68),
+PPH2score REAL,
+MAPPprediction VARCHAR(68),
+MAPPpValue REAL,
+MAPPpValueMedian REAL,
+TASTERprediction VARCHAR(68),
+TASTERpValue REAL
+);
 
+#Bridge/Juction tables.
+CREATE TABLE patient_info2raw_variants(
+patient_ID VARCHAR(10) REFERENCES patient_info,
+chr VARCHAR(5) REFERENCES raw_variants,
+start INT REFERENCES raw_variants,
+stop INT REFERENCES raw_variants,
+ref VARCHAR(50) REFERENCES raw_variants,
+alt VARCHAR(50) REFERENCES raw_variants,
+PRIMARY KEY (patient_ID, Chr, Start, Stop, ref, alt)
+);
+
+CREATE TABLE patient_info2panels(
+patient_ID VARCHAR(10) REFERENCES patient_info,
+panel_name VARCHAR(30) REFERENCES panels,
+PRIMARY KEY (patient_ID, panel_name)
+);
 
