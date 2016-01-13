@@ -6,11 +6,7 @@ CREATE TABLE patient_info(
 patient_ID VARCHAR(10) PRIMARY KEY,
 clinical_info TEXT,
 family_ID INT,
-sex CHAR(1) CHECK(Sex in ('M', 'F')),
-panel INT,
-sbs VARCHAR(12),
-FOREIGN KEY(panel) REFERENCES panels(ID)
-FOREIGN KEY(sbs) REFERENCES panels(runs)
+sex CHAR(1) CHECK(Sex in ('M', 'F'))
 );
 
 CREATE TABLE panels(
@@ -18,7 +14,7 @@ panel_name VARCHAR(30) PRIMARY KEY
 );
 
 CREATE TABLE QC(
-SAMPLE_NAME VARCHAR(10),
+SAMPLE_NAME VARCHAR(10) PRIMARY KEY,
 GENOME_SIZE INT,
 BAIT_TERRITORY INT,
 TARGET_TERRITORY INT,
@@ -65,6 +61,7 @@ FOREIGN KEY(SAMPLE_NAME) REFERENCES patient_info(patient_ID)
 );
 
 CREATE TABLE runs(
+patient_ID VARCHAR(10) REFERENCES patient_info,
 sbs VARCHAR(12) PRIMARY KEY,
 date DATETIME
 );
@@ -79,9 +76,24 @@ hg VARCHAR(10) DEFAULT 'hg19',
 PRIMARY KEY (Chr, Start, Stop, ref, alt)
 );
 
-CREATE TABLE interpretations();
+CREATE TABLE interpretations(
+ID INT PRIMARY KEY,
+SAMPLE_NAME VARCHAR(10),
+chr VARCHAR(5) REFERENCES raw_variants,
+start INT REFERENCES raw_variants,
+stop INT REFERENCES raw_variants,
+ref VARCHAR(50) REFERENCES raw_variants,
+alt VARCHAR(50) REFERENCES raw_variants,
+inhouse_class INT,
+acmg_class INT,
+comments TEXT,
+FOREIGN KEY(SAMPLE_NAME) REFERENCES patient_info(patient_ID),
+FOREIGN KEY(Chr, Start, Stop, ref, alt) REFERENCES raw_variants(Chr, Start, Stop, ref, alt),
+UNIQUE (SAMPLE_NAME, Chr, Start, Stop, ref, alt)
+);
 
 CREATE TABLE alamut_annotation(
+ID INT PRIMARY KEY,
 gene VARCHAR(25),
 geneId INT,
 chrom VARCHAR(5),
@@ -173,8 +185,8 @@ clinVarPhenotypes VARCHAR(96),
 cosmicIds VARCHAR(32),
 cosmicTissues VARCHAR(96),
 substType VARCHAR(32),
-wtNuc VARCHAR(32),
-varNuc VARCHAR(32),
+wtNuc VARCHAR(50),
+varNuc VARCHAR(50),
 nucChange VARCHAR(32),
 phastCons REAL,
 phyloP REAL,
@@ -213,7 +225,9 @@ MAPPprediction VARCHAR(68),
 MAPPpValue REAL,
 MAPPpValueMedian REAL,
 TASTERprediction VARCHAR(68),
-TASTERpValue REAL
+TASTERpValue REAL,
+UNIQUE (chrom, gDNAstart, gDNAend, wtNuc, varNuc),
+FOREIGN KEY(chrom, gDNAstart, gDNAend, wtNuc, varNuc) REFERENCES raw_variants(Chr, Start, Stop, ref, alt)
 );
 
 #Bridge/Juction tables.

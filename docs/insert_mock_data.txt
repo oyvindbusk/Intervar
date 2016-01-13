@@ -1,0 +1,58 @@
+For å droppe tabeller:
+drop table patient_info;
+drop table panels;
+drop table QC;
+drop table runs;
+drop table raw_variants;
+drop table patient_info2raw_variants;
+drop table interpretations;
+drop table alamut_annotation;
+drop table patient_info2panels;
+
+INSERT INTO patient_info
+(patient_ID, clinical_info, family_ID, sex)
+VALUES
+('123_15', 'osteogenesis imperfecta', 100, 'M'),
+('1123_15', 'ALS imperfecta', 100, 'F'),
+('1233_15', 'OI', 100, 'M'),
+('1023_15', 'osteogenesis imperfecta', 100, 'F'),
+('1223_15', 'CMT', 100, 'M')
+;
+
+INSERT INTO panels
+(panel_name)
+VALUES
+('e'),
+('filtex'),
+('pv2-1');
+
+INSERT INTO runs
+(patient_ID, sbs, date)
+VALUES
+('123_15', 'SBS123', '2016-01-01'),
+('1123_15','SBS321', '2016-01-10');
+
+INSERT INTO QC
+()
+VALUES()
+;
+INSERT INTO raw_variants
+()
+VALUES()
+;
+INSERT INTO interpretations
+()
+VALUES()
+;
+INSERT INTO alamut_annotation
+()
+VALUES()
+;
+INSERT INTO patient_info2raw_variants
+()
+VALUES()
+;
+INSERT INTO patient_info2panels
+()
+VALUES()
+;
