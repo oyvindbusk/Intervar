@@ -9,6 +9,9 @@ drop table interpretations;
 drop table alamut_annotation;
 drop table patient_info2panels;
 
+#Hent inn hsmetrics info:
+python insert_hsmetrics_into_db.py
+
 INSERT INTO patient_info
 (patient_ID, clinical_info, family_ID, sex)
 VALUES
@@ -16,8 +19,7 @@ VALUES
 ('1123_15', 'ALS imperfecta', 100, 'F'),
 ('1233_15', 'OI', 100, 'M'),
 ('1023_15', 'osteogenesis imperfecta', 100, 'F'),
-('1223_15', 'CMT', 100, 'M')
-;
+('1223_15', 'CMT', 100, 'M');
 
 INSERT INTO panels
 (panel_name)
@@ -32,27 +34,81 @@ VALUES
 ('123_15', 'SBS123', '2016-01-01'),
 ('1123_15','SBS321', '2016-01-10');
 
-INSERT INTO QC
-()
-VALUES()
-;
 INSERT INTO raw_variants
-()
-VALUES()
+(chr, start, stop, ref, alt)
+VALUES
+('1', 6530965, 6530965, '-', 'G'),
+('1', 6533528, 6533528, 'G', 'A'),
+('1', 6534036, 6534036, '-', 'G'),
+('1', 6534718, 6534722, 'ACGAG', '-'),
+('1', 6557154, 6557154, 'G', 'A'),
+('1', 6579521, 6579521, 'G', 'C'),
+('1', 6579607, 6579607, 'C', 'T');
+
+INSERT INTO patient_info2raw_variants
+(patient_ID, chr, start, stop, ref, alt)
+VALUES
+('123_15', '1', 6530965, 6530965, '-', 'G'),
+('123_15', '1', 6533528, 6533528, 'G', 'A'),
+('123_15', '1', 6534036, 6534036, '-', 'G'),
+('123_15', '1', 6534718, 6534722, 'ACGAG', '-'),
+('123_15', '1', 6557154, 6557154, 'G', 'A'),
+('1123_15', '1', 6534036, 6534036, '-', 'G'),
+('1123_15', '1', 6534718, 6534722, 'ACGAG', '-'),
+('1123_15', '1', 6557154, 6557154, 'G', 'A'),
+('1123_15', '1', 6579521, 6579521, 'G', 'C'),
+('1123_15', '1', 6579607, 6579607, 'C', 'T');
+
+INSERT INTO patient_info2panels
+(patient_ID, panel_name)
+VALUES
+('123_15', 'e'),
+('1123_15', 'e')
 ;
+
+
+
+
 INSERT INTO interpretations
-()
-VALUES()
+(ID, SAMPLE_NAME, chr, start, stop, ref, alt, inhouse_class, acmg_class, comments)
+VALUES
+(NULL, '123_15', '1', 6530965, 6530965, '-', 'G', 2, 2, 'heterozyg hos mor'),
+(NULL, '123_15', '1', 6533528, 6533528, 'G', 'A', 2, 2, 'patogen som homozyg'),
+(NULL, '123_15', '1', 6534036, 6534036, '-', 'G', 5, 5, ''),
+(NULL, '123_15', '1', 6534718, 6534722, 'ACGAG', '-', 4, 4, ''),
+(NULL, '123_15', '1', 6557154, 6557154, 'G', 'A', 3, 3, 'AD for OI'),
+(NULL, '1123_15', '1', 6534036, 6534036, '-', 'G', 5, 5, ''),
+(NULL, '1123_15', '1', 6534718, 6534722, 'ACGAG', '-', 4, 4, ''),
+(NULL, '1123_15', '1', 6557154, 6557154, 'G', 'A', 3, 3, ''),
+(NULL, '1123_15', '1', 6579521, 6579521, 'G', 'C', 2, 2, ''),
+(NULL, '1123_15', '1', 6579607, 6579607, 'C', 'T', 2, 2, '');
+
+
+
+
+
+
 ;
 INSERT INTO alamut_annotation
+(ID, gene, geneId, chrom, transcript, strand, protein, Uniprot, varType, codingEffect, varLocation, assembly, gDNAstart, gDNAend, gNomen, cDNAstart, cDNAend, cNomen, pNomen, alt_pNomen, exon, intron, omimId, pathogenicityClass, distNearestSS, nearestSSType, wtSSFScore, wtMaxEntScore, wtNNSScore, wtGSScore, wtHSFScore, varSSFScore, varMaxEntScore, varNNSScore, varGSScore, varHSFScore, nearestSSChange, localSpliceEffect, proteinDomain1, proteinDomain2, proteinDomain3, proteinDomain4, rsId, rsValidated, rsSuspect, rsValidations, rsValidationNumber, rsAncestralAllele, rsHeterozygosity, rsClinicalSignificance, rsMAF, rsMAFAllele, rsMAFCount, exacQuality, exacFilter, exacAlleleCount, exacAllFreq, exacAFRFreq, exacAMRFreq, exacEASFreq, exacSASFreq, exacNFEFreq, exacFINFreq, exacOTHFreq, exacDP, espRefEACount, espRefAACount, espRefAllCount, espAltEACount, espAltAACount, espAltAllCount, espEAMAF, espAAMAF, espAllMAF, espEAAAF, espAAAAF, espAllAAF, espAvgReadDepth, hgmdId, hgmdPhenotype, hgmdWebLink, hgmdPubMedId, hgmdSubCategory, clinVarIds, clinVarOrigins, clinVarMethods, clinVarClinSignifs, clinVarReviewStatus, clinVarPhenotypes, cosmicIds, cosmicTissues, substType, wtNuc, varNuc, nucChange, phastCons, phyloP, wtAA_1, wtAA_3, wtCodon, wtCodonFreq, varAA_1, varAA_3, varCodon, varCodonFreq, posAA, nOrthos, conservedOrthos, conservedDistSpecies, BLOSUM45, BLOSUM62, BLOSUM80, wtAAcomposition, varAAcomposition, wtAApolarity, varAApolarity, wtAAvolume, varAAvolume, granthamDist, AGVGDclass, AGVGDgv, AGVGDgd, SIFTprediction, SIFTweight, SIFTmedian, PPH2prediction, PPH2class, PPH2score, MAPPprediction, MAPPpValue, MAPPpValueMedian, TASTERprediction, TASTERpValue)
+VALUES
+(),
+(),
+(),
+(),
+(),
+(),
+(),
 ()
-VALUES()
 ;
-INSERT INTO patient_info2raw_variants
-()
-VALUES()
-;
-INSERT INTO patient_info2panels
-()
-VALUES()
-;
+
+
+
+
+
+
+
+
+
+
+

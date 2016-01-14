@@ -1,0 +1,6 @@
+#Number of patients:
+SELECT COUNT(*) FROM patient_info
+#Number of runs:
+#Number of panels:
+#Total number of variants:
+#Number of variants of each class:

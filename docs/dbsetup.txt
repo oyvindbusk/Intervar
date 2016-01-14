@@ -77,7 +77,7 @@ PRIMARY KEY (Chr, Start, Stop, ref, alt)
 );
 
 CREATE TABLE interpretations(
-ID INT PRIMARY KEY,
+ID INTEGER PRIMARY KEY,
 SAMPLE_NAME VARCHAR(10),
 chr VARCHAR(5) REFERENCES raw_variants,
 start INT REFERENCES raw_variants,
@@ -228,6 +228,11 @@ TASTERprediction VARCHAR(68),
 TASTERpValue REAL,
 UNIQUE (chrom, gDNAstart, gDNAend, wtNuc, varNuc),
 FOREIGN KEY(chrom, gDNAstart, gDNAend, wtNuc, varNuc) REFERENCES raw_variants(Chr, Start, Stop, ref, alt)
+);
+
+CREATE TABLE users(
+username VARCHAR(4),
+password VARCHAR(50)
 );
 
 #Bridge/Juction tables.
