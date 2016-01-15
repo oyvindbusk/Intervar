@@ -66,9 +66,6 @@ VALUES
 ('1123_15', 'e')
 ;
 
-
-
-
 INSERT INTO interpretations
 (ID, SAMPLE_NAME, chr, start, stop, ref, alt, inhouse_class, acmg_class, comments)
 VALUES
@@ -83,24 +80,14 @@ VALUES
 (NULL, '1123_15', '1', 6579521, 6579521, 'G', 'C', 2, 2, ''),
 (NULL, '1123_15', '1', 6579607, 6579607, 'C', 'T', 2, 2, '');
 
-
-
-
-
-
-;
 INSERT INTO alamut_annotation
 (ID, gene, geneId, chrom, transcript, strand, protein, Uniprot, varType, codingEffect, varLocation, assembly, gDNAstart, gDNAend, gNomen, cDNAstart, cDNAend, cNomen, pNomen, alt_pNomen, exon, intron, omimId, pathogenicityClass, distNearestSS, nearestSSType, wtSSFScore, wtMaxEntScore, wtNNSScore, wtGSScore, wtHSFScore, varSSFScore, varMaxEntScore, varNNSScore, varGSScore, varHSFScore, nearestSSChange, localSpliceEffect, proteinDomain1, proteinDomain2, proteinDomain3, proteinDomain4, rsId, rsValidated, rsSuspect, rsValidations, rsValidationNumber, rsAncestralAllele, rsHeterozygosity, rsClinicalSignificance, rsMAF, rsMAFAllele, rsMAFCount, exacQuality, exacFilter, exacAlleleCount, exacAllFreq, exacAFRFreq, exacAMRFreq, exacEASFreq, exacSASFreq, exacNFEFreq, exacFINFreq, exacOTHFreq, exacDP, espRefEACount, espRefAACount, espRefAllCount, espAltEACount, espAltAACount, espAltAllCount, espEAMAF, espAAMAF, espAllMAF, espEAAAF, espAAAAF, espAllAAF, espAvgReadDepth, hgmdId, hgmdPhenotype, hgmdWebLink, hgmdPubMedId, hgmdSubCategory, clinVarIds, clinVarOrigins, clinVarMethods, clinVarClinSignifs, clinVarReviewStatus, clinVarPhenotypes, cosmicIds, cosmicTissues, substType, wtNuc, varNuc, nucChange, phastCons, phyloP, wtAA_1, wtAA_3, wtCodon, wtCodonFreq, varAA_1, varAA_3, varCodon, varCodonFreq, posAA, nOrthos, conservedOrthos, conservedDistSpecies, BLOSUM45, BLOSUM62, BLOSUM80, wtAAcomposition, varAAcomposition, wtAApolarity, varAApolarity, wtAAvolume, varAAvolume, granthamDist, AGVGDclass, AGVGDgv, AGVGDgd, SIFTprediction, SIFTweight, SIFTmedian, PPH2prediction, PPH2class, PPH2score, MAPPprediction, MAPPpValue, MAPPpValueMedian, TASTERprediction, TASTERpValue)
 VALUES
-(),
-(),
-(),
-(),
-(),
-(),
-(),
-()
-;
+(NULL , "MLH1", 7127, "1", "NM_001167617.1", 1, "NP_001161089.1", NULL, "substitution", "deletion", "exon", "GRCh37", 6530965, 6530965, "g.37056003->G", 464, 464, "c.464->G", "p.Val155Gly", "p.Val155Gly", 9, NULL, 120436, "Class 3-Unknown pathogenicity", -33, "5'", 77.468, 10.4254, 0.960078, 2.6874, 83.282, 77.468, 10.4254, 0.960078, 2.3437, 83.282, 0, NULL, "DNA mismatch repair protein, C-terminal", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "transversion", "T", "G", "T>G", 1, 4.887, "V", "Val", "GTG", 0.468, "G", "Gly", "GGG", 0.25, 155, 11, 7, "Tetraodon", -3, -3, -6, 0, 0.74, 5.9, 9, 84, 3, 109, "C0", 229.59, 0, "Tolerated", 0.15, 3.04, NULL, NULL, NULL, "good", 6.01E-01, 0.0888, "disease causing", 1),
+(NULL , "GJB1", 7127, "1", "NM_001167617.1", 1, "NP_001161089.1", NULL, "substitution", "missense", "exon", "GRCh37", 6533528, 6533528, "g.37056003G>A", 464, 464, "c.464G>A", "p.Val155Gly", "p.Val155Gly", 9, NULL, 120436, "Class 3-Unknown pathogenicity", -33, "5'", 77.468, 10.4254, 0.960078, 2.6874, 83.282, 77.468, 10.4254, 0.960078, 2.3437, 83.282, 0, NULL, "DNA mismatch repair protein, C-terminal", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "transversion", "T", "G", "T>G", 1, 4.887, "V", "Val", "GTG", 0.468, "G", "Gly", "GGG", 0.25, 155, 11, 7, "Tetraodon", -3, -3, -6, 0, 0.74, 5.9, 9, 84, 3, 109, "C0", 229.59, 0, "Tolerated", 0.15, 3.04, NULL, NULL, NULL, "good", 6.01E-01, 0.0888, "disease causing", 1),
+(NULL , "MLH1", 7127, "1", "NM_001167617.1", 1, "NP_001161089.1", NULL, "substitution", "missense", "exon", "GRCh37", 6557154, 6557154, "g.37056003G>A", 464, 464, "c.464G>A", "p.Val155Gly", "p.Val155Gly", 9, NULL, 120436, "Class 3-Unknown pathogenicity", -33, "5'", 77.468, 10.4254, 0.960078, 2.6874, 83.282, 77.468, 10.4254, 0.960078, 2.3437, 83.282, 0, NULL, "DNA mismatch repair protein, C-terminal", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "transversion", "T", "G", "T>G", 1, 4.887, "V", "Val", "GTG", 0.468, "G", "Gly", "GGG", 0.25, 155, 11, 7, "Tetraodon", -3, -3, -6, 0, 0.74, 5.9, 9, 84, 3, 109, "C0", 229.59, 0, "Tolerated", 0.15, 3.04, NULL, NULL, NULL, "good", 6.01E-01, 0.0888, "disease causing", 1),
+(NULL , "MLH1", 7127, "1", "NM_001167617.1", 1, "NP_001161089.1", NULL, "substitution", "missense", "exon", "GRCh37", 6579521, 6579521, "g.37056003G>C", 464, 464, "c.464G>C", "p.Val155Gly", "p.Val155Gly", 9, NULL, 120436, "Class 3-Unknown pathogenicity", -33, "5'", 77.468, 10.4254, 0.960078, 2.6874, 83.282, 77.468, 10.4254, 0.960078, 2.3437, 83.282, 0, NULL, "DNA mismatch repair protein, C-terminal", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "transversion", "T", "G", "T>G", 1, 4.887, "V", "Val", "GTG", 0.468, "G", "Gly", "GGG", 0.25, 155, 11, 7, "Tetraodon", -3, -3, -6, 0, 0.74, 5.9, 9, 84, 3, 109, "C0", 229.59, 0, "Tolerated", 0.15, 3.04, NULL, NULL, NULL, "good", 6.01E-01, 0.0888, "disease causing", 1),
+(NULL , "MLH1", 7127, "1", "NM_001167617.1", 1, "NP_001161089.1", NULL, "substitution", "missense", "exon", "GRCh37", 6579607, 6579607, "g.37056003C>T", 464, 464, "c.464C>T", "p.Val155Gly", "p.Val155Gly", 9, NULL, 120436, "Class 3-Unknown pathogenicity", -33, "5'", 77.468, 10.4254, 0.960078, 2.6874, 83.282, 77.468, 10.4254, 0.960078, 2.3437, 83.282, 0, NULL, "DNA mismatch repair protein, C-terminal", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "transversion", "T", "G", "T>G", 1, 4.887, "V", "Val", "GTG", 0.468, "G", "Gly", "GGG", 0.25, 155, 11, 7, "Tetraodon", -3, -3, -6, 0, 0.74, 5.9, 9, 84, 3, 109, "C0", 229.59, 0, "Tolerated", 0.15, 3.04, NULL, NULL, NULL, "good", 6.01E-01, 0.0888, "disease causing", 1);
 
 
 

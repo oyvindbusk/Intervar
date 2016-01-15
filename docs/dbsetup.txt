@@ -87,13 +87,15 @@ alt VARCHAR(50) REFERENCES raw_variants,
 inhouse_class INT,
 acmg_class INT,
 comments TEXT,
+interpretor username VARCHAR(4) REFERENCES users,
+signed DATETIME,
 FOREIGN KEY(SAMPLE_NAME) REFERENCES patient_info(patient_ID),
 FOREIGN KEY(Chr, Start, Stop, ref, alt) REFERENCES raw_variants(Chr, Start, Stop, ref, alt),
 UNIQUE (SAMPLE_NAME, Chr, Start, Stop, ref, alt)
 );
 
 CREATE TABLE alamut_annotation(
-ID INT PRIMARY KEY,
+ID INTEGER PRIMARY KEY,
 gene VARCHAR(25),
 geneId INT,
 chrom VARCHAR(5),
