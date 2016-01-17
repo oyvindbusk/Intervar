@@ -5,7 +5,7 @@ import os
 
 DEBUG = True
 SECRET_KEY = 'yekterces'
-SQLALCHEMY_DATABASE_URI = 'sqlite:///db/sql.db'
+SQLALCHEMY_DATABASE_URI = 'sqlite:///db/users.db'
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -91,5 +91,11 @@ def login():
 def index():
     return render_template('index.html')
 
+@app.route('/patient')
+def patient():
+	return render_template('patient.html')
+
+
+
 if __name__ == '__main__':
-    app.run('172.16.0.56', port=5000)
+    app.run('0.0.0.0')

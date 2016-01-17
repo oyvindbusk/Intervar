@@ -2,15 +2,19 @@
 {% block content %}
 <div class="jumbotron">
   <div class="container">
-    <h1>My Secure Site</h1>
+    <h1>Intervar app</h1>
+    <p>An app for storing NGS-interpretations!</p> 
   </div>
 </div>
 <div class="container">
+<h3>More info here:</h3>        
+<p>Made in the epicenter of change!</p>
   {% with messages = get_flashed_messages() %}
     {% if messages %}
       {% for message in messages %}
       <div class="row">
         <div class="col-md-12">
+        
           <div class="alert alert-info" role="alert">{{ message }}</div>
         </div>
       </div>

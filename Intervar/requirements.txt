@@ -1,2 +1,4 @@
-Flask-Login==0.2.11
-Flask-SQLAlchemy==?
+Flask-Login==0.3.2
+Flask-SQLAlchemy==2.1
+Flask-WTF==0.12
+
