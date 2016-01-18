@@ -1,6 +1,11 @@
 import sqlite3
-
-# db navn Intervar.db
+from flask.ext.wtf import Form
+from wtforms import TextField, TextAreaField, SubmitField, FileField, SelectField
+from wtforms.validators import DataRequired
+from flask_table import Table, Col
+from flask import g
+from flask import g
+# db navn Intervar.sqlite
 #tabeller:
 #patient_info
 
@@ -12,27 +17,33 @@ import sqlite3
 #alamut_annotations
 
 
-def connect_to_db(db_name):
-	conn = sqlite3.connect(db_name)
-	c = conn.cursor()
+
+
+
+#patient form
+
+class PatientForm(Form):
+    patient_ID = TextField("Patient ID", validators=[DataRequired()])
+    sex = SelectField('Sex', choices=[('M', 'Male'),('F', 'Female')])
+    clinInfo = TextAreaField("Clinical info")
+    familyID = TextField('Family ID')
+    hsmFileUpload = FileField("Hsmetrics file")
+    submit = SubmitField("Submit")
     
 
 
-
-def fill_db_with_mock_data():
-	purchases = [('2006-03-28', 'BUY', 'IBM', 1000, 45.00),
-             ('2006-04-05', 'BUY', 'MSFT', 1000, 72.00),
-             ('2006-04-06', 'SELL', 'IBM', 500, 53.00),
-            ]
-    c.executemany('INSERT INTO stocks VALUES (?,?,?,?,?)', purchases)
-
-
+# Declare your table
+class ItemTable(Table):
+    PID = Col('Patient ID')
+    clinInfo = Col('Clinical info')
+    familyID = Col('Family ID')
+    sex = Col('sex')
+    classes = ['table table-striped']
 
 
-
-
-
-
-
-
-
+def dictFromCur(dbcursor):
+	items = []
+	for i in dbcursor:
+		items.append(dict(PID=i[0], clinInfo=i[1], familyID=i[2], sex=i[3]))
+	return items
+	

@@ -1,7 +1,15 @@
-from flask import Flask, render_template, request, abort, redirect, url_for, flash
+from flask import Flask, render_template, request, abort, redirect, url_for, flash, g
 from flask.ext.login import LoginManager, UserMixin, login_user, logout_user, login_required
 from flask.ext.sqlalchemy import SQLAlchemy
+
+
+
+
+
 import os
+import sqlite3
+#importere egne scripts
+from scripts import PatientForm, ItemTable, dictFromCur
 
 DEBUG = True
 SECRET_KEY = 'yekterces'
@@ -14,8 +22,23 @@ login_manager = LoginManager(app)
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-db = SQLAlchemy(app)
+DATABASE = 'Intervar.sqlite'
+def connect_to_database():
+    return sqlite3.connect(DATABASE)
 
+def get_db():
+    db = getattr(g, '_database', None)
+    if db is None:
+		db = g._database = connect_to_database()
+    return db
+	
+@app.teardown_appcontext
+def close_connection(exception):
+	db = getattr(g, '_database', None)
+	if db is not None:
+		db.close()
+
+db = SQLAlchemy(app)
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String)
@@ -91,11 +114,45 @@ def login():
 def index():
     return render_template('index.html')
 
-@app.route('/patient')
-def patient():
-	return render_template('patient.html')
-
-
-
+@app.route('/testinput', methods=['GET', 'POST'])
+@login_required
+def testinput():
+	form = PatientForm()
+	if request.method == 'POST':
+		db = get_db()
+		cur = get_db().cursor()
+		cur.execute("INSERT INTO patient_info (patient_ID, family_ID, clinical_info,  sex) VALUES (?, ?, ?, ?)", [request.form['patient_ID'], request.form['familyID'], request.form['clinInfo'], request.form['sex'], ])
+		db.commit()
+		return "Suksess: Patient info:{}".format(request.form['patient_ID'])
+	elif request.method == "GET":
+		return render_template('testinput.html', form=form)
+		
+		
+		
+	
+@app.route('/showdb')
+@login_required
+def showdb():
+    cur = get_db().cursor()
+    cur.execute('SELECT * FROM patient_info')
+    items = dictFromCur(cur.fetchall())
+    table = ItemTable(items)
+    return render_template('showdb.html', table=table)
+	
+	
 if __name__ == '__main__':
-    app.run('0.0.0.0')
+    app.run('172.16.0.56')
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
