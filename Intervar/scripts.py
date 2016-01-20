@@ -1,9 +1,8 @@
 import sqlite3
 from flask.ext.wtf import Form
-from wtforms import TextField, TextAreaField, SubmitField, FileField, SelectField
-from wtforms.validators import DataRequired
+from wtforms import TextField, TextAreaField, SubmitField, FileField, SelectField, validators
+
 from flask_table import Table, Col
-from flask import g
 from flask import g
 # db navn Intervar.sqlite
 #tabeller:
@@ -17,13 +16,10 @@ from flask import g
 #alamut_annotations
 
 
-
-
-
 #patient form
 
 class PatientForm(Form):
-    patient_ID = TextField("Patient ID", validators=[DataRequired()])
+    patient_ID = TextField("Patient ID")
     sex = SelectField('Sex', choices=[('M', 'Male'),('F', 'Female')])
     clinInfo = TextAreaField("Clinical info")
     familyID = TextField('Family ID')

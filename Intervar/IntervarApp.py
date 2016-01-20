@@ -2,10 +2,6 @@ from flask import Flask, render_template, request, abort, redirect, url_for, fla
 from flask.ext.login import LoginManager, UserMixin, login_user, logout_user, login_required
 from flask.ext.sqlalchemy import SQLAlchemy
 
-
-
-
-
 import os
 import sqlite3
 #importere egne scripts
@@ -123,10 +119,10 @@ def testinput():
 		cur = get_db().cursor()
 		cur.execute("INSERT INTO patient_info (patient_ID, family_ID, clinical_info,  sex) VALUES (?, ?, ?, ?)", [request.form['patient_ID'], request.form['familyID'], request.form['clinInfo'], request.form['sex'], ])
 		db.commit()
-		return "Suksess: Patient info:{}".format(request.form['patient_ID'])
+		return "Suksess"
+		#flash('Suksess!!')
 	elif request.method == "GET":
-		return render_template('testinput.html', form=form)
-		
+	    return render_template('testinput.html', form=form)
 		
 		
 	
@@ -141,8 +137,8 @@ def showdb():
 	
 	
 if __name__ == '__main__':
-    app.run('172.16.0.56')
-	
+    #app.run('172.16.0.56')
+	app.run('0.0.0.0')
 
 	
 	
