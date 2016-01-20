@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="jumbotron">
 <div class="container">
+    <div class="col-sm-4">
     <h1>Patient info</h1>
 	<form action="{{ url_for('testinput') }}" method=post>
 	<fieldset class="form-group">
@@ -30,3 +30,5 @@
 </div>
 </div>
 {% endblock %}
+
+
