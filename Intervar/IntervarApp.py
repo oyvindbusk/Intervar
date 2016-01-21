@@ -137,8 +137,8 @@ def showdb():
 	
 	
 if __name__ == '__main__':
-    #app.run('172.16.0.56')
-	app.run('0.0.0.0')
+    	app.run('172.16.0.56')
+	#app.run('0.0.0.0')
 
 	
 	
