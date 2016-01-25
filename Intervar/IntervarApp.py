@@ -5,7 +5,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 import os
 import sqlite3
 #importere egne scripts
-from scripts import PatientForm, ItemTable, dictFromCur
+from scripts import PatientForm, PatientTable, VariantTable, dictFromCur, print_file
 
 DEBUG = True
 SECRET_KEY = 'yekterces'
@@ -25,14 +25,14 @@ def connect_to_database():
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
-		db = g._database = connect_to_database()
+        db = g._database = connect_to_database()
     return db
-	
+    
 @app.teardown_appcontext
 def close_connection(exception):
-	db = getattr(g, '_database', None)
-	if db is not None:
-		db.close()
+    db = getattr(g, '_database', None)
+    if db is not None:
+        db.close()
 
 db = SQLAlchemy(app)
 class User(db.Model, UserMixin):
@@ -110,45 +110,52 @@ def login():
 def index():
     return render_template('index.html')
 
+
 @app.route('/testinput', methods=['GET', 'POST'])
 @login_required
 def testinput():
-	form = PatientForm()
-	if request.method == 'POST':
-		db = get_db()
-		cur = get_db().cursor()
-		cur.execute("INSERT INTO patient_info (patient_ID, family_ID, clinical_info,  sex) VALUES (?, ?, ?, ?)", [request.form['patient_ID'], request.form['familyID'], request.form['clinInfo'], request.form['sex'], ])
-		db.commit()
-		return "Suksess"
-		#flash('Suksess!!')
-	elif request.method == "GET":
-	    return render_template('testinput.html', form=form)
-		
-		
-	
+    form = PatientForm()
+    if request.method == 'POST':
+        db = get_db()
+        cur = get_db().cursor()
+        cur.execute("INSERT INTO patient_info (patient_ID, family_ID, clinical_info,  sex) VALUES (?, ?, ?, ?)", [request.form['patient_ID'], request.form['familyID'], request.form['clinInfo'], request.form['sex'], ])
+        db.commit()
+ 
+
+
+        return "Suksess"
+        #flash('Suksess!!')
+    elif request.method == "GET":
+        return render_template('testinput.html', form=form)
+        
+        
+    
 @app.route('/showdb')
 @login_required
 def showdb():
     cur = get_db().cursor()
+    #hente ut pasientinfo for alle som er kjort
     cur.execute('SELECT * FROM patient_info')
-    items = dictFromCur(cur.fetchall())
-    table = ItemTable(items)
-    return render_template('showdb.html', table=table)
-	
-	
+    patient_items = dictFromCur(cur.fetchall(), 'patient_info')
+    patient_table = PatientTable(patient_items)
+    #hente ut tolkede varianter for en pasient
+    cur.execute('SELECT chr, start, stop, ref, alt, inhouse_class FROM interpretations WHERE SAMPLE_NAME = "123_15"')
+    var_items = dictFromCur(cur.fetchall(), 'int_variants')
+    var_table = VariantTable(var_items,)
+    return render_template('showdb.html', patient_table=patient_table, var_table=var_table)
+    
+    
 if __name__ == '__main__':
-    	app.run('172.16.0.56')
-	#app.run('0.0.0.0')
+        #app.run('172.16.0.56')
+    app.run('0.0.0.0')
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+    
+
+    
+    
+    
+    
+    
+    
+    
+    

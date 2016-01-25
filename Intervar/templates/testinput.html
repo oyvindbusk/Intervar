@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container">
-    <div class="col-sm-4">
+    <div class="col-sm-5">
     <h1>Patient info</h1>
 	<form action="{{ url_for('testinput') }}" method=post>
-	<fieldset class="form-group">
+    <fieldset class="form-group">
     {{ form.patient_ID.label }}
     {{ form.patient_ID(class="form-control", placeholder="Patient ID") }}
 	</fieldset>
@@ -12,10 +12,14 @@
     {{ form.familyID.label }}
     {{ form.familyID(class="form-control", placeholder="Family ID") }}
 	</fieldset>
-	<fieldset class="form-group">
+    <fieldset class="form-group">
     {{ form.sex.label }}
     {{ form.sex(class="form-control") }}
 	</fieldset>
+    <fieldset class="form-group">
+    {{ form.panel.label }}
+    {{ form.panel(class="form-control") }}
+    </fieldset>
 	<fieldset class="form-group">
     {{ form.clinInfo.label }}
     {{ form.clinInfo(class="form-control", placeholder="Enter clinical info about the patient") }}
@@ -25,6 +29,11 @@
     {{ form.hsmFileUpload(class="Load hsmetrics-file") }}
 	<small class="text-muted">Load a hsmetrics-file containing QC-info for the sample.</small>
 	</fieldset>
+    <fieldset class="form-group">
+    {{ form.fragmentSizeUpload.label }}
+    {{ form.fragmentSizeUpload(class="Load fragment size file") }}
+    <small class="text-muted">Load a file containing fragment sizes for the sample.</small>
+    </fieldset>
      {{ form.submit(class="btn btn-primary") }}
   </form>
 </div>
