@@ -58,6 +58,8 @@ def dictFromCur(dbcursor, type):
 			items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], inhouse_class=i[5]))
 	return items
 
+##DEV!
+
 def print_file(filename):
 	reader = csv.reader(open(filename, 'r'))
 	for i in reader:

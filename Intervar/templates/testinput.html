@@ -3,7 +3,7 @@
 <div class="container">
     <div class="col-sm-5">
     <h1>Patient info</h1>
-	<form action="{{ url_for('testinput') }}" method=post>
+	<form action="{{ url_for('testinput') }}" method=POST enctype="multipart/form-data">
     <fieldset class="form-group">
     {{ form.patient_ID.label }}
     {{ form.patient_ID(class="form-control", placeholder="Patient ID") }}

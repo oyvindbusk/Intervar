@@ -1,11 +1,14 @@
-from flask import Flask, render_template, request, abort, redirect, url_for, flash, g
+from flask import Flask, render_template, request, abort, redirect, url_for, flash, g, send_from_directory
 from flask.ext.login import LoginManager, UserMixin, login_user, logout_user, login_required
 from flask.ext.sqlalchemy import SQLAlchemy
-
 import os
 import sqlite3
+from werkzeug import secure_filename
 #importere egne scripts
 from scripts import PatientForm, PatientTable, VariantTable, dictFromCur, print_file
+
+
+
 
 DEBUG = True
 SECRET_KEY = 'yekterces'
@@ -13,10 +16,18 @@ SQLALCHEMY_DATABASE_URI = 'sqlite:///db/users.db'
 
 app = Flask(__name__)
 app.config.from_object(__name__)
+UPLOAD_FOLDER = './uploads'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 login_manager = LoginManager(app)
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 DATABASE = 'Intervar.sqlite'
 def connect_to_database():
@@ -120,16 +131,15 @@ def testinput():
         cur = get_db().cursor()
         cur.execute("INSERT INTO patient_info (patient_ID, family_ID, clinical_info,  sex) VALUES (?, ?, ?, ?)", [request.form['patient_ID'], request.form['familyID'], request.form['clinInfo'], request.form['sex'], ])
         db.commit()
- 
-
-
+        file = request.files['hsmFileUpload']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         return "Suksess"
         #flash('Suksess!!')
     elif request.method == "GET":
         return render_template('testinput.html', form=form)
-        
-        
-    
+
 @app.route('/showdb')
 @login_required
 def showdb():
@@ -152,7 +162,10 @@ if __name__ == '__main__':
     
 
     
-    
+    #@app.route('/uploads/<filename>')
+#def uploaded_file(filename):
+ #   return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
     
     
     
