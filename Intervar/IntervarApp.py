@@ -5,7 +5,7 @@ import os
 import sqlite3
 from werkzeug import secure_filename
 #importere egne scripts
-from scripts import PatientForm, PatientTable, VariantTable, dictFromCur, print_file
+from scripts import PatientForm, PatientTable, VariantTable, dictFromCur, print_file, hsmetrics_to_tuple, insert_data, get_values_from_form
 
 
 
@@ -17,7 +17,7 @@ SQLALCHEMY_DATABASE_URI = 'sqlite:///db/users.db'
 app = Flask(__name__)
 app.config.from_object(__name__)
 UPLOAD_FOLDER = './uploads'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS = set(['txt', 'csv'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 login_manager = LoginManager(app)
@@ -129,17 +129,22 @@ def testinput():
     if request.method == 'POST':
         db = get_db()
         cur = get_db().cursor()
-        cur.execute("INSERT INTO patient_info (patient_ID, family_ID, clinical_info,  sex) VALUES (?, ?, ?, ?)", [request.form['patient_ID'], request.form['familyID'], request.form['clinInfo'], request.form['sex'], ])
+        patient_form_tuple = get_values_from_form()
+        cur.execute("INSERT INTO patient_info (patient_ID, family_ID, clinical_info,  sex) VALUES (?, ?, ?, ?)", patient_form_tuple )
+        
+        hsm_file = request.files['hsmFileUpload']
+        if hsm_file and allowed_file(hsm_file.filename):
+            filename = secure_filename(hsm_file.filename)
+            hsm_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            #print(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            insert_data(cur, 'QC', hsmetrics_to_tuple(os.path.join(app.config['UPLOAD_FOLDER'], filename), patient_form_tuple[0] ))
         db.commit()
-        file = request.files['hsmFileUpload']
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        db.close()
         return "Suksess"
         #flash('Suksess!!')
     elif request.method == "GET":
         return render_template('testinput.html', form=form)
-
+#insert_data(sqlite_file, 'QC',hsmetrics_to_tuple('523_15_hsmetrix_out.txt'))
 @app.route('/showdb')
 @login_required
 def showdb():
@@ -156,8 +161,8 @@ def showdb():
     
     
 if __name__ == '__main__':
-        #app.run('172.16.0.56')
-    app.run('0.0.0.0')
+    app.run('172.16.0.56')
+    #app.run('0.0.0.0')
 
     
 

@@ -1,0 +1,14 @@
+make insert script for insertsizefiles
+make validators for the form
+make overview-page
+add field clinical category to form and db
+legge innearch-h-window ett eller annet sted for aa teste ut
+Lage variant-html
+db: 
+teknisk godkjenning
+teknisk kontroll
+dato analysesvar??
+--------------------
+Lage tolkningshtml
+installere flask-weasyprint
+lage rapport med weasyprint
