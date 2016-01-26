@@ -1,7 +1,7 @@
 make insert script for insertsizefiles
 make validators for the form
 make overview-page
-add field clinical category to form and db
+add field clinical_category to form and db
 legge innearch-h-window ett eller annet sted for aa teste ut
 Lage variant-html
 db: 
