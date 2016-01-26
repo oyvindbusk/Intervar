@@ -25,6 +25,9 @@ class VariantForm(Form):
     ref = TextField("Reference Allele")
     alt = TextField("Alternate Allele")
 
+class SearchForm(Form):
+	search = TextField("Search for Sample")
+
 # Declare your table
 class PatientTable(Table):
     PID = Col('Patient ID')

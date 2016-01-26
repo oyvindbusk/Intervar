@@ -5,7 +5,7 @@ import os
 import sqlite3
 from werkzeug import secure_filename
 #importere egne scripts
-from scripts import PatientForm, VariantForm, PatientTable, VariantTable, dictFromCur, print_file, hsmetrics_to_tuple, insert_data, get_values_from_form, insertsize_to_tuple, insert_data_is
+from scripts import PatientForm, VariantForm, SearchForm, PatientTable, VariantTable, dictFromCur, print_file, hsmetrics_to_tuple, insert_data, get_values_from_form, insertsize_to_tuple, insert_data_is
 #from scripts import SearchForm
 
 
@@ -61,12 +61,7 @@ def user_loader(user_id):
 @app.before_first_request
 def init_request():
     db.create_all()
-    
-
-#@app.route('/secret')
-#@login_required
-#def secret():
-#    return render_template('secret.html')
+    return render_template('secret.html')
 
 @app.route('/logout')
 def logout():
@@ -159,12 +154,20 @@ def testinput():
 def overview():
     return render_template('overview.html')
 
-@app.route('/interpret')
+@app.route('/interpret', methods=['GET', 'POST'])
 @login_required
 def interpret():
+    form = VariantForm()
+    searchform = SearchForm
+    if request.method == "POST":
+        return render_template('post_search.html', search_results=request.form['search'], form=form, searchform=searchform)
     return render_template('interpret.html')
 		#should contain a search bar like:  http://exac.broadinstitute.org which will lead to a specific sample interpetation.
-		
+	
+
+
+
+
 @app.route('/showdb')
 @login_required
 def showdb():
@@ -189,14 +192,6 @@ if __name__ == '__main__':
     #app.run('172.16.0.56')
     app.run('0.0.0.0')
 
-    
-
-    
-    #@app.route('/uploads/<filename>')
-#def uploaded_file(filename):
- #   return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
-
-    
     
     
     
