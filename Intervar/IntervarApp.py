@@ -5,8 +5,8 @@ import os
 import sqlite3
 from werkzeug import secure_filename
 #importere egne scripts
-from scripts import PatientForm, PatientTable, VariantTable, dictFromCur, print_file, hsmetrics_to_tuple, insert_data, get_values_from_form
-
+from scripts import PatientForm, VariantForm, PatientTable, VariantTable, dictFromCur, print_file, hsmetrics_to_tuple, insert_data, get_values_from_form, insertsize_to_tuple, insert_data_is
+#from scripts import SearchForm
 
 
 
@@ -61,11 +61,12 @@ def user_loader(user_id):
 @app.before_first_request
 def init_request():
     db.create_all()
+    
 
-@app.route('/secret')
-@login_required
-def secret():
-    return render_template('secret.html')
+#@app.route('/secret')
+#@login_required
+#def secret():
+#    return render_template('secret.html')
 
 @app.route('/logout')
 def logout():
@@ -131,13 +132,20 @@ def testinput():
         cur = get_db().cursor()
         patient_form_tuple = get_values_from_form()
         cur.execute("INSERT INTO patient_info (patient_ID, family_ID, clinical_info,  sex) VALUES (?, ?, ?, ?)", patient_form_tuple )
-        
         hsm_file = request.files['hsmFileUpload']
         if hsm_file and allowed_file(hsm_file.filename):
             filename = secure_filename(hsm_file.filename)
             hsm_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            #print(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            insert_data(cur, 'QC', hsmetrics_to_tuple(os.path.join(app.config['UPLOAD_FOLDER'], filename), patient_form_tuple[0] ))
+            insert_data(cur, 'QC', hsmetrics_to_tuple(os.path.join(app.config['UPLOAD_FOLDER'], filename), patient_form_tuple[0]))
+
+        #upload insertsizemetrics-file:
+        is_file = request.files['fragmentSizeUpload']
+        if is_file and allowed_file(is_file.filename):
+            is_filename = secure_filename(is_file.filename)
+            is_file.save(os.path.join(app.config['UPLOAD_FOLDER'], patient_form_tuple[0] + "_" + is_filename))
+            insert_data_is(cur, 'insert_size', insertsize_to_tuple(os.path.join(app.config['UPLOAD_FOLDER'], is_filename), patient_form_tuple[0]))
+            #insert_data_is(cur, )
+            # maa oppdatere databasen first
         db.commit()
         db.close()
         return "Suksess"
@@ -150,11 +158,17 @@ def testinput():
 @login_required
 def overview():
     return render_template('overview.html')
-		
+
+@app.route('/interpret')
+@login_required
+def interpret():
+    return render_template('interpret.html')
+		#should contain a search bar like:  http://exac.broadinstitute.org which will lead to a specific sample interpetation.
 		
 @app.route('/showdb')
 @login_required
 def showdb():
+    form = VariantForm()
     cur = get_db().cursor()
     #hente ut pasientinfo for alle som er kjort
     cur.execute('SELECT * FROM patient_info')
@@ -164,12 +178,16 @@ def showdb():
     cur.execute('SELECT chr, start, stop, ref, alt, inhouse_class FROM interpretations WHERE SAMPLE_NAME = "123_15"')
     var_items = dictFromCur(cur.fetchall(), 'int_variants')
     var_table = VariantTable(var_items,)
-    return render_template('showdb.html', patient_table=patient_table, var_table=var_table)
-    
-    
+    return render_template('showdb.html', patient_table=patient_table, var_table=var_table, form=form)
+
+
+
+
+
+
 if __name__ == '__main__':
-    app.run('172.16.0.56')
-    #app.run('0.0.0.0')
+    #app.run('172.16.0.56')
+    app.run('0.0.0.0')
 
     
 

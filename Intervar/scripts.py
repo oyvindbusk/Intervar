@@ -18,6 +18,13 @@ class PatientForm(Form):
     fragmentSizeUpload = FileField("Fragment size file")
     submit = SubmitField("Submit")
 
+class VariantForm(Form):
+    chrom = TextField("Chromosome name")
+    start = TextField("Start position") #Finnes det numberfield??
+    stop = TextField("Stop position")
+    ref = TextField("Reference Allele")
+    alt = TextField("Alternate Allele")
+
 # Declare your table
 class PatientTable(Table):
     PID = Col('Patient ID')
@@ -50,15 +57,14 @@ def dictFromCur(dbcursor, type):
 #metode for aa hente ut mean og median insert size:
 #insertSizeMetrics.txt
 #line 7, median == 0 (INT), mean 4 (REAL)
-def insertsize_to_db(is_file):
-    median_is = 0
-    mean_is = 0
+def insertsize_to_tuple(is_file, sample_name):
+    istuple = (sample_name, )
     reader = csv.reader(open(is_file, 'r'), delimiter='\t')
     for count, line in enumerate(reader):
         if count == 7:
-            median_is = line[0]
-            mean_is = line[4]
-    return median_is, mean_is
+            istuple = istuple + (line[0],)
+            istuple = istuple + (line[4],)
+    return istuple
 
 def get_values_from_form():
     form_tuple = (request.form['patient_ID'], request.form['familyID'], request.form['clinInfo'], request.form['sex'] )
@@ -85,7 +91,14 @@ def insert_data(cursor, table, tuple_with_data):
     except Exception as e:
         raise e
     
-
+def insert_data_is(cursor, table, tuple_with_data):
+    c = cursor
+    t = tuple_with_data
+    try:
+        c.execute("INSERT INTO " + table + " VALUES (?, ?, ?)", t)
+    except Exception as e:
+        raise e
+    
 	
 def print_file(filename):
 	reader = csv.reader(open(filename, 'r'))
