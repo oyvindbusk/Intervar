@@ -12,3 +12,28 @@ dato analysesvar??
 Lage tolkningshtml
 installere flask-weasyprint
 lage rapport med weasyprint
+
+Overview:
+Table for overwiew grouped by analysis and SBS:
+ 		MEAN_T_COV 	PCT_TARGET_BASES_20X
+		count 	mean 	mean
+SBS 	Panel_type 			
+NS0014 	e 	12 	106.765594 	0.926867
+NS0015 	filtex 	10 	114.572177 	0.935647
+NS0016 	filtex 	10 	105.138737 	0.923380
+NS0018 	exom 	6 	94.865389 	0.926307
+filtex 	4 	98.207947 	0.932466
+NS0019 	pv2-1 	24 	436.309742 	0.979184
+NS006 	pv2-1 	20 	687.272709 	0.980587
+NS008 	e 	12 	78.158322 	0.894468
+NS013 	pv2-1 	22 	578.557069 	0.981950
+SBS109 	e 	11 	68.943382 	0.897833
+pv2-1 	36 	322.219167 	0.932049
+SBS120 	pv2-1 	35 	462.057059 	0.974403
+SBS122 	exom 	10 	71.964841 	0.789851
+SBS123 	pv2-1 	22 	438.868145 	0.972981
+
+
+
+Google graph scatter plot of coverage
+plotte insertsize

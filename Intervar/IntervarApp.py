@@ -144,7 +144,14 @@ def testinput():
         #flash('Suksess!!')
     elif request.method == "GET":
         return render_template('testinput.html', form=form)
-#insert_data(sqlite_file, 'QC',hsmetrics_to_tuple('523_15_hsmetrix_out.txt'))
+
+		
+@app.route('/overview')
+@login_required
+def overview():
+    return render_template('overview.html')
+		
+		
 @app.route('/showdb')
 @login_required
 def showdb():
