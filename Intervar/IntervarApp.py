@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, abort, redirect, url_for, flash, g, send_from_directory
+from flask import Flask, render_template, request, abort, redirect, url_for, flash, g, send_from_directory, jsonify
 from flask.ext.login import LoginManager, UserMixin, login_user, logout_user, login_required
 from flask.ext.sqlalchemy import SQLAlchemy
 import os
@@ -61,7 +61,7 @@ def user_loader(user_id):
 @app.before_first_request
 def init_request():
     db.create_all()
-    return render_template('secret.html')
+    
 
 @app.route('/logout')
 def logout():
@@ -165,7 +165,12 @@ def interpret():
 		#should contain a search bar like:  http://exac.broadinstitute.org which will lead to a specific sample interpetation.
 	
 
-
+@app.route('/_add_numbers')
+def add_numbers():
+    """Add two numbers server side, ridiculous but well..."""
+    a = request.args.get('a', 0, type=int)
+    b = request.args.get('b', 0, type=int)
+    return jsonify(result=a + b)
 
 
 @app.route('/showdb')
@@ -190,7 +195,7 @@ def showdb():
 
 if __name__ == '__main__':
     #app.run('172.16.0.56')
-    app.run('0.0.0.0')
+    app.run('0.0.0.0', port=8080)
 
     
     
