@@ -37,3 +37,5 @@ SBS123 	pv2-1 	22 	438.868145 	0.972981
 
 Google graph scatter plot of coverage
 plotte insertsize
+
+Annovar har en refGeneVersion, den kan være nyttig for http-request til Alamut.

@@ -41,19 +41,28 @@
 
 
 <hr>
+
+
 <script type="text/javascript">
   $(function() {
-    var submit_form = function(e) {
-      $.getJSON($SCRIPT_ROOT + '/_add_numbers', {
+	var submit_form = function(e) {
+	  var $foo = $('.foo');
+	  $.getJSON($SCRIPT_ROOT + '/_add_numbers', {
         a: $('input[name="a"]').val(),
-        b: $('input[name="b"]').val()
+        b: $('input[name="b"]').val(),
+		
       }, function(data) {
         $('#result').text(data.result);
         $('input[name=a]').focus().select();
       });
       return false;
     };
-
+	$('a#jqtest').click(function(){
+		$.get("http://localhost:10000/version", function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
+	});
+	
     $('a#calculate').bind('click', submit_form);
 
     $('input[type=text]').bind('keydown', function(e) {
@@ -65,12 +74,18 @@
     $('input[name=a]').focus();
   });
 </script>
+
+
+
+
 <h1>jQuery Example</h1>
 <p>
   <input type="text" size="5" name="a"> +
   <input type="text" size="5" name="b"> =
   <span id="result">?</span>
 <p><a href=# id="calculate">calculate server side</a>
+</br>
+<a href=# id="jqtest">test</a>
 
 <hr>
 

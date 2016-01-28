@@ -170,6 +170,8 @@ def add_numbers():
     """Add two numbers server side, ridiculous but well..."""
     a = request.args.get('a', 0, type=int)
     b = request.args.get('b', 0, type=int)
+    alamut = request.args.get('alamut', 0, type=str)
+    print(alamut)
     return jsonify(result=a + b)
 
 
@@ -194,8 +196,8 @@ def showdb():
 
 
 if __name__ == '__main__':
-    #app.run('172.16.0.56')
-    app.run('0.0.0.0', port=8080)
+    app.run('172.16.0.56')
+    #app.run('0.0.0.0', port=8080)
 
     
     
