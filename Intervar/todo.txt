@@ -1,3 +1,25 @@
+1st pri:
+flask -> request.get_json(force=False, silent=False, cache=True)¶
+jquery.getJSON
+http://www.tutorialspoint.com/jquery/ajax-jquery-getjson.htm
+
+Ferdig input-form
+overview vise output fra sqlite-spørringer:
+	antall pasienter
+	antall SBS
+	Antall varianter
+	Antall varianter i hver klasse
+	tabell gruppert.
+Ferdig DB:
+	legge til felter for å se om GJB har vurdert, samt tolkningsmøtedato
+	tolkningsmøtekommentar
+	Sangerverifisert?
+	Ny tabell for run_info.txt -> inn i input-form?
+Få til slik at det åpner seg en tolkningsside for den aktuelle pasienten fra søkevindu i interpretation.
+
+
+
+
 make insert script for insertsizefiles
 make validators for the form
 make overview-page

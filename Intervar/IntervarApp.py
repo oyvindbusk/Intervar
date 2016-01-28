@@ -176,8 +176,9 @@ def add_numbers():
 
 
 @app.route('/showdb')
+@app.route('/showdb/<pID>')
 @login_required
-def showdb():
+def showdb(pID="123_15"):
     form = VariantForm()
     cur = get_db().cursor()
     #hente ut pasientinfo for alle som er kjort
@@ -188,7 +189,7 @@ def showdb():
     cur.execute('SELECT chr, start, stop, ref, alt, inhouse_class FROM interpretations WHERE SAMPLE_NAME = "123_15"')
     var_items = dictFromCur(cur.fetchall(), 'int_variants')
     var_table = VariantTable(var_items,)
-    return render_template('showdb.html', patient_table=patient_table, var_table=var_table, form=form)
+    return render_template('showdb.html', patient_table=patient_table, var_table=var_table, form=form, pID=pID)
 
 
 
@@ -196,8 +197,8 @@ def showdb():
 
 
 if __name__ == '__main__':
-    app.run('172.16.0.56')
-    #app.run('0.0.0.0', port=8080)
+    #app.run('172.16.0.56')
+    app.run('0.0.0.0', port=8080)
 
     
     
