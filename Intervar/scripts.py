@@ -26,7 +26,7 @@ class VariantForm(Form):
     alt = TextField("Alternate Allele")
 
 class SearchForm(Form):
-	search = TextField("Search for Sample")
+    search = TextField("Search for Sample")
 
 # Declare your table
 class PatientTable(Table):
@@ -37,7 +37,7 @@ class PatientTable(Table):
     classes = ['table table-striped']
 
 class VariantTable(Table):
-    chrom = Col('Chrom')
+    chrom = Col('chrom')
     start = Col('start')
     stop = Col('stop')
     ref = Col('ref')
@@ -45,16 +45,28 @@ class VariantTable(Table):
     inhouse_class = Col('Class')
     classes = ['table table-striped'] # make sortable like in the exac-page?
 
-
 def dictFromCur(dbcursor, type):
-	#legge inn en IF saa man bruke denne til aa lage tabeller fra flere forskjellige sporringer
-	items = []
-	for i in dbcursor:
-		if type == 'patient_info':
-			items.append(dict(PID=i[0], clinInfo=i[1], familyID=i[2], sex=i[3]))
-		elif type == 'int_variants':
-			items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], inhouse_class=i[5]))
-	return items
+    patient_dict = {}
+    for i in dbcursor:
+        if type == 'pID_patient':
+            patient_dict = {"PID" : i[0], "clinInfo": i[1], "familyID" : i[2], "sex" : i[3], "panel_name" : i[4], "mean_target_cov" : i[5], "pct_target_20" : i[6], "pct_target_30": i[7], "median_is" : i[8], "mean_is" : i[9]}
+    return patient_dict
+            
+
+def listOfdictsFromCur(dbcursor, type):
+    """legge inn en IF saa man bruke denne til aa lage tabeller fra flere forskjellige sporringer
+    I use a list of dicts for the tables, and for the single lines I simply export a single dict.
+
+    """
+    list_items = []
+    for i in dbcursor:
+        if type == 'patient_info':
+            list_items.append(dict(PID=i[0], clinInfo=i[1], familyID=i[2], sex=i[3] ))
+        elif type == 'int_variants':
+            list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], inhouse_class=i[5]))
+    return list_items
+        
+    
 
 ##DEV!
 #metode for aa hente ut mean og median insert size:
@@ -72,7 +84,7 @@ def insertsize_to_tuple(is_file, sample_name):
 def get_values_from_form():
     form_tuple = (request.form['patient_ID'], request.form['familyID'], request.form['clinInfo'], request.form['sex'] )
     return form_tuple
-	
+    
 #get info from hsmetrics-file into tuple (exluding sample name)
 def hsmetrics_to_tuple(hsmfilepath, sample_name):
     hsmetrics_csv_reader = csv.reader(open(hsmfilepath,'r'),delimiter='\t')
@@ -102,9 +114,9 @@ def insert_data_is(cursor, table, tuple_with_data):
     except Exception as e:
         raise e
     
-	
+    
 def print_file(filename):
-	reader = csv.reader(open(filename, 'r'))
-	for i in reader:
-		print(i)
+    reader = csv.reader(open(filename, 'r'))
+    for i in reader:
+        print(i)
 

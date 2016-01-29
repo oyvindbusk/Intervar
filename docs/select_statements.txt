@@ -12,3 +12,15 @@ GROUP BY patient_info.patient_ID;
 #Number of panels:
 #Total number of variants:
 #Number of variants of each class:
+
+# patient info pr. info til showdb-siden. Alle pasienter skal ha alle disse verdiene (bortsett fra slektsID) så det skal gå fint. Kan evt. bruke left join hvis det er noen som mangler neon filer.
+SELECT pat.patient_ID, pat.clinical_info, pat.family_ID, pat.sex,
+pan.panel_name,
+QC.MEAN_TARGET_COVERAGE, QC.PCT_TARGET_BASES_20X, QC.PCT_TARGET_BASES_30X,
+ins.median_insert_size, ins.mean_insert_size
+FROM patient_info AS pat
+JOIN patient_info2panels AS pan ON pat.patient_ID=pan.patient_ID
+JOIN QC ON pat.patient_ID=QC.SAMPLE_NAME
+JOIN insert_size AS ins ON pat.patient_ID=ins.SAMPLE_NAME
+WHERE pat.patient_ID = "123_15"
+
