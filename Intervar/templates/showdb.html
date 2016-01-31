@@ -1,11 +1,40 @@
 {% extends 'base.html' %}
 {% block content %}
+
+<style>
+.highlight { background-color: red; }
+</style>
+
+
+<!-- Choose a row of a table and use some method on it. In this case, change background color. -->
+<script type=text/javascript>
+  $(function() {
+    $("#test tr").click(function() {
+    var $row = jQuery(this).closest('tr');
+    var $columns = $row.find('td');
+    $columns.addClass('row-highlight');
+    var values = "";
+    jQuery.each($columns, function(i, item) {
+        values = values + 'td' + (i + 1) + ':' + item.innerHTML + '<br/>';
+        alert(values);
+    });
+    alert(values);
+
+        });
+
+
+
+
+
+  });
+</script>
+
+
+
 <div class="container">
 	<div class="row">
 	<div class="col-md-10 col-xs-offset-1 col-md-offset-1">        
-    	<h1>Interpretation window for: {{ pID }}</h1>
-
-       
+    	<h1>Interpretation window for: {{ pID }}</h1>       
       <hr>
 	</div>
 	</div>
@@ -13,7 +42,6 @@
 		<div class="col-sm-5">
 			<dl class="dl-horizontal">
 				<dt>Patient ID</dt>
-        
 				<dd>{{ pID_patient.PID }}</dd>
 				<dt>Family ID</dt>
 				<dd>{{ pID_patient.familyID }}</dd>
@@ -24,13 +52,9 @@
 				<dt>Clinical info</dt>
 				<dd>{{ pID_patient.clinInfo }}</dd>
 			</dl>
-
   		</div>
-
-  		
-		
 		<div class="col-sm-7">
-			<table class="table">
+			<table class="table" id="data">
                         <thead>
                             <tr>
                                 <th style="padding-top: 4px;">Mean Target <br>Coverage</th>
@@ -104,21 +128,13 @@
                     </div>
                   </fieldset>
       		</div>
-
-
-
-
-
-
       		<div class="modal-footer">
         	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         	<button type="button" class="btn btn-primary">Submit to DB</button>
       </div>
     </div>
-
   </div>
 </div>
-
   	</div>
   </div>
 

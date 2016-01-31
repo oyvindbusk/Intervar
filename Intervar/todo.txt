@@ -1,4 +1,8 @@
 1st pri:
+Så forbanna enkelt er det å fylle forms med Jquery:
+  $("#search").val("Det er da vel ikke så forbanna enkelt?"); 
+
+legge til ori_chr, ori_start, ori_stop, ori_ref, ori_alt fra raw_variants i alamuttabellen (disse skal være like med det som er i raw_variants, og som er det som er submitted), siden de kan være forskjellige.
 flask -> request.get_json(force=False, silent=False, cache=True)¶
 jquery.getJSON
 http://www.tutorialspoint.com/jquery/ajax-jquery-getjson.htm

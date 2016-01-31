@@ -43,7 +43,7 @@ class VariantTable(Table):
     ref = Col('ref')
     alt = Col('alt')
     inhouse_class = Col('Class')
-    classes = ['table table-striped'] # make sortable like in the exac-page?
+    classes = ['table table-striped" id="test'] # make sortable like in the exac-page?
 
 def dictFromCur(dbcursor, type):
     patient_dict = {}
