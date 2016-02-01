@@ -18,6 +18,8 @@ class PatientForm(Form):
     fragmentSizeUpload = FileField("Fragment size file")
     submit = SubmitField("Submit")
 
+
+
 class VariantForm(Form):
     chrom = TextField("Chromosome name")
     start = TextField("Start position") #Finnes det numberfield??
@@ -81,9 +83,13 @@ def insertsize_to_tuple(is_file, sample_name):
             istuple = istuple + (line[4],)
     return istuple
 
-def get_values_from_form():
-    form_tuple = (request.form['patient_ID'], request.form['familyID'], request.form['clinInfo'], request.form['sex'] )
+def get_values_from_form(type='first_input'):
+    if type == 'first_input':
+        form_tuple = (request.form['patient_ID'], request.form['familyID'], request.form['clinInfo'], request.form['sex'] )
+    elif type == 'update':
+        form_tuple = (request.form['familyID'], request.form['clinInfo'], request.form['sex'] )
     return form_tuple
+
 
 def get_variants_from_form():
     variant_tuple = (request.form['chrom'], request.form['start'], request.form['stop'], request.form['ref'], request.form['alt'])

@@ -1,35 +1,34 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<!--  A CSS class that have been used to change color of selected row in table. -->
 <style>
 .highlight { background-color: red; }
 </style>
 
-
 <!-- Choose a row of a table and use some method on it. In this case, change background color. -->
 <script type=text/javascript>
   $(function() {
-    $("#test tr").click(function() {
-    var $row = jQuery(this).closest('tr');
-    var $columns = $row.find('td');
-    $columns.addClass('row-highlight');
-    var values = "";
-    jQuery.each($columns, function(i, item) {
-        values = values + 'td' + (i + 1) + ':' + item.innerHTML + '<br/>';
-        alert(values);
-    });
-    alert(values);
-
-        });
-
-
-
-
-
-  });
+  //fill the patient info modal with info on the specific patient in case you want to alter some values.
+  $('#pID_Modal').on('shown.bs.modal', function (e) {
+  $('#sex').val('{{ pID_patient.sex }}');
+  $('#panel').val('{{ pID_patient.panel_name }}');
+  $('#clinInfo').val('{{ pID_patient.clinInfo }}');
+  $('#familyID').val('{{ pID_patient.familyID }}');
+  $('#hsmFileUpload').val('{{ pID_patient.hsmFileUpload }}');
+  $('#fragmentSizeUpload').val('{{ pID_patient.fragmentSizeUpload }}');
+})
+//get from variant table @ click:
+$('#test tr').click(function () {
+    var chrom = $(this).closest("tr").find('td:eq(0)').text();
+    var start = $(this).closest("tr").find('td:eq(1)').text();
+    var stop = $(this).closest("tr").find('td:eq(2)').text();
+    var ref = $(this).closest("tr").find('td:eq(3)').text();
+    var alt = $(this).closest("tr").find('td:eq(4)').text();
+    alert(chrom + "|" + start + "|" + stop + "|" + ref + "|" + alt);
+});
+});
 </script>
-
-
 
 <div class="container">
 	<div class="row">
@@ -75,8 +74,11 @@
                         </tbody>
                     </table>
   			</div>
-
   		</div>
+      <div class="row">
+      <div class="col-sm-1"></div>
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#pID_Modal">edit patient info</button> 
+      </div>
   		<div class="row"><hr></div>
   	<div class="row">
   	<div class="col-sm-1"></div>
@@ -87,9 +89,9 @@
   	</div>
   	<div class="row">
   		<div class="col-sm-4"></div>
-  			<!-- Trigger the modal with a button -->
+  		<!-- Trigger the modal with a button -->
 			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Enter variant</button>	
-  			<!-- Modal -->
+  		<!-- Modal -->
 			<div id="myModal" class="modal fade" role="dialog">
   			<div class="modal-dialog">
     		<!-- Modal content-->
@@ -101,9 +103,10 @@
       		<div class="modal-body">
         	<p>Fill inn variant identification and get data from Alamut</p>
 			    <form action="" method=POST enctype="multipart/form-data">
+          {{ form.hidden_tag() }}
         		<fieldset class="form-group">
     			{{ form.chrom.label }}
-                {{ form.chrom(class="form-control") }}
+          {{ form.chrom(class="form-control") }}
 				</fieldset>
 				<fieldset class="form-group">
     			{{ form.start.label }}
@@ -124,20 +127,60 @@
 				<fieldset class="form-group">
                     <div class="col-sm-10">
                       <button type="submit" class="btn btn-default">Get from Alamut</button>
-					  {{ form.submit(class="btn btn-primary") }}
+					            {{ form.submit(class="btn btn-primary") }}
                     </div>
                 </fieldset>
-				
 				</form>
       		</div>
       		<div class="modal-footer">
         	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        	
+          </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
+
+
+<!-- Modal -->
+      <div id="pID_Modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Edit info for sample: {{ pID }}</h4>
+          </div>
+          <div class="modal-body">
+          <form action="" method=POST enctype="multipart/form-data">
+            {{ pform.hidden_tag() }}
+            <fieldset class="form-group">
+                {{ pform.sex.label }}
+                {{ pform.sex(class="form-control") }}
+            </fieldset>
+            <fieldset class="form-group">
+                {{ pform.panel.label }}
+                {{ pform.panel(class="form-control") }}
+            </fieldset>
+            <fieldset class="form-group">
+                {{ pform.clinInfo.label }}
+                {{ pform.clinInfo(class="form-control") }}
+            </fieldset>
+            <fieldset class="form-group">
+                {{ pform.familyID.label }}
+                {{ pform.familyID(class="form-control") }}
+            </fieldset>
+        <fieldset class="form-group">
+          <div class="col-sm-10">
+            {{ pform.submit(class="btn btn-primary") }}
+          </div>
+        </fieldset>
+        </form>
+          </div>
+          <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+          </div>
+        </div>
+      </div>
   	</div>
   </div>
-
 {% endblock %}

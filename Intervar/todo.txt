@@ -1,4 +1,9 @@
 1st pri:
+Skal jeg lage en stor form (modal eller egen site?) for Alamut, hente JSON, populate med Jquery, og ha en submit-knapp i bunn??
+
+Hvordan skal tolkningsvinduet se ut??
+
+
 Så forbanna enkelt er det å fylle forms med Jquery:
   $("#search").val("Det er da vel ikke så forbanna enkelt?"); 
 

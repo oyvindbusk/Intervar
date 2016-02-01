@@ -6,8 +6,6 @@ import sqlite3
 from werkzeug import secure_filename
 #importere egne scripts
 from scripts import PatientForm, VariantForm, SearchForm, PatientTable, VariantTable, listOfdictsFromCur, dictFromCur, print_file, hsmetrics_to_tuple, insert_data, get_values_from_form, insertsize_to_tuple, insert_data_is, get_variants_from_form
-#from scripts import SearchForm
-
 
 
 DEBUG = True
@@ -122,27 +120,30 @@ def index():
 def testinput():
     form = PatientForm()
     if request.method == 'POST':
-        db = get_db()
-        cur = get_db().cursor()
-        patient_form_tuple = get_values_from_form()
-        cur.execute("INSERT INTO patient_info (patient_ID, family_ID, clinical_info,  sex) VALUES (?, ?, ?, ?)", patient_form_tuple )
-        hsm_file = request.files['hsmFileUpload']
-        if hsm_file and allowed_file(hsm_file.filename):
-            filename = secure_filename(hsm_file.filename)
-            hsm_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            insert_data(cur, 'QC', hsmetrics_to_tuple(os.path.join(app.config['UPLOAD_FOLDER'], filename), patient_form_tuple[0]))
-        #upload insertsizemetrics-file:
-        is_file = request.files['fragmentSizeUpload']
-        if is_file and allowed_file(is_file.filename):
-            is_filename = secure_filename(is_file.filename)
-            is_file.save(os.path.join(app.config['UPLOAD_FOLDER'], patient_form_tuple[0] + "_" + is_filename))
-            insert_data_is(cur, 'insert_size', insertsize_to_tuple(os.path.join(app.config['UPLOAD_FOLDER'], is_filename), patient_form_tuple[0]))
-            #insert_data_is(cur, )
-            # maa oppdatere databasen first
-        db.commit()
-        db.close()
-        return "Suksess"
-        #flash('Suksess!!')
+        if form.validate_on_submit():
+            db = get_db()
+            cur = get_db().cursor()
+            patient_form_tuple = get_values_from_form()
+            cur.execute("INSERT INTO patient_info (patient_ID, family_ID, clinical_info,  sex) VALUES (?, ?, ?, ?)", patient_form_tuple )
+            hsm_file = request.files['hsmFileUpload']
+            if hsm_file and allowed_file(hsm_file.filename):
+                filename = secure_filename(hsm_file.filename)
+                hsm_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                insert_data(cur, 'QC', hsmetrics_to_tuple(os.path.join(app.config['UPLOAD_FOLDER'], filename), patient_form_tuple[0]))
+            #upload insertsizemetrics-file:
+            is_file = request.files['fragmentSizeUpload']
+            if is_file and allowed_file(is_file.filename):
+                is_filename = secure_filename(is_file.filename)
+                is_file.save(os.path.join(app.config['UPLOAD_FOLDER'], patient_form_tuple[0] + "_" + is_filename))
+                insert_data_is(cur, 'insert_size', insertsize_to_tuple(os.path.join(app.config['UPLOAD_FOLDER'], is_filename), patient_form_tuple[0]))
+                #insert_data_is(cur, )
+                # maa oppdatere databasen first
+            db.commit()
+            db.close()
+            return "Suksess"
+            #flash('Suksess!!')
+        else:
+            return abort(404)
     elif request.method == "GET":
         return render_template('testinput.html', form=form)
 
@@ -164,28 +165,33 @@ def interpret():
 		#should contain a search bar like:  http://exac.broadinstitute.org which will lead to a specific sample interpetation.
 ################################################################################################################################################	
 
-@app.route('/_add_numbers')
-def add_numbers():
-    """Add two numbers server side, ridiculous but well..."""
-    a = request.args.get('a', 0, type=int)
-    b = request.args.get('b', 0, type=int)
-    alamut = request.args.get('alamut', 0, type=str)
-    print(alamut)
-    return jsonify(result=a + b)
+
 	
 @app.route('/showdb', methods=['GET', 'POST'])
 @app.route('/showdb/<pID>', methods=['GET', 'POST'])
 @login_required
 def showdb(pID="123_15"):
+    #INSERT OR REPLACE
     form = VariantForm()
+    pform = PatientForm()
     db = get_db()
     cur = get_db().cursor()
     if request.method == 'POST':
-        variant_form_tuple = get_variants_from_form()
-        cur.execute("INSERT INTO raw_variants (chr, start, stop, ref, alt, hg) VALUES (?, ?, ?, ?, ?, 'hg19')", variant_form_tuple)
-        variant_form_tuple = (pID,) + variant_form_tuple
-        cur.execute("INSERT INTO patient_info2raw_variants (patient_ID, chr, start, stop, ref, alt) VALUES (?, ?, ?, ?, ?, ?)", variant_form_tuple) 
-        db.commit()
+        if pform.validate_on_submit():
+            patient_form_tuple = get_values_from_form('update')
+            patient_form_tuple = (pID,) + patient_form_tuple
+            print(patient_form_tuple)
+            cur.execute("INSERT OR REPLACE INTO patient_info (patient_ID, family_ID, clinical_info, sex) VALUES (?, ?, ?, ?)", patient_form_tuple )
+            cur.execute("UPDATE patient_info2panels SET panel_name = ? WHERE patient_ID = ?", (request.form['panel'], pID)) 
+            db.commit()
+        elif form.validate_on_submit():
+            variant_form_tuple = get_variants_from_form()
+            cur.execute("INSERT INTO raw_variants (chr, start, stop, ref, alt, hg) VALUES (?, ?, ?, ?, ?, 'hg19')", variant_form_tuple)
+            variant_form_tuple = (pID,) + variant_form_tuple
+            cur.execute("INSERT INTO patient_info2raw_variants (patient_ID, chr, start, stop, ref, alt) VALUES (?, ?, ?, ?, ?, ?)", variant_form_tuple) 
+            db.commit()
+        else:
+            return abort(404)
     #hente ut pasientinfo for alle som er kjort
     cur.execute('SELECT * FROM patient_info')
     patient_items = listOfdictsFromCur(cur.fetchall(), 'patient_info')
@@ -202,11 +208,16 @@ def showdb(pID="123_15"):
     WHERE pat.patient_ID = ?', (pID, ))
     pID_patient = dictFromCur(cur.fetchall(), 'pID_patient')
     db.close()
-    return render_template('showdb.html', patient_table=patient_table, var_table=var_table, form=form, pID=pID, pID_patient=pID_patient)
+    return render_template('showdb.html', patient_table=patient_table, var_table=var_table, form=form, pform=pform, pID=pID, pID_patient=pID_patient)
+
+
+
+
+#########
 
 if __name__ == '__main__':
-    app.run('172.16.0.56')
-    #app.run('0.0.0.0', port=8080)
+    #app.run('172.16.0.56')
+    app.run('0.0.0.0', port=8080)
 
     
     

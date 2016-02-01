@@ -31,14 +31,12 @@
   <h4>January 13, 2016</h4> - Version 0.01 InterVar data and browser (beta) is released! 
   <!-- Get '/get' -->
   <hr>
-<script type="text/javascript">
-  $(function() {
-	
-	   
+  <script type="text/javascript">
+  $(function() {	   
 	$("a#jqtest_2").click(function(){
     $.getJSON("http://localhost:10000/show?request=MLH1:c.464T>G&synchronous=true", function(result){
         $.each(result, function(key, val){
-            $("#json_result").append(key + ":" + val + "</br>");
+            $("#json_result").append(key + ":" + val + "</br>"); // set value on form objects here? $("#search").val(val);  <-- Like so??
 			});
 		});
 		alert(results)
