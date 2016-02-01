@@ -5,7 +5,7 @@ import os
 import sqlite3
 from werkzeug import secure_filename
 #importere egne scripts
-from scripts import PatientForm, VariantForm, SearchForm, PatientTable, VariantTable, listOfdictsFromCur, dictFromCur, print_file, hsmetrics_to_tuple, insert_data, get_values_from_form, insertsize_to_tuple, insert_data_is
+from scripts import PatientForm, VariantForm, SearchForm, PatientTable, VariantTable, listOfdictsFromCur, dictFromCur, print_file, hsmetrics_to_tuple, insert_data, get_values_from_form, insertsize_to_tuple, insert_data_is, get_variants_from_form
 #from scripts import SearchForm
 
 
@@ -117,7 +117,6 @@ def login():
 def index():
     return render_template('index.html')
 
-
 @app.route('/testinput', methods=['GET', 'POST'])
 @login_required
 def testinput():
@@ -132,7 +131,6 @@ def testinput():
             filename = secure_filename(hsm_file.filename)
             hsm_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             insert_data(cur, 'QC', hsmetrics_to_tuple(os.path.join(app.config['UPLOAD_FOLDER'], filename), patient_form_tuple[0]))
-
         #upload insertsizemetrics-file:
         is_file = request.files['fragmentSizeUpload']
         if is_file and allowed_file(is_file.filename):
@@ -174,20 +172,26 @@ def add_numbers():
     alamut = request.args.get('alamut', 0, type=str)
     print(alamut)
     return jsonify(result=a + b)
-
-
-@app.route('/showdb')
-@app.route('/showdb/<pID>')
+	
+@app.route('/showdb', methods=['GET', 'POST'])
+@app.route('/showdb/<pID>', methods=['GET', 'POST'])
 @login_required
 def showdb(pID="123_15"):
     form = VariantForm()
+    db = get_db()
     cur = get_db().cursor()
+    if request.method == 'POST':
+        variant_form_tuple = get_variants_from_form()
+        cur.execute("INSERT INTO raw_variants (chr, start, stop, ref, alt, hg) VALUES (?, ?, ?, ?, ?, 'hg19')", variant_form_tuple)
+        variant_form_tuple = (pID,) + variant_form_tuple
+        cur.execute("INSERT INTO patient_info2raw_variants (patient_ID, chr, start, stop, ref, alt) VALUES (?, ?, ?, ?, ?, ?)", variant_form_tuple) 
+        db.commit()
     #hente ut pasientinfo for alle som er kjort
     cur.execute('SELECT * FROM patient_info')
     patient_items = listOfdictsFromCur(cur.fetchall(), 'patient_info')
     patient_table = PatientTable(patient_items)
     #hente ut tolkede varianter for en pasient
-    cur.execute('SELECT chr, start, stop, ref, alt, inhouse_class FROM interpretations WHERE SAMPLE_NAME = ?', (pID, ))
+    cur.execute('SELECT chr, start, stop, ref, alt FROM patient_info2raw_variants WHERE patient_ID = ?', (pID, ))
     var_items = listOfdictsFromCur(cur.fetchall(), 'int_variants')
     var_table = VariantTable(var_items,)
     #get patientinfo for a single patient assigned by pID
@@ -197,13 +201,12 @@ def showdb(pID="123_15"):
     JOIN QC ON pat.patient_ID=QC.SAMPLE_NAME LEFT JOIN insert_size AS ins ON pat.patient_ID=ins.SAMPLE_NAME\
     WHERE pat.patient_ID = ?', (pID, ))
     pID_patient = dictFromCur(cur.fetchall(), 'pID_patient')
+    db.close()
     return render_template('showdb.html', patient_table=patient_table, var_table=var_table, form=form, pID=pID, pID_patient=pID_patient)
 
-
-
 if __name__ == '__main__':
-    #app.run('172.16.0.56')
-    app.run('0.0.0.0', port=8080)
+    app.run('172.16.0.56')
+    #app.run('0.0.0.0', port=8080)
 
     
     

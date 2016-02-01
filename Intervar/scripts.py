@@ -24,7 +24,8 @@ class VariantForm(Form):
     stop = TextField("Stop position")
     ref = TextField("Reference Allele")
     alt = TextField("Alternate Allele")
-
+    submit = SubmitField("Submit to DB")
+	
 class SearchForm(Form):
     search = TextField("Search for Sample")
 
@@ -42,7 +43,6 @@ class VariantTable(Table):
     stop = Col('stop')
     ref = Col('ref')
     alt = Col('alt')
-    inhouse_class = Col('Class')
     classes = ['table table-striped" id="test'] # make sortable like in the exac-page?
 
 def dictFromCur(dbcursor, type):
@@ -63,7 +63,7 @@ def listOfdictsFromCur(dbcursor, type):
         if type == 'patient_info':
             list_items.append(dict(PID=i[0], clinInfo=i[1], familyID=i[2], sex=i[3] ))
         elif type == 'int_variants':
-            list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], inhouse_class=i[5]))
+            list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4]))
     return list_items
         
     
@@ -84,7 +84,11 @@ def insertsize_to_tuple(is_file, sample_name):
 def get_values_from_form():
     form_tuple = (request.form['patient_ID'], request.form['familyID'], request.form['clinInfo'], request.form['sex'] )
     return form_tuple
-    
+
+def get_variants_from_form():
+    variant_tuple = (request.form['chrom'], request.form['start'], request.form['stop'], request.form['ref'], request.form['alt'])
+    return variant_tuple
+	
 #get info from hsmetrics-file into tuple (exluding sample name)
 def hsmetrics_to_tuple(hsmfilepath, sample_name):
     hsmetrics_csv_reader = csv.reader(open(hsmfilepath,'r'),delimiter='\t')

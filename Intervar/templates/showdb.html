@@ -89,11 +89,9 @@
   		<div class="col-sm-4"></div>
   			<!-- Trigger the modal with a button -->
 			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Enter variant</button>	
-  			
   			<!-- Modal -->
 			<div id="myModal" class="modal fade" role="dialog">
   			<div class="modal-dialog">
-
     		<!-- Modal content-->
     		<div class="modal-content">
       		<div class="modal-header">
@@ -102,9 +100,10 @@
       		</div>
       		<div class="modal-body">
         	<p>Fill inn variant identification and get data from Alamut</p>
+			    <form action="" method=POST enctype="multipart/form-data">
         		<fieldset class="form-group">
     			{{ form.chrom.label }}
-          {{ form.chrom(class="form-control") }}
+                {{ form.chrom(class="form-control") }}
 				</fieldset>
 				<fieldset class="form-group">
     			{{ form.start.label }}
@@ -125,12 +124,15 @@
 				<fieldset class="form-group">
                     <div class="col-sm-10">
                       <button type="submit" class="btn btn-default">Get from Alamut</button>
+					  {{ form.submit(class="btn btn-primary") }}
                     </div>
-                  </fieldset>
+                </fieldset>
+				
+				</form>
       		</div>
       		<div class="modal-footer">
         	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        	<button type="button" class="btn btn-primary">Submit to DB</button>
+        	
       </div>
     </div>
   </div>

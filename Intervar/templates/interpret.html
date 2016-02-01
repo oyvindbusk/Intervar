@@ -19,83 +19,40 @@
     <h3 align="center"> <a href="/about" style="color: black;">About InterVar</a></h3>
   <div>
 <p>
-                        I should probably write something clever about the app here, but the main thing is it is quite cool how it looks like the
-                        ExAC-browser.
+  I should probably write something clever about the app here, but the main thing is it is quite cool how it looks like the ExAC-browser.
 </p>
 <p>
-                        Same thing here, but what to write...A kingdom for a horse.
+  Same thing here, but what to write...A kingdom for a horse.
 </p>
 </div>
 </div>
 <div class="col-md-4">
   <h3 align="center">Recent News</h3>
   <h4>January 13, 2016</h4> - Version 0.01 InterVar data and browser (beta) is released! 
-  
-  
   <!-- Get '/get' -->
-  <h4>5) Get variant annotations</h4>
-<p>
-<a href="http://localhost:10000/show?request=MLH1:c.464T>G&synchronous=true" target="-blank">http://localhost:10000/show?request=MLH1:c.464T>G&synchronous=true</a> (from a web browser)<br />
-</p>
-
-
-<hr>
-
-
+  <hr>
 <script type="text/javascript">
-  
-
-
-
   $(function() {
-	var submit_form = function(e) {
-	  var $foo = $('.foo');
-	  $.getJSON($SCRIPT_ROOT + '/_add_numbers', {
-        a: $('input[name="a"]').val(),
-        b: $('input[name="b"]').val(),
-		
-      }, function(data) {
-        $('#result').text(data.result);
-        $('input[name=a]').focus().select();
-      });
-      return false;
-    };
-	$('a#jqtest').click(function(){
-		$.get("http://localhost:10000/version", function(data, status){
-            alert("Data: " + data + "\nStatus: " + status);
-        });
-	});
 	
-    $('a#calculate').bind('click', submit_form);
-
-    $('input[type=text]').bind('keydown', function(e) {
-      if (e.keyCode == 13) {
-        submit_form(e);
-      }
-    });
+	   
 	$("a#jqtest_2").click(function(){
     $.getJSON("http://localhost:10000/show?request=MLH1:c.464T>G&synchronous=true", function(result){
-        $.each(result, function(i, field){
-            $("#result").append(field + " ");
+        $.each(result, function(key, val){
+            $("#json_result").append(key + ":" + val + "</br>");
 			});
 		});
 		alert(results)
 	}); 
-	
     $('input[name=a]').focus();
+  
   });
 </script>
 
 <h1>jQuery Example</h1>
-<p>
-  <input type="text" size="5" name="a"> +
-  <input type="text" size="5" name="b"> =
-  <span id="result">?</span>
-<p><a href=# id="calculate">calculate server side</a>
-</br>
-<a href=# id="jqtest">test</a>
+
 </br>
 <a href=# id="jqtest_2">test JSON</a>
+</br>
 <span id="json_result">?</span>
 <hr>
 </div>
