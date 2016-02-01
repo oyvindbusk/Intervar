@@ -33,10 +33,20 @@
   <hr>
   <script type="text/javascript">
   $(function() {	   
-	$("a#jqtest_2").click(function(){
+	  // test of sending a variable to Flask:
+    // Try replacing the a and b with the output from the request against Alamut
+    $("a#vstest").click(function(){
+      $.getJSON($SCRIPT_ROOT + '/interpret', {
+          a: "Does this work?",
+          b: "or this?"});
+    });
+
+
+
+    $("a#jqtest_2").click(function(){
     $.getJSON("http://localhost:10000/show?request=MLH1:c.464T>G&synchronous=true", function(result){
-        $.each(result, function(key, val){
-            $("#json_result").append(key + ":" + val + "</br>"); // set value on form objects here? $("#search").val(val);  <-- Like so??
+      $.each(result, function(key, val){
+        $("#json_result").append(key + ":" + val + "</br>"); // set value on form objects here? $("#search").val(val);  <-- Like so?? Or send the entire contents via another Get
 			});
 		});
 		alert(results)
@@ -49,7 +59,8 @@
 <h1>jQuery Example</h1>
 
 </br>
-<a href=# id="jqtest_2">test JSON</a>
+<a href=# id="jqtest_2">test JSON</a></br>
+<a href=# id="vstest">test send variable</a>
 </br>
 <span id="json_result">?</span>
 <hr>

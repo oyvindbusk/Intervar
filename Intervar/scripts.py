@@ -18,8 +18,6 @@ class PatientForm(Form):
     fragmentSizeUpload = FileField("Fragment size file")
     submit = SubmitField("Submit")
 
-
-
 class VariantForm(Form):
     chrom = TextField("Chromosome name")
     start = TextField("Start position") #Finnes det numberfield??

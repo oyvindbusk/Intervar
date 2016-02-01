@@ -161,6 +161,8 @@ def interpret():
     form = SearchForm()
     if request.method == "POST":
         return redirect(url_for('showdb', pID=request.form['search']))
+    result = request.args.get('a', 0)
+    print(result)
     return render_template('interpret.html', form=form)
 		#should contain a search bar like:  http://exac.broadinstitute.org which will lead to a specific sample interpetation.
 ################################################################################################################################################	
