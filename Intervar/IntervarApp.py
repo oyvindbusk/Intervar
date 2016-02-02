@@ -6,7 +6,8 @@ import sqlite3
 from werkzeug import secure_filename
 #importere egne scripts
 from scripts import PatientForm, VariantForm, SearchForm, PatientTable, VariantTable, listOfdictsFromCur, dictFromCur, print_file, hsmetrics_to_tuple, insert_data, get_values_from_form, insertsize_to_tuple, insert_data_is, get_variants_from_form
-
+from scripts import alamut_dict_to_DB
+import json
 
 DEBUG = True
 SECRET_KEY = 'yekterces'
@@ -157,12 +158,47 @@ def overview():
 ################################################################################################################################################
 @app.route('/interpret', methods=['GET', 'POST'])
 @login_required
-def interpret():
+def interpret(pID="123_15"):
     form = SearchForm()
     if request.method == "POST":
-        return redirect(url_for('showdb', pID=request.form['search']))
-    result = request.args.get('a', 0)
-    print(result)
+        db = get_db()
+        cur = get_db().cursor()
+		#return redirect(url_for('showdb', pID=request.form['search']))
+		#title = request.json['gene']
+        alamut_dict = request.get_json(force=True)
+        test_dict = {u'substType': u'transversion', u'nearestSSType': u"3'", u'varCodonFreq': u'0.082', u'clinVarMethods': u'research', u'varGSScore': u'1.53641', u'varLocation': u'exon', u'espAltEACount': u'', u'espRefAACount': u'', u'hgmdId': u'CM053325', u'espRefAllCount': u'', u'espAAAAF': u'', u'exacAllFreq': u'', u'intron': u'', u'SIFTprediction': u'Deleterious', u'exacNFEFreq': u'', u'cDNAend': u'464', u'conservedOrthos': u'14', u'rsMAF': u'0.000', u'exacAlleleCount': u'', u'PPH2prediction': u'', u'phyloP': u'6.932', u'exacQuality': u'', u'MAPPprediction': u'bad', u'cNomen': u'c.464T>G', u'PPH2class': u'', u'exon': u'6', u'alt_pNomen': u'p.Leu155Arg', u'chrom': u'3', u'hgmdPhenotype': u'Colorectal cancer, non-polyposis', u'strand': u'1', u'exacAMRFreq': u'', u'espRefEACount': u'', u'rsValidations': u'', u'pNomen': u'p.Leu155Arg', u'clinVarOrigins': u'germline', u'AGVGDclass': u'C65', u'BLOSUM45': u'-2', u'hgmdSubCategory': u'DM', u'exacOTHFreq': u'', u'wtNNSScore': u'0.798934', u'nearestSSChange': u'0.013785', u'varHSFScore': u'93.59', u'PPH2score': u'', u'posAA': u'155', u'nucChange': u'T>G', u'espAltAllCount': u'', u'rsMAFAllele': u'', u'gDNAend': u'37008824', u'varType': u'substitution', u'MAPPpValueMedian': u'8', u'wtAA_1': u'L', u'rsMAFCount': u'0', u'wtAA_3': u'Leu', u'distNearestSS': u'11', u'varCodon': u'CGT', u'clinVarReviewStatus': u'3', u'assembly': u'GRCh38', u'varSSFScore': u'87.3907', u'rsValidationNumber': u'0', u'Uniprot': u'P40692', u'cDNAstart': u'464', u'wtSSFScore': u'87.3907', u'gNomen': u'g.37008824T>G', u'espEAAAF': u'', u'varNuc': u'G', u'wtMaxEntScore': u'6.39207', u'TASTERprediction': u'', u'gene': u'MLH1', u'proteinDomain4': u'', u'proteinDomain1': u'DNA mismatch repair protein family', u'proteinDomain3': u'', u'proteinDomain2': u'Histidine kinase-like ATPase, C-terminal domain', u'varAApolarity': u'10.5', u'AGVGDgd': u'101.88', u'espAAMAF': u'', u'cosmicTissues': u'', u'AGVGDgv': u'0.00', u'wtNuc': u'T', u'omimId': u'120436', u'SIFTmedian': u'3.43', u'wtAAcomposition': u'0', u'exacDP': u'', u'rsHeterozygosity': u'0.000', u'wtHSFScore': u'93.59', u'hgmdWebLink': u'https://portal.biobase-international.com/hgmd/pro/mut.php?accession=CM053325', u'exacSASFreq': u'', u'espAltAACount': u'', u'varMaxEntScore': u'6.39207', u'exacFilter': u'', u'BLOSUM80': u'-4', u'clinVarPhenotypes': u'Lynch syndrome', u'pathogenicityClass': u'Class 3-Unknown pathogenicity', u'exacAFRFreq': u'', u'cosmicIds': u'', u'granthamDist': u'102', u'localSpliceEffect': u'', u'MAPPpValue': u'1,243E-5', u'codingEffect': u'missense', u'rsClinicalSignificance': u'pathogenic', u'nOrthos': u'14', u'varAAcomposition': u'0.65', u'espAllMAF': u'', u'gDNAstart': u'37008824', u'espAvgReadDepth': u'', u'protein': u'NP_000240.1', u'exacEASFreq': u'', u'wtCodon': u'CTT', u'wtCodonFreq': u'0.129', u'wtAApolarity': u'4.9', u'varAAvolume': u'124', u'wtGSScore': u'', u'rsSuspect': u'no', u'geneId': u'7127', u'varNNSScore': u'0.831974', u'clinVarClinSignifs': u'Pathogenic', u'SIFTweight': u'0', u'espEAMAF': u'', u'TASTERpValue': u'', u'hgmdPubMedId': u'16083711', u'rsId': u'rs63750891', u'phastCons': u'1.000', u'wtAAvolume': u'111', u'transcript': u'NM_000249.2', u'rsValidated': u'no', u'rsAncestralAllele': u'T', u'exacFINFreq': u'', u'clinVarIds': u'RCV000075730.2', u'conservedDistSpecies': u'Trichoplax adhaerens', u'varAA_3': u'Arg', u'varAA_1': u'R', u'espAllAAF': u'', u'BLOSUM62': u'-2'}
+        print("----")
+        print(alamut_dict)
+        print("-----")
+		#sette inn metode som henter fra dict og sette inn i DB.
+        new_tuple = ('transversion', 'research', 'exon', 'CM053325', 'Deleterious', 464, 14, '', '', 'bad', 'c.464T>G', '', 6, 'p.Leu155Arg', '3', 'Colorectal cancer, non-polyposis', '1', '', 'p.Leu155Arg', 'germline', 'C65', -2, 'DM', 155, 'T>G', '', 37008824, 'substitution', 'L', 0, 'Leu', 11, 'CGT', 3, 'GRCh38', 0, 'P40692', 464, 'g.37008824T>G', 'G', '', 'MLH1', '', 'DNA mismatch repair protein family', '', 'Histidine kinase-like ATPase, C-terminal domain', '', 'T', 120436, 0, '', 'https://portal.biobase-international.com/hgmd/pro/mut.php?accession=CM053325', '', -4, 'Lynch syndrome', 'Class 3-Unknown pathogenicity', '', 102, '', 'missense', 'pathogenic', 14, 37008824, '', 'NP_000240.1', 'CTT', 124, 'no', 7127, 'Pathogenic', 0, 16083711, 'rs63750891', 111, 'NM_000249.2', 'no', 'T', 'RCV000075730.2', 'Trichoplax adhaerens', 'Arg', 'R', -2)
+        test_tuple = ('transversion', 'research', 'exon', '', 3, 37008824, 37008824, 'T', 'G')
+        
+        
+        
+        #substType, clinVarMethods, varLocation, intron, chrom, gDNAstart, gDNAend, wtNuc, varNuc
+        #new_tuple = ()
+        #for k, v in alamut_dict.iteritems():
+        #    if k in ["geneId", "gDNAstart", "gDNAend", "cDNAstart", "cDNAend", "exon", "intron", "omimId", "distNearestSS", "rsValidationNumber", "rsMAFCount", "exacAlleleCount", "espRefEACount", "espRefAACount", "espRefAllCount", "espAltEACount", "espAltAACount", "espAltAllCount", "hgmdPubMedId", "clinVarReviewStatus", "posAA", "nOrthos", "conservedOrthos", "BLOSUM45", "BLOSUM62", "BLOSUM80", "wtAAcomposition", "wtAAvolume", "varAAvolume", "granthamDist", "SIFTweight"]:
+        #        try:
+        #            new_tuple = new_tuple + (int(v),)
+        #        except:
+        #            new_tuple + (str(v),)
+        #    elif k in ["wtSSFScore", "wtMaxEntScore", "wtNNSScore", "wtGSScore", "wtHSFScore", "varSSFScore", "varMaxEntScore", "varNNSScore", "varGSScore", "varHSFScore", "nearestSSChange", "rsHeterozygosity", "rsMAF", "exacAllFreq", "exacAFRFreq", "exacAMRFreq", "exacEASFreq", "exacSASFreq", "exacNFEFreq", "exacFINFreq", "exacOTHFreq", "espEAMAF", "espAAMAF", "espAllMAF", "espEAAAF", "espAAAAF", "espAllAAF", "phastCons", "phyloP", "wtCodonFreq", "varCodonFreq", "varAAcomposition", "wtAApolarity", "varAApolarity", "AGVGDgv", "AGVGDgd", "SIFTmedian", "PPH2score", "MAPPpValue", "MAPPpValueMedian", "TASTERpValue"]:
+        #        try:
+        #            new_tuple + (float(v),)
+        #        except:
+        #            new_tuple + (str(v),)
+        #    elif k in ['nearestSSType']:
+        #        new_tuple + (str(v).replace("'",""), )
+        #    else:
+        #        new_tuple = new_tuple + (str(v),)
+        #print(new_tuple)
+        cur.execute("INSERT INTO alamut_annotation (substType, clinVarMethods, varLocation, intron, chrom, gDNAstart, gDNAend, wtNuc, varNuc) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", test_tuple)
+        db.commit()
+        db.close()
+		
+    #result = request.get_json('a')
     return render_template('interpret.html', form=form)
 		#should contain a search bar like:  http://exac.broadinstitute.org which will lead to a specific sample interpetation.
 ################################################################################################################################################	
@@ -218,8 +254,8 @@ def showdb(pID="123_15"):
 #########
 
 if __name__ == '__main__':
-    #app.run('172.16.0.56')
-    app.run('0.0.0.0', port=8080)
+    app.run('172.16.0.56')
+    #app.run('0.0.0.0', port=8080)
 
     
     

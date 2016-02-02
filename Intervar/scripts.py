@@ -122,9 +122,64 @@ def insert_data_is(cursor, table, tuple_with_data):
     except Exception as e:
         raise e
     
-    
 def print_file(filename):
     reader = csv.reader(open(filename, 'r'))
     for i in reader:
         print(i)
 
+
+     
+
+        
+def alamut_dict_to_DB(ala_dict, pID):
+    '''
+    A dictionary requested from Alamut via Ajax JSON is inserted into the SQLITE db.
+    fields:
+    	
+    '''
+    #establish connection to db
+    #make a tuple from dict including pID
+    new_tuple = ()
+    new_dict = {}
+    for k, v in ala_dict.iteritems():
+        if k in ["gene", "geneId"]:
+            if k in ["geneId", "gDNAstart", "gDNAend", "cDNAstart", "cDNAend", "exon", "intron", "omimId", "distNearestSS", "rsValidationNumber", "rsMAFCount", "exacAlleleCount", "espRefEACount", "espRefAACount", "espRefAllCount", "espAltEACount", "espAltAACount", "espAltAllCount", "hgmdPubMedId", "clinVarReviewStatus", "posAA", "nOrthos", "conservedOrthos", "BLOSUM45", "BLOSUM62", "BLOSUM80", "wtAAcomposition", "wtAAvolume", "varAAvolume", "granthamDist", "SIFTweight"]:
+                try:
+                    new_dict[k] = int(v)
+                    new_tuple = new_tuple + (int(v),)
+                except:
+                    new_dict[k] = v
+                    new_tuple + (v,)
+            elif k in ["wtSSFScore", "wtMaxEntScore", "wtNNSScore", "wtGSScore", "wtHSFScore", "varSSFScore", "varMaxEntScore", "varNNSScore", "varGSScore", "varHSFScore", "nearestSSChange", "rsHeterozygosity", "rsMAF", "exacAllFreq", "exacAFRFreq", "exacAMRFreq", "exacEASFreq", "exacSASFreq", "exacNFEFreq", "exacFINFreq", "exacOTHFreq", "espEAMAF", "espAAMAF", "espAllMAF", "espEAAAF", "espAAAAF", "espAllAAF", "phastCons", "phyloP", "wtCodonFreq", "varCodonFreq", "varAAcomposition", "wtAApolarity", "varAApolarity", "AGVGDgv", "AGVGDgd", "SIFTmedian", "PPH2score", "MAPPpValue", "MAPPpValueMedian", "TASTERpValue"]:
+                try:
+                    new_dict[k] = float(v)
+                    new_tuple + (float(v),)
+                except:
+                    new_dict[k] = v
+                    new_tuple + (v,)
+            else:
+                new_dict[k] = v
+                new_tuple = new_tuple + (v,)
+    print(new_dict)
+    print(new_tuple)
+    
+    
+    print(ala_tup)
+    ala_tup = [('gene', 'MLH1'), ('geneId', 7127)]
+    
+    #for i in ala_tup:
+     #   print(i)
+    cur.execute("INSERT INTO alamut_annotation \
+    (gene, geneId)\
+    VALUES (?,?) \
+    ", new_tuple)
+    db.commit()
+    db.close()
+    
+    #insert all values from dict
+    #commit
+    #close connection
+	
+	
+	
+	
