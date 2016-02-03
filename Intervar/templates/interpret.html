@@ -36,30 +36,30 @@
 	// test of sending a variable to Flask:
     // Try replacing the a and b with the output from the request against Alamut
     $("a#vstest").click(function(){
-	$.ajax({
-	type: "POST",
-	contentType: "application/json; charset=utf-8",
-	url: "/interpret",
-	data: JSON.stringify({title: 'hallo', article: 'test'}),
-	success: function (data) {
-	alert(data.title + data.article)
-	},
-	dataType: "json"
-	});
-	});
-
-	$("a#vstestddd2").click(function(){
-	$.ajax({
-	type: "POST",
-	contentType: "application/json; charset=utf-8",
-	url: "/interpret",
-	data: JSON.stringify({title: 'hallo', article: 'test'}),
-	success: function (data) {
-	alert(data.title + data.article)
-	},
-	dataType: "json"
-	});
-	});
+	  $.ajax({
+	  type: "POST",
+	  contentType: "application/json; charset=utf-8",
+	  url: "/interpret",
+	  data: JSON.stringify({title: 'hallo', article: 'test'}),
+	  success: function (data) {
+	  alert(data.title + data.article)
+	  },
+	  dataType: "json"
+	  });
+	  });
+  
+	  $("a#vstestddd2").click(function(){
+	  $.ajax({
+	  type: "POST",
+	  contentType: "application/json; charset=utf-8",
+	  url: "/interpret",
+	  data: JSON.stringify({title: 'hallo', article: 'test'}),
+	  success: function (data) {
+	  alert(data.title + data.article)
+	  },
+	  dataType: "json"
+	  });
+	  });
 	
 	
 	$("a#vstest2").click(function(){

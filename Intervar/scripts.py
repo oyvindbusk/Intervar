@@ -180,6 +180,16 @@ def alamut_dict_to_DB(ala_dict, pID):
     #commit
     #close connection
 	
-	
-	
-	
+def str_to_int_float(input, type):
+    output = None
+    if type == 'int':
+        try:
+            output = int(input)
+        except:
+            output = str(input)
+    if type == 'float': 
+        try:
+            output = float(input)
+        except:
+            output = str(input)
+    return output

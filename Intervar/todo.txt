@@ -1,4 +1,7 @@
 1st pri:
+Flask og google charts eksempel:
+https://pythonspot.com/flask-json-and-the-google-charts-api/
+
 Skal jeg lage en stor form (modal eller egen site?) for Alamut, hente JSON, populate med Jquery, og ha en submit-knapp i bunn??
 
 Hvordan skal tolkningsvinduet se ut??
