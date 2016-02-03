@@ -24,3 +24,16 @@ JOIN QC ON pat.patient_ID=QC.SAMPLE_NAME
 JOIN insert_size AS ins ON pat.patient_ID=ins.SAMPLE_NAME
 WHERE pat.patient_ID = "123_15"
 
+SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt,
+am.gene, am.transcript, am.varType, am.cNomen, am.pNomen
+FROM patient_info2raw_variants AS p2r
+LEFT JOIN alamut_annotation AS am ON p2r.chr = am.chrom AND p2r.start = am.gDNAstart
+WHERE patient_ID ='123_15'
+
+SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt,
+am.gene, am.transcript, am.varType, am.cNomen, am.pNomen,
+i.inhouse_class
+FROM patient_info2raw_variants AS p2r
+LEFT JOIN alamut_annotation AS am ON p2r.chr = am.chrom AND p2r.start = am.gDNAstart
+LEFT JOIN interpretations AS i ON p2r.chr = i.chr AND p2r.start = i.start AND p2r.patient_ID = i.SAMPLE_NAME
+WHERE patient_ID ='123_15'

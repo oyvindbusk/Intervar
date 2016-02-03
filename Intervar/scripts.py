@@ -43,6 +43,7 @@ class VariantTable(Table):
     stop = Col('stop')
     ref = Col('ref')
     alt = Col('alt')
+    gene = Col('gene')
     classes = ['table table-striped" id="test'] # make sortable like in the exac-page?
 
 def dictFromCur(dbcursor, type):
@@ -63,7 +64,7 @@ def listOfdictsFromCur(dbcursor, type):
         if type == 'patient_info':
             list_items.append(dict(PID=i[0], clinInfo=i[1], familyID=i[2], sex=i[3] ))
         elif type == 'int_variants':
-            list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4]))
+            list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], gene=i[5]))
     return list_items
         
     

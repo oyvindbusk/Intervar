@@ -48,20 +48,9 @@
 	  });
 	  });
   
-	  $("a#vstestddd2").click(function(){
-	  $.ajax({
-	  type: "POST",
-	  contentType: "application/json; charset=utf-8",
-	  url: "/interpret",
-	  data: JSON.stringify({title: 'hallo', article: 'test'}),
-	  success: function (data) {
-	  alert(data.title + data.article)
-	  },
-	  dataType: "json"
-	  });
-	  });
+
 	
-	
+
 	$("a#vstest2").click(function(){
     $.getJSON("http://localhost:10000/show?request=MLH1:c.464T>G&synchronous=true", function(result){
 	$.ajax({
@@ -74,14 +63,10 @@
 	},
 	dataType: "json"
 	});
-		
-		
 		});
 	});
 	
 	
-	
-
     $("a#jqtest_2").click(function(){
     $.getJSON("http://localhost:10000/show?request=MLH1:c.464T>G&synchronous=true", function(result){
 		$.getJSON($SCRIPT_ROOT + '/interpret', {a: result});	
