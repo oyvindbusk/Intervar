@@ -7,21 +7,19 @@
   </div>
 </div>
 <div class="container">
-
-
-<h3>More info here:</h3>        
-<p>Made in the epicenter of change!</p>
+  <h3>More info here:</h3>        
+  <p>Made in the epicenter of change!</p>
   {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      {% for message in messages %}
-      <div class="row">
-        <div class="col-md-12">
-        
-          <div class="alert alert-info" role="alert">{{ message }}</div>
-        </div>
-      </div>
-      {% endfor %}
-    {% endif %}
+  {% if messages %}
+  {% for message in messages %}
+  <div class="row">
+    <div class="col-md-12">
+      
+      <div class="alert alert-info" role="alert">{{ message }}</div>
+    </div>
+  </div>
+  {% endfor %}
+  {% endif %}
   {% endwith %}
 </div>
 {% endblock %}

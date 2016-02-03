@@ -1,51 +1,51 @@
 <!DOCTYPE html>
-  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    
-    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/static/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
-    var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-    </script>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/static/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+  var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+</script>
 <html>
-  <head>
-    <title></title>
-    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
-    <style>
+<head>
+  <title></title>
+  <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+  <style>
     body {
       padding-top: 65px;
     }
-    </style>
-  </head>
-  <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Intervar</a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li><a href="/">Home</a></li>
-            {% if current_user.is_authenticated %}
-			        <li><a href="/overview">Overview</a></li>
-              <li><a href="/testinput">Input</a></li>
-              <li><a href="/interpret">Interpret</a></li>
-			        <li><a href="/showdb">DB dump</a></li>
-              <li><a href="/logout">Logout</a></li>
-            {% else %}
-              <li><a href="/login">Login</a></li>
-              <li><a href="/register">Register</a></li>
-            {% endif %}
-          </ul>
-        </div><!--/.nav-collapse -->
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Intervar</a>
       </div>
-    </nav>
-    {% block content %}{% endblock %}
-    </body>
+      <div id="navbar" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li><a href="/">Home</a></li>
+          {% if current_user.is_authenticated %}
+          <li><a href="/overview">Overview</a></li>
+          <li><a href="/testinput">Input</a></li>
+          <li><a href="/interpret">Interpret</a></li>
+          <li><a href="/showdb">DB dump</a></li>
+          <li><a href="/logout">Logout</a></li>
+          {% else %}
+          <li><a href="/login">Login</a></li>
+          <li><a href="/register">Register</a></li>
+          {% endif %}
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div>
+  </nav>
+  {% block content %}{% endblock %}
+</body>
 </html>

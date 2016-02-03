@@ -3,7 +3,7 @@
 
 <!--  A CSS class that have been used to change color of selected row in table. -->
 <style>
-.highlight { background-color: red; }
+  .highlight { background-color: red; }
 </style>
 
 <!-- Choose a row of a table and use some method on it. In this case, change background color. -->
@@ -11,25 +11,28 @@
   $(function() {
   //fill the patient info modal with info on the specific patient in case you want to alter some values.
   $('#pID_Modal').on('shown.bs.modal', function (e) {
-  $('#sex').val('{{ pID_patient.sex }}');
-  $('#panel').val('{{ pID_patient.panel_name }}');
-  $('#clinInfo').val('{{ pID_patient.clinInfo }}');
-  $('#familyID').val('{{ pID_patient.familyID }}');
-  $('#hsmFileUpload').val('{{ pID_patient.hsmFileUpload }}');
-  $('#fragmentSizeUpload').val('{{ pID_patient.fragmentSizeUpload }}');
-})
+    $('#sex').val('{{ pID_patient.sex }}');
+    $('#panel').val('{{ pID_patient.panel_name }}');
+    $('#clinInfo').val('{{ pID_patient.clinInfo }}');
+    $('#familyID').val('{{ pID_patient.familyID }}');
+    $('#hsmFileUpload').val('{{ pID_patient.hsmFileUpload }}');
+    $('#fragmentSizeUpload').val('{{ pID_patient.fragmentSizeUpload }}');
+  })
 //get from variant table @ click:
 $('#test tr').click(function () {
-    var chrom = $(this).closest("tr").find('td:eq(0)').text();
-    var start = $(this).closest("tr").find('td:eq(1)').text();
-    var stop = $(this).closest("tr").find('td:eq(2)').text();
-    var ref = $(this).closest("tr").find('td:eq(3)').text();
-    var alt = $(this).closest("tr").find('td:eq(4)').text();
-    alert(chrom + "|" + start + "|" + stop + "|" + ref + "|" + alt);
-});
+  var chrom = $(this).closest("tr").find('td:eq(0)').text();
+  var start = $(this).closest("tr").find('td:eq(1)').text();
+  var stop = $(this).closest("tr").find('td:eq(2)').text();
+  var ref = $(this).closest("tr").find('td:eq(3)').text();
+  var alt = $(this).closest("tr").find('td:eq(4)').text();
+  $('.variant_info').html(chrom + " " + start + " " + stop);
+  $('#Interp_Modal').modal('show');
+
+    //alert(chrom + "|" + start + "|" + stop + "|" + ref + "|" + alt);
+  });
 
  //Check if a ref & alt is letter as opposed to -. And also check if length == 1. This would mean missense.
-function isOneLetter(str) {
+ function isOneLetter(str) {
   return str.length === 1 && str.match(/[a-z]/i);
 }
 function isLetter(str) {
@@ -41,198 +44,226 @@ function isLetter(str) {
 // del
 // insertion
 // duplication
-
 $('#get_alamut').click(function () {
-    var chrom = $('#chrom').val()
-    var start = $('#start').val()
-    var stop = $('#stop').val()
-    var ref = $('#ref').val()
-    var alt = $('#alt').val()
-    var assembly = "(GRCh37)"
-    var alamut_request = ""
-    
-    // Get input 
-    if (isOneLetter(ref) && isOneLetter(alt)) {
-    var alamut_request = "chr" + chrom  +assembly + ":g." + start + ref + ">" + alt
-    } else if (isLetter(ref) && isLetter(alt) !== true) {
-    var alamut_request = "chr" + chrom + assembly + ":g." + start + "_" + stop + "del"
-    } else if ( isLetter(ref) !== true && isLetter(alt)) {
-    var alamut_request = "chr" + chrom + assembly + ":g." + start + "_" + stop + "ins" + alt
-    }
-    
-    //#deletion   
-    //localhost:10000/show?request=chr1:g.183205708G>C&synchronous=true
-    $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronous=true", function(result){
-	$.ajax({
-	type: "POST",
-	contentType: "application/json; charset=utf-8",
-	url: "/showdb",
-	data: JSON.stringify(result),
-	success: function (data) {
-	alert("ferdig" + chrom +"-"+ start +" "+ stop +" "+ ref +" "+ alt)
-	},
-	dataType: "json"
-	});
-	});       
+  var chrom = $('#chrom').val()
+  var start = $('#start').val()
+  var stop = $('#stop').val()
+  var ref = $('#ref').val()
+  var alt = $('#alt').val()
+  var assembly = "(GRCh37)"
+  var alamut_request = "" 
+// Get input 
+if (isOneLetter(ref) && isOneLetter(alt)) {
+  var alamut_request = "chr" + chrom  +assembly + ":g." + start + ref + ">" + alt
+} else if (isLetter(ref) && isLetter(alt) !== true) {
+  var alamut_request = "chr" + chrom + assembly + ":g." + start + "_" + stop + "del"
+} else if ( isLetter(ref) !== true && isLetter(alt)) {
+  var alamut_request = "chr" + chrom + assembly + ":g." + start + "_" + stop + "ins" + alt
+}  
+$.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronous=true", function(result){
+  $.ajax({
+    type: "POST",
+    contentType: "application/json; charset=utf-8",
+    url: "/showdb",
+    data: JSON.stringify(result),
+    success: function (data) {
+      alert("ferdig" + chrom +"-"+ start +" "+ stop +" "+ ref +" "+ alt)
+    },
+    dataType: "json"
+  });
+});       
 });
 });
 </script>
-
 <div class="container">
 	<div class="row">
-	<div class="col-md-10 col-xs-offset-1 col-md-offset-1">        
-    	<h1>Interpretation window for: {{ pID }}</h1>       
-      <hr>
-	</div>
-	</div>
-	<div class="row">
-		<div class="col-sm-5">
-			<dl class="dl-horizontal">
-				<dt>Patient ID</dt>
-				<dd>{{ pID_patient.PID }}</dd>
-				<dt>Family ID</dt>
-				<dd>{{ pID_patient.familyID }}</dd>
-				<dt>Panel</dt>
-				<dd>{{ pID_patient.panel_name }}</dd>
-				<dt>Sex</dt>
-				<dd>{{ pID_patient.sex }}</dd>
-				<dt>Clinical info</dt>
-				<dd>{{ pID_patient.clinInfo }}</dd>
-			</dl>
-  		</div>
-		<div class="col-sm-7">
-			<table class="table" id="data">
-                        <thead>
-                            <tr>
-                                <th style="padding-top: 4px;">Mean Target <br>Coverage</th>
-                                <th style="padding-top: 4px; width=50%;">% bases > 20 X</th>
-                                <th style="padding-top: 4px;" class="tooltip-table-header" >% bases > 30 X</th>
-                                <th style="padding-top: 4px;" class="tooltip-table-header" >Mean insert size</th>
-                                <th style="padding-top: 4px;" class="tooltip-table-header" >Median insert size</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>{{ pID_patient.mean_target_cov }}</td>
-                                <td>{{ pID_patient.pct_target_20 }}</td>
-                                <td>{{ pID_patient.pct_target_30 }}</td>
-                                <td>{{ pID_patient.mean_is }}</td>
-                                <td>{{ pID_patient.median_is }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-  			</div>
-  		</div>
-      <div class="row">
-      <div class="col-sm-1"></div>
-      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#pID_Modal">edit patient info</button> 
-      </div>
-  		<div class="row"><hr></div>
-  	<div class="row">
-  	<div class="col-sm-1"></div>
-  		<div class="col-sm-9">
-  			<h3>Table of interpreted variants</h3>
-  			{{ var_table }}
-  		</div>
-  	</div>
-  	<div class="row">
-  		<div class="col-sm-4"></div>
-  		<!-- Trigger the modal with a button -->
-			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Enter variant</button>	
-
-  		<!-- Modal -->
-			<div id="myModal" class="modal fade" role="dialog">
-  			<div class="modal-dialog">
-    		<!-- Modal content-->
-    		<div class="modal-content">
-      		<div class="modal-header">
-        	<button type="button" class="close" data-dismiss="modal">&times;</button>
-        	<h4 class="modal-title">Enter variant</h4>
-      		</div>
-      		<div class="modal-body">
-        	<p>Fill inn variant identification and get data from Alamut</p>
-			    <form action="" method=POST enctype="multipart/form-data">
-          {{ form.hidden_tag() }}
-        		<fieldset class="form-group">
-    			{{ form.chrom.label }}
-          {{ form.chrom(class="form-control") }}
-				</fieldset>
-				<fieldset class="form-group">
-    			{{ form.start.label }}
-    			{{ form.start(class="form-control") }}
-				</fieldset>
-				<fieldset class="form-group">
-    			{{ form.stop.label }}
-    			{{ form.stop(class="form-control") }}
-				</fieldset>
-				<fieldset class="form-group">
-    			{{ form.ref.label }}
-    			{{ form.ref(class="form-control") }}
-    			</fieldset>
-    			<fieldset class="form-group">
-    			{{ form.alt.label }}
-    			{{ form.alt(class="form-control") }}
-				</fieldset>
-				<fieldset class="form-group">
-                    <div class="col-sm-10">
-					  {{ form.submit(class="btn btn-primary") }}
-                    </div>
-                </fieldset>
-				</form>
-                
-                 <button id="get_alamut" type="submit" class="btn btn-default">Get from Alamut</button>
-      		</div>
-      		<div class="modal-footer">
-        	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
-          </div>
-        </div>
-      </div>
-
-
-<!-- Modal -->
-      <div id="pID_Modal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-        <!-- Modal content-->
-        <div class="modal-content">
-          <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Edit info for sample: {{ pID }}</h4>
-          </div>
-          <div class="modal-body">
-          <form action="" method=POST enctype="multipart/form-data">
-            {{ pform.hidden_tag() }}
-            <fieldset class="form-group">
-                {{ pform.sex.label }}
-                {{ pform.sex(class="form-control") }}
-            </fieldset>
-            <fieldset class="form-group">
-                {{ pform.panel.label }}
-                {{ pform.panel(class="form-control") }}
-            </fieldset>
-            <fieldset class="form-group">
-                {{ pform.clinInfo.label }}
-                {{ pform.clinInfo(class="form-control") }}
-            </fieldset>
-            <fieldset class="form-group">
-                {{ pform.familyID.label }}
-                {{ pform.familyID(class="form-control") }}
-            </fieldset>
-        <fieldset class="form-group">
-          <div class="col-sm-10">
-            {{ pform.submit(class="btn btn-primary") }}
-          </div>
-        </fieldset>
-        </form>
-          </div>
-          <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-
-          </div>
-          </div>
-        </div>
-      </div>
-  	</div>
-    </br></br></br>
+   <hr>
+   <div class="col-md-10 col-xs-offset-1 col-md-offset-1">        
+     <h1>Interpretation window for: {{ pID }}</h1>       
+   </div>
+ </div>
+ <div class="row">
+  <div class="col-sm-5">
+   <dl class="dl-horizontal">
+    <dt>Patient ID</dt>
+    <dd>{{ pID_patient.PID }}</dd>
+    <dt>Family ID</dt>
+    <dd>{{ pID_patient.familyID }}</dd>
+    <dt>Panel</dt>
+    <dd>{{ pID_patient.panel_name }}</dd>
+    <dt>Sex</dt>
+    <dd>{{ pID_patient.sex }}</dd>
+    <dt>Clinical info</dt>
+    <dd>{{ pID_patient.clinInfo }}</dd>
+  </dl>
+</div>
+<div class="col-sm-7">
+ <table class="table" id="data">
+  <thead>
+    <tr>
+      <th style="padding-top: 4px;">Mean Target <br>Coverage</th>
+      <th style="padding-top: 4px; width=50%;">% bases > 20 X</th>
+      <th style="padding-top: 4px;" class="tooltip-table-header" >% bases > 30 X</th>
+      <th style="padding-top: 4px;" class="tooltip-table-header" >Mean insert size</th>
+      <th style="padding-top: 4px;" class="tooltip-table-header" >Median insert size</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{ pID_patient.mean_target_cov }}</td>
+      <td>{{ pID_patient.pct_target_20 }}</td>
+      <td>{{ pID_patient.pct_target_30 }}</td>
+      <td>{{ pID_patient.mean_is }}</td>
+      <td>{{ pID_patient.median_is }}</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+<div class="row">
+  <div class="col-sm-1"></div>
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#pID_Modal">edit patient info</button> 
+</div>
+<div class="row"><hr></div>
+<div class="col-sm-1"></div>
+<div class="col-sm-4"><h3>Interpretation comments:</h3></div>
+<div class="row">
+  <div class="col-sm-6">
+    <div class="form-group">
+      <textarea class="form-control" rows="4" id="comment" placeholder="Insert comments here:"></textarea>
     </div>
+    <button type="button" class="btn btn-primary" id="1">Update</button> 
+  </div>
+</div>
+<div class="row"><hr></div>
+<div class="row">
+ <div class="col-sm-1"></div>
+ <div class="col-sm-9">
+  <h3>Table of interpreted variants</h3>
+  {{ var_table }}
+</div>
+</div>
+<div class="row">
+  <div class="col-sm-4"></div>
+  <!-- Trigger the modal with a button -->
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Enter variant</button>	
+
+  <!-- Modal -->
+  <div id="myModal" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+       <button type="button" class="close" data-dismiss="modal">&times;</button>
+       <h4 class="modal-title">Enter variant</h4>
+     </div>
+     <div class="modal-body">
+       <p>Fill inn variant identification and get data from Alamut</p>
+       <form action="" method=POST enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+         {{ form.chrom.label }}
+         {{ form.chrom(class="form-control") }}
+       </fieldset>
+       <fieldset class="form-group">
+         {{ form.start.label }}
+         {{ form.start(class="form-control") }}
+       </fieldset>
+       <fieldset class="form-group">
+         {{ form.stop.label }}
+         {{ form.stop(class="form-control") }}
+       </fieldset>
+       <fieldset class="form-group">
+         {{ form.ref.label }}
+         {{ form.ref(class="form-control") }}
+       </fieldset>
+       <fieldset class="form-group">
+         {{ form.alt.label }}
+         {{ form.alt(class="form-control") }}
+       </fieldset>
+       <fieldset class="form-group">        
+         <div class="col-sm-2">
+           {{ form.submit(class="btn btn-primary") }}
+         </div>
+       </fieldset>
+     </form>
+     <button id="get_alamut" type="submit" class="btn btn-default">Get Alamut</button>
+
+     <hr><hr>
+   </div>
+   <div class="modal-footer">
+     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+   </div>
+ </div>
+</div>
+</div>
+<!-- Modal -->
+<div id="pID_Modal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-sm">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit info for sample: {{ pID }}</h4>
+      </div>
+      <div class="modal-body">
+        <form action="" method=POST enctype="multipart/form-data">
+          {{ pform.hidden_tag() }}
+          <fieldset class="form-group">
+            {{ pform.sex.label }}
+            {{ pform.sex(class="form-control") }}
+          </fieldset>
+          <fieldset class="form-group">
+            {{ pform.panel.label }}
+            {{ pform.panel(class="form-control") }}
+          </fieldset>
+          <fieldset class="form-group">
+            {{ pform.clinInfo.label }}
+            {{ pform.clinInfo(class="form-control") }}
+          </fieldset>
+          <fieldset class="form-group">
+            {{ pform.familyID.label }}
+            {{ pform.familyID(class="form-control") }}
+          </fieldset>
+          <fieldset class="form-group">
+            <div class="col-sm-10">
+              {{ pform.submit(class="btn btn-primary") }}
+            </div>
+          </fieldset>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+      </div>
+    </div>
+  </div>
+  </div>
+<!-- Modal -->
+<div id="Interp_Modal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit info for the variant in sample: {{ pID }}</h4>
+      </div>
+      <div class="modal-body">
+        <h3>This should contain some info</h3>
+        <p>And the info should be posted here..</p>
+        <p>Fill out with data from alamut_annotation table</p>
+        <p>Comment field for the variant and the variant in this sample.</p>
+        <p>Add a button for deleting the entry from this patients variant table.</p>
+        <div class="variant_info"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+</br></br></br>
+</div>
 {% endblock %}

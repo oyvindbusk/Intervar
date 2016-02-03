@@ -239,8 +239,8 @@ def showdb(pID="123_15"):
 #########
 
 if __name__ == '__main__':
-    app.run('172.16.0.56')
-    #app.run('0.0.0.0', port=8080)
+    #app.run('172.16.0.56')
+    app.run('0.0.0.0', port=8080)
 
     
     
