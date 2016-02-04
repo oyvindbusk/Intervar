@@ -80,7 +80,7 @@ stop INT,
 ref VARCHAR(50),
 alt VARCHAR(50),
 hg VARCHAR(10) DEFAULT 'hg19',
-PRIMARY KEY (Chr, Start, Stop, ref, alt)
+PRIMARY KEY (chr, start, stop, ref, alt)
 );
 
 CREATE TABLE interpretations(
@@ -91,6 +91,7 @@ start INT REFERENCES raw_variants,
 stop INT REFERENCES raw_variants,
 ref VARCHAR(50) REFERENCES raw_variants,
 alt VARCHAR(50) REFERENCES raw_variants,
+zygosity VARCHAR(3),
 inhouse_class INT,
 acmg_class INT,
 comments TEXT,
@@ -235,8 +236,13 @@ MAPPpValue REAL,
 MAPPpValueMedian REAL,
 TASTERprediction VARCHAR(68),
 TASTERpValue REAL,
+ori_chr VARCHAR(5),
+ori_start INT,
+ori_stop INT,
+ori_ref VARCHAR(50),
+ori_alt VARCHAR(50),
 UNIQUE (chrom, gDNAstart, gDNAend, wtNuc, varNuc),
-FOREIGN KEY(chrom, gDNAstart, gDNAend, wtNuc, varNuc) REFERENCES raw_variants(Chr, Start, Stop, ref, alt)
+FOREIGN KEY(ori_chr, ori_start, ori_stop, ori_ref, ori_alt) REFERENCES raw_variants(chr, start, stop, ref, alt)
 );
 
 CREATE TABLE users(

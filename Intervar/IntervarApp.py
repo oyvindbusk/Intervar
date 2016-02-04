@@ -142,7 +142,6 @@ def testinput():
             db.commit()
             db.close()
             return "Suksess"
-            #flash('Suksess!!')
         else:
             return abort(404)
     elif request.method == "GET":
@@ -161,23 +160,7 @@ def overview():
 def interpret(pID="123_15"):
     form = SearchForm()
     if request.method == "POST":
-        db = get_db()
-        cur = get_db().cursor()
-		#return redirect(url_for('showdb', pID=request.form['search']))
-        alamut_dict = request.get_json(force=True)
-        #alamut_dict = {u'substType': u'transversion', u'nearestSSType': u"3'", u'varCodonFreq': u'0.082', u'clinVarMethods': u'research', u'varGSScore': u'1.53641', u'varLocation': u'exon', u'espAltEACount': u'', u'espRefAACount': u'', u'hgmdId': u'CM053325', u'espRefAllCount': u'', u'espAAAAF': u'', u'exacAllFreq': u'', u'intron': u'', u'SIFTprediction': u'Deleterious', u'exacNFEFreq': u'', u'cDNAend': u'464', u'conservedOrthos': u'14', u'rsMAF': u'0.000', u'exacAlleleCount': u'', u'PPH2prediction': u'', u'phyloP': u'6.932', u'exacQuality': u'', u'MAPPprediction': u'bad', u'cNomen': u'c.464T>G', u'PPH2class': u'', u'exon': u'6', u'alt_pNomen': u'p.Leu155Arg', u'chrom': u'3', u'hgmdPhenotype': u'Colorectal cancer, non-polyposis', u'strand': u'1', u'exacAMRFreq': u'', u'espRefEACount': u'', u'rsValidations': u'', u'pNomen': u'p.Leu155Arg', u'clinVarOrigins': u'germline', u'AGVGDclass': u'C65', u'BLOSUM45': u'-2', u'hgmdSubCategory': u'DM', u'exacOTHFreq': u'', u'wtNNSScore': u'0.798934', u'nearestSSChange': u'0.013785', u'varHSFScore': u'93.59', u'PPH2score': u'', u'posAA': u'155', u'nucChange': u'T>G', u'espAltAllCount': u'', u'rsMAFAllele': u'', u'gDNAend': u'37008824', u'varType': u'substitution', u'MAPPpValueMedian': u'8', u'wtAA_1': u'L', u'rsMAFCount': u'0', u'wtAA_3': u'Leu', u'distNearestSS': u'11', u'varCodon': u'CGT', u'clinVarReviewStatus': u'3', u'assembly': u'GRCh38', u'varSSFScore': u'87.3907', u'rsValidationNumber': u'0', u'Uniprot': u'P40692', u'cDNAstart': u'464', u'wtSSFScore': u'87.3907', u'gNomen': u'g.37008824T>G', u'espEAAAF': u'', u'varNuc': u'G', u'wtMaxEntScore': u'6.39207', u'TASTERprediction': u'', u'gene': u'MLH1', u'proteinDomain4': u'', u'proteinDomain1': u'DNA mismatch repair protein family', u'proteinDomain3': u'', u'proteinDomain2': u'Histidine kinase-like ATPase, C-terminal domain', u'varAApolarity': u'10.5', u'AGVGDgd': u'101.88', u'espAAMAF': u'', u'cosmicTissues': u'', u'AGVGDgv': u'0.00', u'wtNuc': u'T', u'omimId': u'120436', u'SIFTmedian': u'3.43', u'wtAAcomposition': u'0', u'exacDP': u'', u'rsHeterozygosity': u'0.000', u'wtHSFScore': u'93.59', u'hgmdWebLink': u'https://portal.biobase-international.com/hgmd/pro/mut.php?accession=CM053325', u'exacSASFreq': u'', u'espAltAACount': u'', u'varMaxEntScore': u'6.39207', u'exacFilter': u'', u'BLOSUM80': u'-4', u'clinVarPhenotypes': u'Lynch syndrome', u'pathogenicityClass': u'Class 3-Unknown pathogenicity', u'exacAFRFreq': u'', u'cosmicIds': u'', u'granthamDist': u'102', u'localSpliceEffect': u'', u'MAPPpValue': u'1,243E-5', u'codingEffect': u'missense', u'rsClinicalSignificance': u'pathogenic', u'nOrthos': u'14', u'varAAcomposition': u'0.65', u'espAllMAF': u'', u'gDNAstart': u'37008824', u'espAvgReadDepth': u'', u'protein': u'NP_000240.1', u'exacEASFreq': u'', u'wtCodon': u'CTT', u'wtCodonFreq': u'0.129', u'wtAApolarity': u'4.9', u'varAAvolume': u'124', u'wtGSScore': u'', u'rsSuspect': u'no', u'geneId': u'7127', u'varNNSScore': u'0.831974', u'clinVarClinSignifs': u'Pathogenic', u'SIFTweight': u'0', u'espEAMAF': u'', u'TASTERpValue': u'', u'hgmdPubMedId': u'16083711', u'rsId': u'rs63750891', u'phastCons': u'1.000', u'wtAAvolume': u'111', u'transcript': u'NM_000249.2', u'rsValidated': u'no', u'rsAncestralAllele': u'T', u'exacFINFreq': u'', u'clinVarIds': u'RCV000075730.2', u'conservedDistSpecies': u'Trichoplax adhaerens', u'varAA_3': u'Arg', u'varAA_1': u'R', u'espAllAAF': u'', u'BLOSUM62': u'-2'}
-        print(alamut_dict)
-        
-		#sette inn metode som henter fra dict og sette inn i DB.
-        new_tuple = ('transversion', 'research', 'exon', 'CM053325', 'Deleterious', 464, 14, '', '', 'bad', 'c.464T>G', '', 6, 'p.Leu155Arg', '3', 'Colorectal cancer, non-polyposis', '1', '', 'p.Leu155Arg', 'germline', 'C65', -2, 'DM', 155, 'T>G', '', 37008824, 'substitution', 'L', 0, 'Leu', 11, 'CGT', 3, 'GRCh38', 0, 'P40692', 464, 'g.37008824T>G', 'G', '', 'MLH1', '', 'DNA mismatch repair protein family', '', 'Histidine kinase-like ATPase, C-terminal domain', '', 'T', 120436, 0, '', 'https://portal.biobase-international.com/hgmd/pro/mut.php?accession=CM053325', '', -4, 'Lynch syndrome', 'Class 3-Unknown pathogenicity', '', 102, '', 'missense', 'pathogenic', 14, 37008824, '', 'NP_000240.1', 'CTT', 124, 'no', 7127, 'Pathogenic', 0, 16083711, 'rs63750891', 111, 'NM_000249.2', 'no', 'T', 'RCV000075730.2', 'Trichoplax adhaerens', 'Arg', 'R', -2)
-        test_tuple = ('transversion', 'research', 'exon', '', 3, 37008824, 37008824, 'T', 'G')
-        # removed nearestsstype since it contained the prime symbol"'", which fucked up things.
-
-        cur.execute("INSERT INTO alamut_annotation (geneId, strand, gDNAstart, gDNAend, cDNAstart, cDNAend, exon, intron, omimId, distNearestSS, rsValidationNumber, rsMAFCount, exacAlleleCount, espRefEACount, espRefAACount, espRefAllCount, espAltEACount, espAltAACount, espAltAllCount, hgmdPubMedId, clinVarReviewStatus, posAA, nOrthos, conservedOrthos, BLOSUM45, BLOSUM62, BLOSUM80, wtAAcomposition, wtAAvolume, varAAvolume, granthamDist, SIFTweight, wtSSFScore, wtMaxEntScore, wtNNSScore, wtGSScore, wtHSFScore, varSSFScore, varMaxEntScore, varNNSScore, varGSScore, varHSFScore, nearestSSChange, rsHeterozygosity, rsMAF, exacAllFreq, exacAFRFreq, exacAMRFreq, exacEASFreq, exacSASFreq, exacNFEFreq, exacFINFreq, exacOTHFreq, espEAMAF, espAAMAF, espAllMAF, espEAAAF, espAAAAF, espAllAAF, phastCons, phyloP, wtCodonFreq, varCodonFreq, varAAcomposition, wtAApolarity, varAApolarity, AGVGDgv, AGVGDgd, SIFTmedian, PPH2score, MAPPpValue, MAPPpValueMedian, TASTERpValue, rsAncestralAllele, hgmdSubCategory, gene, varLocation, rsId, varAA_1, transcript, protein, Uniprot, varType, codingEffect, gNomen, cNomen, pNomen, alt_pNomen, pathogenicityClass, rsValidations, rsClinicalSignificance, rsMAFAllele, exacQuality, exacFilter, exacDP, espAvgReadDepth, hgmdId, clinVarIds, clinVarOrigins, clinVarMethods, clinVarClinSignifs, cosmicIds, substType, nucChange, AGVGDclass, chrom, rsValidated, rsSuspect, localSpliceEffect, wtNuc, varNuc, wtAA_1, wtAA_3, wtCodon, varAA_3, varCodon, proteinDomain1, proteinDomain2, proteinDomain3, proteinDomain4, conservedDistSpecies, SIFTprediction, PPH2prediction,PPH2class,MAPPprediction, TASTERprediction, assembly, hgmdPhenotype, hgmdWebLink, clinVarPhenotypes, cosmicTissues) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [str_to_int_float(alamut_dict['geneId'], 'int'), str_to_int_float(alamut_dict['strand'], 'int'), str_to_int_float(alamut_dict['gDNAstart'], 'int'), str_to_int_float(alamut_dict['gDNAend'], 'int'), str_to_int_float(alamut_dict['cDNAstart'], 'int'), str_to_int_float(alamut_dict['cDNAend'], 'int'), str_to_int_float(alamut_dict['exon'], 'int'), str_to_int_float(alamut_dict['intron'], 'int'), str_to_int_float(alamut_dict['omimId'], 'int'), str_to_int_float(alamut_dict['distNearestSS'], 'int'), str_to_int_float(alamut_dict['rsValidationNumber'], 'int'), str_to_int_float(alamut_dict['rsMAFCount'], 'int'), str_to_int_float(alamut_dict['exacAlleleCount'], 'int'), str_to_int_float(alamut_dict['espRefEACount'], 'int'), str_to_int_float(alamut_dict['espRefAACount'], 'int'), str_to_int_float(alamut_dict['espRefAllCount'], 'int'), str_to_int_float(alamut_dict['espAltEACount'], 'int'), str_to_int_float(alamut_dict['espAltAACount'], 'int'), str_to_int_float(alamut_dict['espAltAllCount'], 'int'), str_to_int_float(alamut_dict['hgmdPubMedId'], 'int'), str_to_int_float(alamut_dict['clinVarReviewStatus'], 'int'), str_to_int_float(alamut_dict['posAA'], 'int'), str_to_int_float(alamut_dict['nOrthos'], 'int'), str_to_int_float(alamut_dict['conservedOrthos'], 'int'), str_to_int_float(alamut_dict['BLOSUM45'], 'int'), str_to_int_float(alamut_dict['BLOSUM62'], 'int'), str_to_int_float(alamut_dict['BLOSUM80'], 'int'), str_to_int_float(alamut_dict['wtAAcomposition'], 'int'), str_to_int_float(alamut_dict['wtAAvolume'], 'int'), str_to_int_float(alamut_dict['varAAvolume'], 'int'), str_to_int_float(alamut_dict['granthamDist'], 'int'), str_to_int_float(alamut_dict['SIFTweight'], 'int'), str_to_int_float(alamut_dict['wtSSFScore'], 'float'), str_to_int_float(alamut_dict['wtMaxEntScore'], 'float'), str_to_int_float(alamut_dict['wtNNSScore'], 'float'), str_to_int_float(alamut_dict['wtGSScore'], 'float'), str_to_int_float(alamut_dict['wtHSFScore'], 'float'), str_to_int_float(alamut_dict['varSSFScore'], 'float'), str_to_int_float(alamut_dict['varMaxEntScore'], 'float'), str_to_int_float(alamut_dict['varNNSScore'], 'float'), str_to_int_float(alamut_dict['varGSScore'], 'float'), str_to_int_float(alamut_dict['varHSFScore'], 'float'), str_to_int_float(alamut_dict['nearestSSChange'], 'float'), str_to_int_float(alamut_dict['rsHeterozygosity'], 'float'), str_to_int_float(alamut_dict['rsMAF'], 'float'), str_to_int_float(alamut_dict['exacAllFreq'], 'float'), str_to_int_float(alamut_dict['exacAFRFreq'], 'float'), str_to_int_float(alamut_dict['exacAMRFreq'], 'float'), str_to_int_float(alamut_dict['exacEASFreq'], 'float'), str_to_int_float(alamut_dict['exacSASFreq'], 'float'), str_to_int_float(alamut_dict['exacNFEFreq'], 'float'), str_to_int_float(alamut_dict['exacFINFreq'], 'float'), str_to_int_float(alamut_dict['exacOTHFreq'], 'float'), str_to_int_float(alamut_dict['espEAMAF'], 'float'), str_to_int_float(alamut_dict['espAAMAF'], 'float'), str_to_int_float(alamut_dict['espAllMAF'], 'float'), str_to_int_float(alamut_dict['espEAAAF'], 'float'), str_to_int_float(alamut_dict['espAAAAF'], 'float'), str_to_int_float(alamut_dict['espAllAAF'], 'float'), str_to_int_float(alamut_dict['phastCons'], 'float'), str_to_int_float(alamut_dict['phyloP'], 'float'), str_to_int_float(alamut_dict['wtCodonFreq'], 'float'), str_to_int_float(alamut_dict['varCodonFreq'], 'float'), str_to_int_float(alamut_dict['varAAcomposition'], 'float'), str_to_int_float(alamut_dict['wtAApolarity'], 'float'), str_to_int_float(alamut_dict['varAApolarity'], 'float'), str_to_int_float(alamut_dict['AGVGDgv'], 'float'), str_to_int_float(alamut_dict['AGVGDgd'], 'float'), str_to_int_float(alamut_dict['SIFTmedian'], 'float'), str_to_int_float(alamut_dict['PPH2score'], 'float'), str_to_int_float(alamut_dict['MAPPpValue'], 'float'), str_to_int_float(alamut_dict['MAPPpValueMedian'], 'float'), str_to_int_float(alamut_dict['TASTERpValue'], 'float'), str(alamut_dict['rsAncestralAllele']), str(alamut_dict['hgmdSubCategory']), str(alamut_dict['gene']), str(alamut_dict['varLocation']), str(alamut_dict['rsId']), str(alamut_dict['varAA_1']), str(alamut_dict['transcript']), str(alamut_dict['protein']), str(alamut_dict['Uniprot']), str(alamut_dict['varType']), str(alamut_dict['codingEffect']), str(alamut_dict['gNomen']), str(alamut_dict['cNomen']), str(alamut_dict['pNomen']), str(alamut_dict['alt_pNomen']), str(alamut_dict['pathogenicityClass']), str(alamut_dict['rsValidations']), str(alamut_dict['rsClinicalSignificance']), str(alamut_dict['rsMAFAllele']), str(alamut_dict['exacQuality']), str(alamut_dict['exacFilter']), str(alamut_dict['exacDP']), str(alamut_dict['espAvgReadDepth']), str(alamut_dict['hgmdId']), str(alamut_dict['clinVarIds']), str(alamut_dict['clinVarOrigins']), str(alamut_dict['clinVarMethods']), str(alamut_dict['clinVarClinSignifs']), str(alamut_dict['cosmicIds']), str(alamut_dict['substType']), str(alamut_dict['nucChange']), str(alamut_dict['AGVGDclass']), str(alamut_dict['chrom']), str(alamut_dict['rsValidated']), str(alamut_dict['rsSuspect']), str(alamut_dict['localSpliceEffect']), str(alamut_dict['wtNuc']), str(alamut_dict['varNuc']), str(alamut_dict['wtAA_1']), str(alamut_dict['wtAA_3']), str(alamut_dict['wtCodon']), str(alamut_dict['varAA_3']), str(alamut_dict['varCodon']), str(alamut_dict['proteinDomain1']), str(alamut_dict['proteinDomain2']), str(alamut_dict['proteinDomain3']), str(alamut_dict['proteinDomain4']), str(alamut_dict['conservedDistSpecies']), str(alamut_dict['SIFTprediction']), str(alamut_dict['PPH2prediction']), str(alamut_dict['PPH2class']), str(alamut_dict['MAPPprediction']), str(alamut_dict['TASTERprediction']), str(alamut_dict['assembly']), str(alamut_dict['hgmdPhenotype']), str(alamut_dict['hgmdWebLink']), str(alamut_dict['clinVarPhenotypes']), str(alamut_dict['cosmicTissues']) ])
-        db.commit()
-        db.close()
-		
-    #result = request.get_json('a')
+		return redirect(url_for('showdb', pID=request.form['search']))
     return render_template('interpret.html', form=form)
 		#should contain a search bar like:  http://exac.broadinstitute.org which will lead to a specific sample interpetation.
 ################################################################################################################################################	
@@ -204,9 +187,10 @@ def showdb(pID="123_15"):
             db.commit()
         elif form.validate_on_submit() and not request.is_xhr:
             variant_form_tuple = get_variants_from_form()
-            cur.execute("INSERT INTO raw_variants (chr, start, stop, ref, alt, hg) VALUES (?, ?, ?, ?, ?, 'hg19')", variant_form_tuple)
+            cur.execute("INSERT OR IGNORE INTO raw_variants (chr, start, stop, ref, alt, hg) VALUES (?, ?, ?, ?, ?, 'hg19')", variant_form_tuple)
             variant_form_tuple = (pID,) + variant_form_tuple
             cur.execute("INSERT INTO patient_info2raw_variants (patient_ID, chr, start, stop, ref, alt) VALUES (?, ?, ?, ?, ?, ?)", variant_form_tuple) 
+            #insert into interpretations
             db.commit()
         #OBS: Could I check the presence of this with an if? > Oh yes!
         elif request.is_xhr:
@@ -220,7 +204,13 @@ def showdb(pID="123_15"):
     patient_items = listOfdictsFromCur(cur.fetchall(), 'patient_info')
     patient_table = PatientTable(patient_items)
     #hente ut tolkede varianter for en pasient
-    cur.execute('SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt, am.gene FROM patient_info2raw_variants AS p2r LEFT JOIN alamut_annotation AS am ON p2r.chr = am.chrom AND p2r.start = am.gDNAstart WHERE patient_ID = ?', (pID, ))
+    cur.execute('SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt,\
+    am.gene, am.cNomen AS cDNA, am.pNomen AS protein, am.exacAllFreq,\
+    i.inhouse_class, i.comments\
+    FROM patient_info2raw_variants AS p2r\
+    LEFT JOIN alamut_annotation AS am ON p2r.chr = am.chrom AND p2r.start = am.gDNAstart\
+    LEFT JOIN interpretations AS i ON p2r.patient_ID = i.SAMPLE_NAME AND p2r.chr = i.chr AND p2r.start =i.start\
+    WHERE patient_ID = ?', (pID, ))
     var_items = listOfdictsFromCur(cur.fetchall(), 'int_variants')
     var_table = VariantTable(var_items,)
     #get patientinfo for a single patient assigned by pID
@@ -231,16 +221,36 @@ def showdb(pID="123_15"):
     WHERE pat.patient_ID = ?', (pID, ))
     pID_patient = dictFromCur(cur.fetchall(), 'pID_patient')
     db.close()
+    # how to send alamut variant info to the html -> use Ajax?
+    
     return render_template('showdb.html', patient_table=patient_table, var_table=var_table, form=form, pform=pform, pID=pID, pID_patient=pID_patient)
 
-
-
+@app.route('/_return_alamut_for_variant')
+def _return_alamut_for_variant():
+    variant_id = request.args.get('id', 0, type=int)
+    print('-------')
+    print(variant_id)
+    def dict_factory(cursor, row):
+        d = {}
+        for idx, col in enumerate(cursor.description):
+            d[col[0]] = row[idx]
+        return d
+    db = get_db()
+    db.row_factory = dict_factory
+    cur = get_db().cursor()
+    cur.execute('SELECT * FROM alamut_annotation WHERE ID = ?', [variant_id])
+    result = cur.fetchall()[0]
+    print(result)
+    
+    
+    db.close()
+    return jsonify(result)
 
 #########
 
 if __name__ == '__main__':
-    #app.run('172.16.0.56')
-    app.run('0.0.0.0', port=8080)
+    app.run('172.16.0.56')
+    #app.run('0.0.0.0', port=8080)
 
     
     
