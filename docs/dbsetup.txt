@@ -91,15 +91,14 @@ start INT REFERENCES raw_variants,
 stop INT REFERENCES raw_variants,
 ref VARCHAR(50) REFERENCES raw_variants,
 alt VARCHAR(50) REFERENCES raw_variants,
-zygosity VARCHAR(3),
 inhouse_class INT,
 acmg_class INT,
 comments TEXT,
 interpretor username VARCHAR(4) REFERENCES users,
 signed DATETIME,
 FOREIGN KEY(SAMPLE_NAME) REFERENCES patient_info(patient_ID),
-FOREIGN KEY(Chr, Start, Stop, ref, alt) REFERENCES raw_variants(Chr, Start, Stop, ref, alt),
-UNIQUE (SAMPLE_NAME, Chr, Start, Stop, ref, alt)
+FOREIGN KEY(chr, start, stop, ref, alt) REFERENCES raw_variants(chr, start, stop, ref, alt),
+UNIQUE (SAMPLE_NAME, chr, start, stop, ref, alt)
 );
 
 CREATE TABLE alamut_annotation(
@@ -258,7 +257,8 @@ start INT REFERENCES raw_variants,
 stop INT REFERENCES raw_variants,
 ref VARCHAR(50) REFERENCES raw_variants,
 alt VARCHAR(50) REFERENCES raw_variants,
-PRIMARY KEY (patient_ID, Chr, Start, Stop, ref, alt)
+zygosity VARCHAR(3),
+PRIMARY KEY (patient_ID, chr, start, stop, ref, alt)
 );
 
 CREATE TABLE patient_info2panels(

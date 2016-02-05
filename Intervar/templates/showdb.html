@@ -20,7 +20,7 @@
   })
 //get from variant table @ click:
 $('#test tr').click(function () {
-  
+
   var chrom = $(this).closest("tr").find('td:eq(0)').text();
   var start = $(this).closest("tr").find('td:eq(1)').text();
   var stop = $(this).closest("tr").find('td:eq(2)').text();
@@ -30,15 +30,23 @@ $('#test tr').click(function () {
   $.getJSON($SCRIPT_ROOT + '/_return_alamut_for_variant', {
     id: 1
   }, function(data) {
-        $('#agene').text(data.gene)
+    $('#agene').text(data.gene)
+    $('#atrans').text(data.transcript)
+    $('#agDNA').text(data.gNomen)
+    $('#aprot').text(data.pNomen)
+    $('#atype').text(data.codingEffect)
+    
+
+
+
   });
   console.log("test")
   //$('.variant_info').html(chrom + " " + start + " " + stop);
   $('#Interp_Modal').modal('show');
   //alert(chr + "|"+ start+ "|"+stop+ "|"+ref+ "|"+alt)
-  });
+});
 
-  
+
  //Check if a ref & alt is letter as opposed to -. And also check if length == 1. This would mean missense.
  function isOneLetter(str) {
   return str.length === 1 && str.match(/[a-z]/i);
@@ -93,7 +101,7 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
  <div class="row">
   <div class="col-sm-5">
    <dl class="dl-horizontal">
-   
+
     <dt>Patient ID</dt>
     <dd>{{ pID_patient.PID }}</dd>
     <dt>Family ID</dt>
@@ -191,6 +199,10 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
          {{ form.alt.label }}
          {{ form.alt(class="form-control") }}
        </fieldset>
+       <fieldset class="form-group">
+         {{ form.zyg.label }}
+         {{ form.zyg(class="form-control") }}
+       </fieldset>
        <fieldset class="form-group">        
          <div class="col-sm-2">
            {{ form.submit(class="btn btn-primary") }}
@@ -248,7 +260,7 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
       </div>
     </div>
   </div>
-  </div>
+</div>
 <!-- Modal -->
 <div id="Interp_Modal" class="modal fade" role="dialog">
   <div class="modal-dialog modal-lg">
@@ -266,39 +278,49 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
         <p>Add a button for deleting the entry from this patients variant table.</p>
         
         <dl class="dl-horizontal">
-        <dt>Gene</dt>
-        <dd id="agene"></dd>
-        <dt>Transcript</dt>
-        <dt>gDNA</dt>
-        <dt>Protein change</dt>
-        <dt>Type of mutation</dt>
-        <dt>Zygosity</dt>
-        <dt>Omim/HGMD</dt>
-        <dt>dbSNP</dt>
-        <dt>1000 genomes</dt>
-        <dt>ESP</dt>
-        <dt>Exac</dt>
-        <dt>in_house_controls</dt>
-        <dt>Zygosity</dt>
-        <dt>Seen @ MGM</dt>
-        <dt>Functional studies</dt>
-        
-        
+          <dt>Gene</dt>
+          <dd id="agene"></dd>
+          <dt>Transcript</dt>
+          <dd id="atrans"></dd>
+          <dt>gDNA</dt>
+          <dd id ="agDNA"></dd>
+          <dt>Protein change</dt>
+          <dd id="aprot"></dd>
+          <dt>Type of mutation</dt>
+          <dd id="atype"></dd>
+          <dt>Zygosity</dt>
+          <dd></dd>
+          <dt>Omim/HGMD</dt>
+          <dd></dd>
+          <dt>dbSNP</dt>
+          <dd></dd>
+          <dt>1000 genomes</dt>
+          <dd></dd>
+          <dt>ESP</dt>
+          <dd></dd>
+          <dt>Exac</dt>
+          <dd></dd>
+          <dt>in_house_controls</dt>
+          <dd></dd>
+          <dt>Zygosity</dt>
+          <dd></dd>
+          <dt>Seen @ MGM</dt>
+          <dd></dd>
+          <dt>Functional studies</dt>
+          <dd></dd>
         </dl>
-        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
         <p>...<p>
-        <form action="" method=POST enctype="multipart/form-data">
-          {{ pform.hidden_tag() }}
-          <fieldset class="form-group">
-          </fieldset>
-          <fieldset class="form-group">
-          </fieldset>
-          <fieldset class="form-group">
-          </fieldset>
-          <fieldset class="form-group">
-          </fieldset>
-          <fieldset class="form-group">
-           
+          <form action="" method=POST enctype="multipart/form-data">
+            {{ pform.hidden_tag() }}
+            <fieldset class="form-group">
+            </fieldset>
+            <fieldset class="form-group">
+            </fieldset>
+            <fieldset class="form-group">
+            </fieldset>
+            <fieldset class="form-group">
+            </fieldset>
+            <fieldset class="form-group">
             </div>
           </fieldset>
         </form>

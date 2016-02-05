@@ -187,13 +187,12 @@ def showdb(pID="123_15"):
             db.commit()
         elif form.validate_on_submit() and not request.is_xhr:
             variant_form_tuple = get_variants_from_form()
-            cur.execute("INSERT OR IGNORE INTO raw_variants (chr, start, stop, ref, alt, hg) VALUES (?, ?, ?, ?, ?, 'hg19')", variant_form_tuple)
+            cur.execute("INSERT OR IGNORE INTO raw_variants (chr, start, stop, ref, alt, hg) VALUES (?, ?, ?, ?, ?, 'hg19')", [variant_form_tuple[0], variant_form_tuple[1], variant_form_tuple[2], variant_form_tuple[3], variant_form_tuple[4]])
             variant_form_tuple = (pID,) + variant_form_tuple
-            cur.execute("INSERT INTO patient_info2raw_variants (patient_ID, chr, start, stop, ref, alt) VALUES (?, ?, ?, ?, ?, ?)", variant_form_tuple) 
+            cur.execute("INSERT INTO patient_info2raw_variants (patient_ID, chr, start, stop, ref, alt, zygosity ) VALUES (?, ?, ?, ?, ?, ?, ?)", variant_form_tuple) 
             #insert into interpretations
             db.commit()
-        #OBS: Could I check the presence of this with an if? > Oh yes!
-        elif request.is_xhr:
+        elif request.is_xhr: # checking if this comes 
             alamut_dict = request.get_json(force=True)
             print(alamut_dict)
             cur.execute("INSERT INTO alamut_annotation (geneId, strand, gDNAstart, gDNAend, cDNAstart, cDNAend, exon, intron, omimId, distNearestSS, rsValidationNumber, rsMAFCount, exacAlleleCount, espRefEACount, espRefAACount, espRefAllCount, espAltEACount, espAltAACount, espAltAllCount, hgmdPubMedId, clinVarReviewStatus, posAA, nOrthos, conservedOrthos, BLOSUM45, BLOSUM62, BLOSUM80, wtAAcomposition, wtAAvolume, varAAvolume, granthamDist, SIFTweight, wtSSFScore, wtMaxEntScore, wtNNSScore, wtGSScore, wtHSFScore, varSSFScore, varMaxEntScore, varNNSScore, varGSScore, varHSFScore, nearestSSChange, rsHeterozygosity, rsMAF, exacAllFreq, exacAFRFreq, exacAMRFreq, exacEASFreq, exacSASFreq, exacNFEFreq, exacFINFreq, exacOTHFreq, espEAMAF, espAAMAF, espAllMAF, espEAAAF, espAAAAF, espAllAAF, phastCons, phyloP, wtCodonFreq, varCodonFreq, varAAcomposition, wtAApolarity, varAApolarity, AGVGDgv, AGVGDgd, SIFTmedian, PPH2score, MAPPpValue, MAPPpValueMedian, TASTERpValue, rsAncestralAllele, hgmdSubCategory, gene, varLocation, rsId, varAA_1, transcript, protein, Uniprot, varType, codingEffect, gNomen, cNomen, pNomen, alt_pNomen, pathogenicityClass, rsValidations, rsClinicalSignificance, rsMAFAllele, exacQuality, exacFilter, exacDP, espAvgReadDepth, hgmdId, clinVarIds, clinVarOrigins, clinVarMethods, clinVarClinSignifs, cosmicIds, substType, nucChange, AGVGDclass, chrom, rsValidated, rsSuspect, localSpliceEffect, wtNuc, varNuc, wtAA_1, wtAA_3, wtCodon, varAA_3, varCodon, proteinDomain1, proteinDomain2, proteinDomain3, proteinDomain4, conservedDistSpecies, SIFTprediction, PPH2prediction,PPH2class,MAPPprediction, TASTERprediction, assembly, hgmdPhenotype, hgmdWebLink, clinVarPhenotypes, cosmicTissues) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [str_to_int_float(alamut_dict['geneId'], 'int'), str_to_int_float(alamut_dict['strand'], 'int'), str_to_int_float(alamut_dict['gDNAstart'], 'int'), str_to_int_float(alamut_dict['gDNAend'], 'int'), str_to_int_float(alamut_dict['cDNAstart'], 'int'), str_to_int_float(alamut_dict['cDNAend'], 'int'), str_to_int_float(alamut_dict['exon'], 'int'), str_to_int_float(alamut_dict['intron'], 'int'), str_to_int_float(alamut_dict['omimId'], 'int'), str_to_int_float(alamut_dict['distNearestSS'], 'int'), str_to_int_float(alamut_dict['rsValidationNumber'], 'int'), str_to_int_float(alamut_dict['rsMAFCount'], 'int'), str_to_int_float(alamut_dict['exacAlleleCount'], 'int'), str_to_int_float(alamut_dict['espRefEACount'], 'int'), str_to_int_float(alamut_dict['espRefAACount'], 'int'), str_to_int_float(alamut_dict['espRefAllCount'], 'int'), str_to_int_float(alamut_dict['espAltEACount'], 'int'), str_to_int_float(alamut_dict['espAltAACount'], 'int'), str_to_int_float(alamut_dict['espAltAllCount'], 'int'), str_to_int_float(alamut_dict['hgmdPubMedId'], 'int'), str_to_int_float(alamut_dict['clinVarReviewStatus'], 'int'), str_to_int_float(alamut_dict['posAA'], 'int'), str_to_int_float(alamut_dict['nOrthos'], 'int'), str_to_int_float(alamut_dict['conservedOrthos'], 'int'), str_to_int_float(alamut_dict['BLOSUM45'], 'int'), str_to_int_float(alamut_dict['BLOSUM62'], 'int'), str_to_int_float(alamut_dict['BLOSUM80'], 'int'), str_to_int_float(alamut_dict['wtAAcomposition'], 'int'), str_to_int_float(alamut_dict['wtAAvolume'], 'int'), str_to_int_float(alamut_dict['varAAvolume'], 'int'), str_to_int_float(alamut_dict['granthamDist'], 'int'), str_to_int_float(alamut_dict['SIFTweight'], 'int'), str_to_int_float(alamut_dict['wtSSFScore'], 'float'), str_to_int_float(alamut_dict['wtMaxEntScore'], 'float'), str_to_int_float(alamut_dict['wtNNSScore'], 'float'), str_to_int_float(alamut_dict['wtGSScore'], 'float'), str_to_int_float(alamut_dict['wtHSFScore'], 'float'), str_to_int_float(alamut_dict['varSSFScore'], 'float'), str_to_int_float(alamut_dict['varMaxEntScore'], 'float'), str_to_int_float(alamut_dict['varNNSScore'], 'float'), str_to_int_float(alamut_dict['varGSScore'], 'float'), str_to_int_float(alamut_dict['varHSFScore'], 'float'), str_to_int_float(alamut_dict['nearestSSChange'], 'float'), str_to_int_float(alamut_dict['rsHeterozygosity'], 'float'), str_to_int_float(alamut_dict['rsMAF'], 'float'), str_to_int_float(alamut_dict['exacAllFreq'], 'float'), str_to_int_float(alamut_dict['exacAFRFreq'], 'float'), str_to_int_float(alamut_dict['exacAMRFreq'], 'float'), str_to_int_float(alamut_dict['exacEASFreq'], 'float'), str_to_int_float(alamut_dict['exacSASFreq'], 'float'), str_to_int_float(alamut_dict['exacNFEFreq'], 'float'), str_to_int_float(alamut_dict['exacFINFreq'], 'float'), str_to_int_float(alamut_dict['exacOTHFreq'], 'float'), str_to_int_float(alamut_dict['espEAMAF'], 'float'), str_to_int_float(alamut_dict['espAAMAF'], 'float'), str_to_int_float(alamut_dict['espAllMAF'], 'float'), str_to_int_float(alamut_dict['espEAAAF'], 'float'), str_to_int_float(alamut_dict['espAAAAF'], 'float'), str_to_int_float(alamut_dict['espAllAAF'], 'float'), str_to_int_float(alamut_dict['phastCons'], 'float'), str_to_int_float(alamut_dict['phyloP'], 'float'), str_to_int_float(alamut_dict['wtCodonFreq'], 'float'), str_to_int_float(alamut_dict['varCodonFreq'], 'float'), str_to_int_float(alamut_dict['varAAcomposition'], 'float'), str_to_int_float(alamut_dict['wtAApolarity'], 'float'), str_to_int_float(alamut_dict['varAApolarity'], 'float'), str_to_int_float(alamut_dict['AGVGDgv'], 'float'), str_to_int_float(alamut_dict['AGVGDgd'], 'float'), str_to_int_float(alamut_dict['SIFTmedian'], 'float'), str_to_int_float(alamut_dict['PPH2score'], 'float'), str_to_int_float(alamut_dict['MAPPpValue'], 'float'), str_to_int_float(alamut_dict['MAPPpValueMedian'], 'float'), str_to_int_float(alamut_dict['TASTERpValue'], 'float'), str(alamut_dict['rsAncestralAllele']), str(alamut_dict['hgmdSubCategory']), str(alamut_dict['gene']), str(alamut_dict['varLocation']), str(alamut_dict['rsId']), str(alamut_dict['varAA_1']), str(alamut_dict['transcript']), str(alamut_dict['protein']), str(alamut_dict['Uniprot']), str(alamut_dict['varType']), str(alamut_dict['codingEffect']), str(alamut_dict['gNomen']), str(alamut_dict['cNomen']), str(alamut_dict['pNomen']), str(alamut_dict['alt_pNomen']), str(alamut_dict['pathogenicityClass']), str(alamut_dict['rsValidations']), str(alamut_dict['rsClinicalSignificance']), str(alamut_dict['rsMAFAllele']), str(alamut_dict['exacQuality']), str(alamut_dict['exacFilter']), str(alamut_dict['exacDP']), str(alamut_dict['espAvgReadDepth']), str(alamut_dict['hgmdId']), str(alamut_dict['clinVarIds']), str(alamut_dict['clinVarOrigins']), str(alamut_dict['clinVarMethods']), str(alamut_dict['clinVarClinSignifs']), str(alamut_dict['cosmicIds']), str(alamut_dict['substType']), str(alamut_dict['nucChange']), str(alamut_dict['AGVGDclass']), str(alamut_dict['chrom']), str(alamut_dict['rsValidated']), str(alamut_dict['rsSuspect']), str(alamut_dict['localSpliceEffect']), str(alamut_dict['wtNuc']), str(alamut_dict['varNuc']), str(alamut_dict['wtAA_1']), str(alamut_dict['wtAA_3']), str(alamut_dict['wtCodon']), str(alamut_dict['varAA_3']), str(alamut_dict['varCodon']), str(alamut_dict['proteinDomain1']), str(alamut_dict['proteinDomain2']), str(alamut_dict['proteinDomain3']), str(alamut_dict['proteinDomain4']), str(alamut_dict['conservedDistSpecies']), str(alamut_dict['SIFTprediction']), str(alamut_dict['PPH2prediction']), str(alamut_dict['PPH2class']), str(alamut_dict['MAPPprediction']), str(alamut_dict['TASTERprediction']), str(alamut_dict['assembly']), str(alamut_dict['hgmdPhenotype']), str(alamut_dict['hgmdWebLink']), str(alamut_dict['clinVarPhenotypes']), str(alamut_dict['cosmicTissues']) ])
@@ -204,7 +203,7 @@ def showdb(pID="123_15"):
     patient_items = listOfdictsFromCur(cur.fetchall(), 'patient_info')
     patient_table = PatientTable(patient_items)
     #hente ut tolkede varianter for en pasient
-    cur.execute('SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt,\
+    cur.execute('SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt, p2r.zygosity,\
     am.gene, am.cNomen AS cDNA, am.pNomen AS protein, am.exacAllFreq,\
     i.inhouse_class, i.comments\
     FROM patient_info2raw_variants AS p2r\
@@ -222,14 +221,13 @@ def showdb(pID="123_15"):
     pID_patient = dictFromCur(cur.fetchall(), 'pID_patient')
     db.close()
     # how to send alamut variant info to the html -> use Ajax?
-    
     return render_template('showdb.html', patient_table=patient_table, var_table=var_table, form=form, pform=pform, pID=pID, pID_patient=pID_patient)
 
 @app.route('/_return_alamut_for_variant')
 def _return_alamut_for_variant():
+    ''' Gets a ID from the alamut table and returns the contents as a JSON
+    '''
     variant_id = request.args.get('id', 0, type=int)
-    print('-------')
-    print(variant_id)
     def dict_factory(cursor, row):
         d = {}
         for idx, col in enumerate(cursor.description):
@@ -240,17 +238,14 @@ def _return_alamut_for_variant():
     cur = get_db().cursor()
     cur.execute('SELECT * FROM alamut_annotation WHERE ID = ?', [variant_id])
     result = cur.fetchall()[0]
-    print(result)
-    
-    
     db.close()
     return jsonify(result)
 
 #########
 
 if __name__ == '__main__':
-    app.run('172.16.0.56')
-    #app.run('0.0.0.0', port=8080)
+    #app.run('172.16.0.56')
+    app.run('0.0.0.0', port=8080)
 
     
     

@@ -24,6 +24,7 @@ class VariantForm(Form):
     stop = TextField("Stop position")
     ref = TextField("Reference Allele")
     alt = TextField("Alternate Allele")
+    zyg = SelectField('Zygosity', choices=[('HOM', 'Homozygous'),('HET', 'Heterozygous'), ('HEM', 'Hemizygous')])
     submit = SubmitField("Submit to DB")
 	
 class SearchForm(Form):
@@ -43,6 +44,7 @@ class VariantTable(Table):
     stop = Col('stop')
     ref = Col('ref')
     alt = Col('alt')
+    zygosity = Col('Zygosity')
     gene = Col('gene')
     cDNA = Col('cDNA')
     protein = Col('protein')
@@ -69,7 +71,7 @@ def listOfdictsFromCur(dbcursor, type):
         if type == 'patient_info':
             list_items.append(dict(PID=i[0], clinInfo=i[1], familyID=i[2], sex=i[3] ))
         elif type == 'int_variants':
-            list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], gene=i[5], cDNA=i[6], protein=i[7], ecacAll=i[8], inclass=i[9], comments=i[10] ))
+            list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], zygosity=i[5], gene=i[6], cDNA=i[7], protein=i[8], ecacAll=i[9], inclass=i[10], comments=i[11] ))
     return list_items
         
     
@@ -96,7 +98,7 @@ def get_values_from_form(type='first_input'):
 
 
 def get_variants_from_form():
-    variant_tuple = (request.form['chrom'], request.form['start'], request.form['stop'], request.form['ref'], request.form['alt'])
+    variant_tuple = (request.form['chrom'], request.form['start'], request.form['stop'], request.form['ref'], request.form['alt'], request.form['zyg'])
     return variant_tuple
 	
 #get info from hsmetrics-file into tuple (exluding sample name)
@@ -168,13 +170,9 @@ def alamut_dict_to_DB(ala_dict, pID):
                 new_tuple = new_tuple + (v,)
     print(new_dict)
     print(new_tuple)
-    
-    
     print(ala_tup)
     ala_tup = [('gene', 'MLH1'), ('geneId', 7127)]
-    
-    #for i in ala_tup:
-     #   print(i)
+         #   print(i)
     cur.execute("INSERT INTO alamut_annotation \
     (gene, geneId)\
     VALUES (?,?) \
