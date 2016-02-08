@@ -2,3 +2,4 @@ Flask-Login==0.3.2
 Flask-SQLAlchemy==2.1
 Flask-WTF==0.12
 Flask-Table==0.2.9
+Weasyprint & all dependencies “sudo port install py27-pip py27-lxml cairo pango gdk-pixbuf2 libffi”

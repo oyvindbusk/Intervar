@@ -83,6 +83,15 @@ hg VARCHAR(10) DEFAULT 'hg19',
 PRIMARY KEY (chr, start, stop, ref, alt)
 );
 
+CREATE TABLE interpretations_pr_patient(
+ID INTEGER PRIMARY KEY,
+patient_ID VARCHAR(10),
+comments TEXT,
+date DATETIME,
+FOREIGN KEY(patient_ID) REFERENCES patient_info(patient_ID),
+UNIQUE (patient_ID)
+);
+
 CREATE TABLE interpretations(
 ID INTEGER PRIMARY KEY,
 SAMPLE_NAME VARCHAR(10),

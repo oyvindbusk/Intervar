@@ -5,9 +5,8 @@ from wtforms import TextField, TextAreaField, SubmitField, FileField, SelectFiel
 from flask_table import Table, Col
 from flask import g, request
 import csv
-# db navn Intervar.sqlite
 
-
+################################################################################################################################################
 class PatientForm(Form):
     patient_ID = TextField("Patient ID")
     sex = SelectField('Sex', choices=[('M', 'Male'),('F', 'Female')])
@@ -30,6 +29,14 @@ class VariantForm(Form):
 class SearchForm(Form):
     search = TextField("Search for Sample")
 
+class Interpret_overallForm(Form):
+    comment = TextAreaField("Comments")
+    submit = SubmitField("Submit or update")
+
+class InterpretForm(Form):
+    comments = TextAreaField("Comments")
+    submit = SubmitField("Submit")
+
 # Declare your table
 class PatientTable(Table):
     PID = Col('Patient ID')
@@ -39,6 +46,7 @@ class PatientTable(Table):
     classes = ['table table-striped']
 
 class VariantTable(Table):
+    ID = Col('ID')
     chrom = Col('chrom')
     start = Col('start')
     stop = Col('stop')
@@ -53,6 +61,7 @@ class VariantTable(Table):
     comments = Col('comments')
     classes = ['table table-striped"  id="test'] # make sortable like in the exac-page?
 
+################################################################################################################################################
 def dictFromCur(dbcursor, type):
     patient_dict = {}
     for i in dbcursor:
@@ -71,7 +80,7 @@ def listOfdictsFromCur(dbcursor, type):
         if type == 'patient_info':
             list_items.append(dict(PID=i[0], clinInfo=i[1], familyID=i[2], sex=i[3] ))
         elif type == 'int_variants':
-            list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], zygosity=i[5], gene=i[6], cDNA=i[7], protein=i[8], ecacAll=i[9], inclass=i[10], comments=i[11] ))
+            list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], zygosity=i[5], ID=i[6], gene=i[7], cDNA=i[8], protein=i[9], ecacAll=i[10], inclass=i[11], comments=i[12] ))
     return list_items
         
     
@@ -94,8 +103,9 @@ def get_values_from_form(type='first_input'):
         form_tuple = (request.form['patient_ID'], request.form['familyID'], request.form['clinInfo'], request.form['sex'] )
     elif type == 'update':
         form_tuple = (request.form['familyID'], request.form['clinInfo'], request.form['sex'] )
+    elif type == 'Interpret_overall':
+        form_tuple = (request.form['comment'])
     return form_tuple
-
 
 def get_variants_from_form():
     variant_tuple = (request.form['chrom'], request.form['start'], request.form['stop'], request.form['ref'], request.form['alt'], request.form['zyg'])
@@ -134,10 +144,6 @@ def print_file(filename):
     reader = csv.reader(open(filename, 'r'))
     for i in reader:
         print(i)
-
-
-     
-
         
 def alamut_dict_to_DB(ala_dict, pID):
     '''
