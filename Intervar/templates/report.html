@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+	<div class="row">
+   <div class="col-md-10 col-xs-offset-1 col-md-offset-1">        
+     <h1>Report for: {{ pID }}</h1>
+   </div>
+ </div>
+ <div class="row">
+  <div class="col-sm-5">
+   <dl class="dl-horizontal">
+    <dt>Patient ID</dt>
+    <dd>{{ pID_patient.PID }}</dd>
+    <dt>Family ID</dt>
+    <dd>{{ pID_patient.familyID }}</dd>
+    <dt>Panel</dt>
+    <dd>{{ pID_patient.panel_name }}</dd>
+    <dt>Sex</dt>
+    <dd>{{ pID_patient.sex }}</dd>
+    <dt>Clinical info</dt>
+    <dd>{{ pID_patient.clinInfo }}</dd>
+  </dl>
+</div>
+<div class="col-sm-7">
+ <table class="table" id="data">
+  <thead>
+    <tr>
+      <th style="padding-top: 4px;">Mean Target <br>Coverage</th>
+      <th style="padding-top: 4px; width=50%;">% bases > 20 X</th>
+      <th style="padding-top: 4px;" class="tooltip-table-header" >% bases > 30 X</th>
+      <th style="padding-top: 4px;" class="tooltip-table-header" >Mean insert size</th>
+      <th style="padding-top: 4px;" class="tooltip-table-header" >Median insert size</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{ pID_patient.mean_target_cov }}</td>
+      <td>{{ pID_patient.pct_target_20 }}</td>
+      <td>{{ pID_patient.pct_target_30 }}</td>
+      <td>{{ pID_patient.mean_is }}</td>
+      <td>{{ pID_patient.median_is }}</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+<hr>
+<h5>What should come below:</h5>
+<p>Have to provide a dict or list from Flask, and use Jinja to iterate with a couple of br`s in between.</p>
+<span><p>A snippet for each variant, with:</p></span>
+<p>Gene: ; cNOMEN</p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<dl>
+      {% for item in var_items %}
+            <dt>{{ item }}</dt>
+            <dd>Chr{{ item.chrom }}:{{ item.start }}-{{ item.stop }} {{ item.ref }} {{ item.alt }}                               </dd>            
+            <dd>Zygositet: {{ item.zygosity }}</dd>
+            <dd>Gene: {{ item.gene }}</dd>
+            <dd>Alamut cDNA: {{ item.cDNA }}</dd>
+            <dd>Alamut protein: {{ item.protein }}</dd>
+            <br><p>----------------------------------</p>
+      {% endfor %}
+</dl>
+
+
+
+</div>
+{% endblock %}

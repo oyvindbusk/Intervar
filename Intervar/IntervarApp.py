@@ -9,7 +9,6 @@ from scripts import PatientForm, VariantForm, SearchForm, PatientTable, VariantT
 from scripts import alamut_dict_to_DB, str_to_int_float, Interpret_overallForm, InterpretForm
 import json
 
-from weasyprint import HTML
 
 DEBUG = True
 SECRET_KEY = 'yekterces'
@@ -153,7 +152,6 @@ def testinput():
 @app.route('/overview')
 @login_required
 def overview():
-    pdf = HTML('http://example.net/hello/').write_pdf()
     return render_template('overview.html')
 
 ################################################################################################################################################
@@ -193,7 +191,7 @@ def showdb(pID="123_15"):
             variant_form_tuple = get_variants_from_form()
             cur.execute("INSERT OR IGNORE INTO raw_variants (chr, start, stop, ref, alt, hg) VALUES (?, ?, ?, ?, ?, 'hg19')", [variant_form_tuple[0], variant_form_tuple[1], variant_form_tuple[2], variant_form_tuple[3], variant_form_tuple[4]])
             variant_form_tuple = (pID,) + variant_form_tuple
-            cur.execute("INSERT INTO patient_info2raw_variants (patient_ID, chr, start, stop, ref, alt, zygosity ) VALUES (?, ?, ?, ?, ?, ?, ?)", variant_form_tuple) 
+            cur.execute("INSERT INTO patient_info2raw_variants (patient_ID, chr, start, stop, ref, alt, zygosity, denovo ) VALUES (?, ?, ?, ?, ?, ?, ?,?)", variant_form_tuple) 
             #insert into interpretations
             db.commit()
         elif request.is_xhr: # checking if this comes 
@@ -243,6 +241,43 @@ def showdb(pID="123_15"):
 
 ################################################################################################################################################
 
+
+
+################################################################################################################################################	
+	
+@app.route('/report', methods=['GET', 'POST'])
+@app.route('/report/<pID>', methods=['GET', 'POST'])
+@login_required
+def report(pID="123_15"):
+    # legge inn en count paa hvor mange tolkninger som er utfort, og velge den hvis 1, mens hvis det er flere, faa ett valg? vrient... velge en forst og fremst
+    
+    db = get_db()
+    cur = get_db().cursor()
+    
+    #hente ut tolkede varianter for en pasient
+    cur.execute('SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt, p2r.zygosity,\
+    am.ID, am.gene, am.cNomen AS cDNA, am.pNomen AS protein, am.exacAllFreq,\
+    i.inhouse_class, i.comments\
+    FROM patient_info2raw_variants AS p2r\
+    LEFT JOIN alamut_annotation AS am ON p2r.chr = am.chrom AND p2r.start = am.gDNAstart\
+    LEFT JOIN interpretations AS i ON p2r.patient_ID = i.SAMPLE_NAME AND p2r.chr = i.chr AND p2r.start =i.start\
+    WHERE patient_ID = ?', (pID, ))
+    var_items = listOfdictsFromCur(cur.fetchall(), 'int_variants')
+   
+    #get patientinfo for a single patient assigned by pID
+    cur.execute('SELECT pat.patient_ID, pat.clinical_info, pat.family_ID, pat.sex, pan.panel_name,QC.MEAN_TARGET_COVERAGE,\
+    QC.PCT_TARGET_BASES_20X, QC.PCT_TARGET_BASES_30X, ins.median_insert_size, ins.mean_insert_size\
+    FROM patient_info AS pat JOIN patient_info2panels AS pan ON pat.patient_ID=pan.patient_ID\
+    JOIN QC ON pat.patient_ID=QC.SAMPLE_NAME LEFT JOIN insert_size AS ins ON pat.patient_ID=ins.SAMPLE_NAME\
+    WHERE pat.patient_ID = ?', (pID, ))
+    pID_patient = dictFromCur(cur.fetchall(), 'pID_patient')
+    db.close()
+    variant_dict = {}
+    
+    return render_template('report.html', var_items=var_items, pID=pID, pID_patient=pID_patient)
+
+################################################################################################################################################
+
 @app.route('/_return_alamut_for_variant')
 def _return_alamut_for_variant():
     ''' Gets a ID from the alamut table and returns the contents as a JSON
@@ -265,8 +300,8 @@ def _return_alamut_for_variant():
 ################################################################################################################################################
 
 if __name__ == '__main__':
-    #app.run('172.16.0.56')
-    app.run('0.0.0.0', port=8080)
+    app.run('172.16.0.56')
+    #app.run('0.0.0.0', port=8080)
 
 
     

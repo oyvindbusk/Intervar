@@ -239,6 +239,10 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
          {{ form.zyg.label }}
          {{ form.zyg(class="form-control") }}
        </fieldset>
+       <fieldset class="form-group">
+         {{ form.denovo.label }}
+         {{ form.denovo(class="form-control") }}
+       </fieldset>
        <fieldset class="form-group">        
          <div class="col-sm-2">
            {{ form.submit(class="btn btn-primary") }}

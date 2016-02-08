@@ -267,6 +267,7 @@ stop INT REFERENCES raw_variants,
 ref VARCHAR(50) REFERENCES raw_variants,
 alt VARCHAR(50) REFERENCES raw_variants,
 zygosity VARCHAR(3),
+denovo BOOL DEFAULT 0,
 PRIMARY KEY (patient_ID, chr, start, stop, ref, alt)
 );
 

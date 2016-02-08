@@ -24,6 +24,7 @@ class VariantForm(Form):
     ref = TextField("Reference Allele")
     alt = TextField("Alternate Allele")
     zyg = SelectField('Zygosity', choices=[('HOM', 'Homozygous'),('HET', 'Heterozygous'), ('HEM', 'Hemizygous')])
+    denovo = SelectField('Denovo', choices=[('0','No'),('1','Yes')], default='0')
     submit = SubmitField("Submit to DB")
 	
 class SearchForm(Form):
@@ -56,7 +57,7 @@ class VariantTable(Table):
     gene = Col('gene')
     cDNA = Col('cDNA')
     protein = Col('protein')
-    ecacAll = Col('exacAllFreq')
+    exacAll = Col('exacAllFreq')
     inclass = Col('inhouse_class')
     comments = Col('comments')
     classes = ['table table-striped"  id="test'] # make sortable like in the exac-page?
@@ -80,7 +81,7 @@ def listOfdictsFromCur(dbcursor, type):
         if type == 'patient_info':
             list_items.append(dict(PID=i[0], clinInfo=i[1], familyID=i[2], sex=i[3] ))
         elif type == 'int_variants':
-            list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], zygosity=i[5], ID=i[6], gene=i[7], cDNA=i[8], protein=i[9], ecacAll=i[10], inclass=i[11], comments=i[12] ))
+            list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], zygosity=i[5], ID=i[6], gene=i[7], cDNA=i[8], protein=i[9], exacAll=i[10], inclass=i[11], comments=i[12] ))
     return list_items
         
     
@@ -108,7 +109,7 @@ def get_values_from_form(type='first_input'):
     return form_tuple
 
 def get_variants_from_form():
-    variant_tuple = (request.form['chrom'], request.form['start'], request.form['stop'], request.form['ref'], request.form['alt'], request.form['zyg'])
+    variant_tuple = (request.form['chrom'], request.form['start'], request.form['stop'], request.form['ref'], request.form['alt'], request.form['zyg'], request.form['denovo'])
     return variant_tuple
 	
 #get info from hsmetrics-file into tuple (exluding sample name)
