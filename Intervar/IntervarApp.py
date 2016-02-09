@@ -152,7 +152,38 @@ def testinput():
 @app.route('/overview')
 @login_required
 def overview():
-    return render_template('overview.html')
+    overview_dict = {}
+    db = get_db()
+    cur = get_db().cursor()
+    #get number of total patients
+    cur.execute('SELECT COUNT(*) FROM patient_info')
+    samples = cur.fetchall()
+    overview_dict.update({'total_patients': samples[0][0] })
+    print(overview_dict)
+    #pr gender
+    cur.execute('SELECT COUNT(*) FROM patient_info WHERE sex = "F"')
+    overview_dict.update({'F_patients': cur.fetchall()[0][0]})
+    cur.execute('SELECT COUNT(*) FROM patient_info WHERE sex = "M"')
+    overview_dict.update({'M_patients': cur.fetchall()[0][0]})
+    
+    #get number of samples PASS QC
+    #SELECT COUNT(*) FROM patient_info
+    #LEFT JOIN QC
+    #ON patient_info.patient_ID=QC.SAMPLE_NAME
+    #WHERE MEAN_TARGET_COVERAGE >= 60 AND PCT_TARGET_BASES_20X > 0.8;
+    #get total number of variants
+    #SELECT COUNT(*) FROM raw_variants;
+    #get total number of variants in each class
+    #SELECT COUNT(*) FROM raw_variants
+    #JOIN interpretations
+    #ON raw_variants.chr = interpretations.chr AND raw_variants.start = interpretations.start AND raw_variants.stop = interpretations.stop AND raw_variants.ref = interpretations.ref AND raw_variants.alt = interpretations.alt
+    #WHERE interpretations.inhouse_class = "3"
+    #get mean coverage for alle samples
+    #SELECT AVG(MEAN_TARGET_COVERAGE) FROM QC;
+
+
+    db.close()
+    return render_template('overview.html', overview_dict=overview_dict)
 
 ################################################################################################################################################
 
@@ -300,8 +331,8 @@ def _return_alamut_for_variant():
 ################################################################################################################################################
 
 if __name__ == '__main__':
-    app.run('172.16.0.56')
-    #app.run('0.0.0.0', port=8080)
+    #app.run('172.16.0.56')
+    app.run('0.0.0.0', port=8080)
 
 
     

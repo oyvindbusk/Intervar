@@ -187,9 +187,7 @@ def alamut_dict_to_DB(ala_dict, pID):
     db.commit()
     db.close()
     
-    #insert all values from dict
-    #commit
-    #close connection
+    
 	
 def str_to_int_float(input, type):
     output = None
