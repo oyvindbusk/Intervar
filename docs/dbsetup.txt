@@ -2,12 +2,38 @@
 sqlite3 Intervar.db
 
 #lage tabeller:
+
+
+
+
+CREATE TABLE litterature_references(
+PMID INT PRIMARY KEY,
+reference TEXT,
+year INT,
+comment TEXT
+);
+
+CREATE TABLE litterature_references2variants(
+PMID
+var_id
+FOREIGN KEY(SAMPLE_NAME) REFERENCES patient_info(patient_ID)
+
+);
+
+
+
+
 CREATE TABLE patient_info(
 patient_ID VARCHAR(10) PRIMARY KEY,
 clinical_info TEXT,
 family_ID INT,
-sex CHAR(1) CHECK(Sex in ('M', 'F'))
+sex CHAR(1) CHECK(Sex in ('M', 'F')),
+disase_category TEXT
 );
+
+
+
+
 
 CREATE TABLE panels(
 panel_name VARCHAR(30) PRIMARY KEY
