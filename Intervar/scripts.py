@@ -12,6 +12,7 @@ class PatientForm(Form):
     sex = SelectField('Sex', choices=[('M', 'Male'),('F', 'Female')])
     panel = SelectField('Panel', choices=[('PV2-1', 'PV2-1'),('F', 'Filtex'), ('E', 'Exome')])
     clinInfo = TextAreaField("Clinical info")
+    dis_category = SelectField('Disease category', choices=[('Atax', 'Ataxia'),('CMT', 'CMT'), ('EDS', 'EDS')])
     familyID = TextField('Family ID')
     hsmFileUpload = FileField("Hsmetrics file")
     fragmentSizeUpload = FileField("Fragment size file")
@@ -67,7 +68,7 @@ def dictFromCur(dbcursor, type):
     patient_dict = {}
     for i in dbcursor:
         if type == 'pID_patient':
-            patient_dict = {"PID" : i[0], "clinInfo": i[1], "familyID" : i[2], "sex" : i[3], "panel_name" : i[4], "mean_target_cov" : i[5], "pct_target_20" : i[6], "pct_target_30": i[7], "median_is" : i[8], "mean_is" : i[9]}
+            patient_dict = {"PID" : i[0], "clinInfo": i[1], "familyID" : i[2], "sex" : i[3], "disease_category" : i[4],"panel_name" : i[5],   "mean_target_cov" : i[6], "pct_target_20" : i[7], "pct_target_30": i[8], "median_is" : i[9], "mean_is" : i[10]}
     return patient_dict
             
 
@@ -101,7 +102,7 @@ def insertsize_to_tuple(is_file, sample_name):
 
 def get_values_from_form(type='first_input'):
     if type == 'first_input':
-        form_tuple = (request.form['patient_ID'], request.form['familyID'], request.form['clinInfo'], request.form['sex'] )
+        form_tuple = (request.form['patient_ID'], request.form['familyID'], request.form['clinInfo'], request.form['sex'], request.form['panel'], request.form['dis_category'] )
     elif type == 'update':
         form_tuple = (request.form['familyID'], request.form['clinInfo'], request.form['sex'] )
     elif type == 'Interpret_overall':

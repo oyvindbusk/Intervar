@@ -125,7 +125,8 @@ def testinput():
             db = get_db()
             cur = get_db().cursor()
             patient_form_tuple = get_values_from_form()
-            cur.execute("INSERT INTO patient_info (patient_ID, family_ID, clinical_info,  sex) VALUES (?, ?, ?, ?)", patient_form_tuple )
+            cur.execute("INSERT INTO patient_info (patient_ID, family_ID, clinical_info, sex, disease_category) VALUES (?, ?, ?, ?, ?)", (request.form['patient_ID'], request.form['familyID'], request.form['clinInfo'], request.form['sex'], request.form['dis_category']))
+            cur.execute("INSERT INTO patient_info2panels (patient_ID, panel_name) VALUES (?, ?)", (request.form['patient_ID'], request.form['panel']))
             hsm_file = request.files['hsmFileUpload']
             if hsm_file and allowed_file(hsm_file.filename):
                 filename = secure_filename(hsm_file.filename)
@@ -189,7 +190,7 @@ def overview():
 
 @app.route('/interpret', methods=['GET', 'POST'])
 @login_required
-def interpret(pID="123_15"):
+def interpret():
     form = SearchForm()
     if request.method == "POST":
 		return redirect(url_for('showdb', pID=request.form['search']))
@@ -201,7 +202,7 @@ def interpret(pID="123_15"):
 @app.route('/showdb', methods=['GET', 'POST'])
 @app.route('/showdb/<pID>', methods=['GET', 'POST'])
 @login_required
-def showdb(pID="123_15"):
+def showdb(pID):
     # legge inn en count paa hvor mange tolkninger som er utfort, og velge den hvis 1, mens hvis det er flere, faa ett valg? vrient... velge en forst og fremst
     form = VariantForm()
     pform = PatientForm()
@@ -209,6 +210,8 @@ def showdb(pID="123_15"):
     ivform = InterpretForm()
     db = get_db()
     cur = get_db().cursor()
+    #variabler
+    patient_comment = ''
     if request.method == 'POST':
         
         if pform.validate_on_submit() and not request.is_xhr:
@@ -254,15 +257,19 @@ def showdb(pID="123_15"):
     var_items = listOfdictsFromCur(cur.fetchall(), 'int_variants')
     var_table = VariantTable(var_items,)
     #get patientinfo for a single patient assigned by pID
-    cur.execute('SELECT pat.patient_ID, pat.clinical_info, pat.family_ID, pat.sex, pan.panel_name,QC.MEAN_TARGET_COVERAGE,\
+    cur.execute('SELECT pat.patient_ID, pat.clinical_info, pat.family_ID, pat.sex, pat.disease_category, pan.panel_name, QC.MEAN_TARGET_COVERAGE,\
     QC.PCT_TARGET_BASES_20X, QC.PCT_TARGET_BASES_30X, ins.median_insert_size, ins.mean_insert_size\
     FROM patient_info AS pat JOIN patient_info2panels AS pan ON pat.patient_ID=pan.patient_ID\
     JOIN QC ON pat.patient_ID=QC.SAMPLE_NAME LEFT JOIN insert_size AS ins ON pat.patient_ID=ins.SAMPLE_NAME\
     WHERE pat.patient_ID = ?', (pID, ))
     pID_patient = dictFromCur(cur.fetchall(), 'pID_patient')
+    print(pID_patient)
     #get comments for the interpretations of one patient:
     cur.execute('SELECT comments FROM interpretations_pr_patient WHERE patient_ID = ?', (pID, ))
-    patient_comment = cur.fetchall()[0][0]
+    try:
+        patient_comment = cur.fetchall()[0][0]
+    except:
+        pass
     if len(patient_comment) == 0:
         patient_comment = ''
     else:
@@ -331,8 +338,8 @@ def _return_alamut_for_variant():
 ################################################################################################################################################
 
 if __name__ == '__main__':
-    #app.run('172.16.0.56')
-    app.run('0.0.0.0', port=8080)
+    app.run('172.16.0.56')
+    #app.run('0.0.0.0', port=8080)
 
 
     

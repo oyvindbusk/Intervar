@@ -13,7 +13,7 @@
     $.ajax({
       type: "POST",
       contentType: "application/json; charset=utf-8",
-      url: "/showdb",
+      url: "/showdb/" + '{{ pID }}',
       data: JSON.stringify(result),
       success: function (data) {
         alert("ferdig " + chrom +"-"+ start +" "+ stop +" "+ ref +" "+ alt)
@@ -40,6 +40,8 @@ $('#test tr').click(function () {
   var stop = $(this).closest("tr").find('td:eq(3)').text();
   var ref = $(this).closest("tr").find('td:eq(4)').text();
   var alt = $(this).closest("tr").find('td:eq(5)').text();
+  var zyg = $(this).closest("tr").find('td:eq(6)').text()
+  
   $('#agene').text('')
   $('#atrans').text('')
   $('#agDNA').text('')
@@ -58,6 +60,7 @@ $('#test tr').click(function () {
     $('#agene').text(data.gene)
     $('#atrans').text(data.transcript)
     $('#agDNA').text(data.gNomen)
+    $('#acDNA').text(data.cNomen)
     $('#aprot').text(data.pNomen)
     $('#atype').text(data.codingEffect)
     $('#hgmdId').text(data.hgmdId)
@@ -73,8 +76,9 @@ $('#test tr').click(function () {
     $('#aProtDom3').text(data.proteinDomain3)
     $('#Exon').text(data.exon)
     $('#alaclass').text(data.pathogenicityClass)
-    $('#granthamDist').text(data.granthamDist)
+    $('#granthamDist').text(String(zyg)) // funker ikke
     
+    $('#zygo').text()
   });
   console.log("test")
   //$('.variant_info').html(chrom + " " + start + " " + stop);
@@ -115,7 +119,7 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
   $.ajax({
     type: "POST",
     contentType: "application/json; charset=utf-8",
-    url: "/showdb",
+    url: "/showdb/" + '{{ pID }}',
     data: JSON.stringify(result),
     success: function (data) {
       alert("ferdig" + chrom +"-"+ start +" "+ stop +" "+ ref +" "+ alt)
@@ -141,6 +145,8 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
     <dd>{{ pID_patient.familyID }}</dd>
     <dt>Panel</dt>
     <dd>{{ pID_patient.panel_name }}</dd>
+    <dt>Disease categor</dt>
+    <dd>{{ pID_patient.disease_category }}</dd>
     <dt>Sex</dt>
     <dd>{{ pID_patient.sex }}</dd>
     <dt>Clinical info</dt>
@@ -179,7 +185,7 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
 <div class="col-sm-4"><h3>Interpretation comments:</h3></div>
 <div class="row">
   <div class="col-sm-6">
-    <form action="{{ url_for('showdb') }}" method=POST enctype="multipart/form-data">
+    <form action="{{ url_for('showdb') }}/{{ pID }}" method=POST enctype="multipart/form-data">
       {{ iform.hidden_tag() }}
       <fieldset class="form-group">
         {{ iform.comment.label }}
@@ -213,7 +219,7 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
      </div>
      <div class="modal-body">
        <p>Fill inn variant identification and get data from Alamut</p>
-       <form action="" method=POST enctype="multipart/form-data">
+       <form action="{{ url_for('showdb') }}/{{ pID }}" method=POST enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         <fieldset class="form-group">
          {{ form.chrom.label }}
@@ -319,7 +325,9 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
               <dd id="atrans"></dd>
               <dt>gDNA</dt>
               <dd id ="agDNA"></dd>
-              <dt>Protein change (the first)</dt>
+              <dt>cDNA</dt>
+              <dd id ="acDNA"></dd>
+              <dt>Protein change</dt>
               <dd id="aprot"></dd>
               <dt>Type of mutation</dt>
               <dd id="atype"></dd>
@@ -348,7 +356,7 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
               <dt>Exon</dt>
               <dd id="Exon"></dd>
               <dt>Zygosity</dt>
-              <dd></dd>
+              <dd id="zygo"></dd>
               <dt>Seen @ MGM</dt>
               <dd></dd>
               <dt>Functional studies</dt>
@@ -367,7 +375,7 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
         </div>
         <hr>
         <h5>Comments regarding this specific variant?</h5>
-        <form action="{{ url_for('showdb') }}" method=POST enctype="multipart/form-data">
+        <form action="{{ url_for('showdb') }}/{{ pID }}" method=POST enctype="multipart/form-data">
           {{ ivform.hidden_tag() }}
           
           <fieldset class="form-group">
