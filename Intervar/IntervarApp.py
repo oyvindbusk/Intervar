@@ -213,12 +213,8 @@ def showdb(pID):
     #variabler
     patient_comment = ''
     if request.method == 'POST':
-        
         if pform.validate_on_submit() and not request.is_xhr:
-            patient_form_tuple = get_values_from_form('update')
-            patient_form_tuple = (pID,) + patient_form_tuple
-            print(patient_form_tuple)
-            cur.execute("INSERT OR REPLACE INTO patient_info (patient_ID, family_ID, clinical_info, sex) VALUES (?, ?, ?, ?)", patient_form_tuple )
+            cur.execute("INSERT OR REPLACE INTO patient_info (patient_ID, family_ID, clinical_info, sex, disease_category) VALUES ( ?, ?, ?, ?, ?)", (pID, request.form['familyID'], request.form['clinInfo'], request.form['sex'], request.form['dis_category']) )
             cur.execute("UPDATE patient_info2panels SET panel_name = ? WHERE patient_ID = ?", (request.form['panel'], pID)) 
             db.commit()
         elif form.validate_on_submit() and not request.is_xhr:
@@ -338,8 +334,8 @@ def _return_alamut_for_variant():
 ################################################################################################################################################
 
 if __name__ == '__main__':
-    app.run('172.16.0.56')
-    #app.run('0.0.0.0', port=8080)
+    #app.run('172.16.0.56')
+    app.run('0.0.0.0', port=8080)
 
 
     

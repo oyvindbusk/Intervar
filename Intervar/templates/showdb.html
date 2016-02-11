@@ -130,6 +130,8 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
 });
 });
 </script>
+
+
 <div class="container">
 	<div class="row">
    <div class="col-md-10 col-xs-offset-1 col-md-offset-1">        
@@ -273,7 +275,7 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
         <h4 class="modal-title">Edit info for sample: {{ pID }}</h4>
       </div>
       <div class="modal-body">
-        <form action="" method=POST enctype="multipart/form-data">
+        <form action="{{ url_for('showdb') }}/{{ pID }}" method=POST enctype="multipart/form-data">
           {{ pform.hidden_tag() }}
           <fieldset class="form-group">
             {{ pform.sex.label }}
@@ -286,6 +288,10 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
           <fieldset class="form-group">
             {{ pform.clinInfo.label }}
             {{ pform.clinInfo(class="form-control") }}
+          </fieldset>
+          <fieldset class="form-group">
+            {{ pform.dis_category.label }}
+            {{ pform.dis_category(class="form-control") }}
           </fieldset>
           <fieldset class="form-group">
             {{ pform.familyID.label }}
@@ -394,7 +400,7 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
           <div class="well">
             <input class="form-control" id="cDNARequest" name="cDNARequest" placeholder="NM_12341.4:c.234C>G" type="text" value="">
             <br>
-            <input class="btn btn-primary" id="submitcDNARequest" name="cDNAsubmit" type="submit" value="submit">
+           <!-- <input class="btn btn-primary" id="submitcDNARequest" name="cDNAsubmit" type="submit" value="submit">
           </div>
         </div>
         

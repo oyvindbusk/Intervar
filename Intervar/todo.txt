@@ -1,3 +1,10 @@
+FIX!!
+
+
+
+
+
+
 1st pri:
 Flask og google charts eksempel:
 https://pythonspot.com/flask-json-and-the-google-charts-api/

@@ -32,12 +32,12 @@ class SearchForm(Form):
     search = TextField("Search for Sample")
 
 class Interpret_overallForm(Form):
-    comment = TextAreaField("Comments")
+    comment = TextAreaField("Comment")
     submit = SubmitField("Submit or update")
 
 class InterpretForm(Form):
     comments = TextAreaField("Comments")
-    submit = SubmitField("Submit")
+    submit = SubmitField("Submit or replace")
 
 # Declare your table
 class PatientTable(Table):
@@ -103,10 +103,8 @@ def insertsize_to_tuple(is_file, sample_name):
 def get_values_from_form(type='first_input'):
     if type == 'first_input':
         form_tuple = (request.form['patient_ID'], request.form['familyID'], request.form['clinInfo'], request.form['sex'], request.form['panel'], request.form['dis_category'] )
-    elif type == 'update':
-        form_tuple = (request.form['familyID'], request.form['clinInfo'], request.form['sex'] )
     elif type == 'Interpret_overall':
-        form_tuple = (request.form['comment'])
+        form_tuple = (request.form['comments'])
     return form_tuple
 
 def get_variants_from_form():
