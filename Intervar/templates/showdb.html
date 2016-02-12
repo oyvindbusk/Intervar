@@ -5,6 +5,11 @@
 <script type=text/javascript>
   $(function() {
     $('#comment').val('{{ patient_comment }}')
+    // hide ID col of table
+    $('#test td:nth-child(1),th:nth-child(1)').hide();
+    //tooltip on classes form selector
+    $('#inhouse_class').tooltip({'trigger':'focus', 'title': 'Inhouse Class'});
+    $('#acmg_class').tooltip({'trigger':'focus', 'title': 'ACMG Class'});
   //on click of: submitcDNARequest get value from: cDNARequest
   $('#submitcDNARequest').click(function () {
     var alamut_request = $('#cDNARequest').val()
@@ -83,6 +88,7 @@ $('#test tr').click(function () {
   console.log("test")
   //$('.variant_info').html(chrom + " " + start + " " + stop);
   $('#Interp_Modal').modal('show');
+  $('#varid').val(String(chrom)+'|'+String(start)+'|'+String(stop)+'|'+String(ref)+'|'+String(alt))
   //alert(chr + "|"+ start+ "|"+stop+ "|"+ref+ "|"+alt)
 });
 
@@ -188,12 +194,14 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
 <div class="row">
   <div class="col-sm-6">
     <form action="{{ url_for('showdb') }}/{{ pID }}" method=POST enctype="multipart/form-data">
-      {{ iform.hidden_tag() }}
+        {{ iform.hidden_tag() }}
       <fieldset class="form-group">
         {{ iform.comment.label }}
         {{ iform.comment(class="form-control", placeholder="This should fill with info is a comment is already present") }}
       </fieldset>
+      <fieldset class="form-group">
       {{ iform.submit(class="btn btn-primary") }}
+      </fieldset>
     </form>
   </div>
 </div>
@@ -201,7 +209,7 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
 <div class="row">
  <div class="col-sm-1"></div>
  <div class="col-sm-12">
-  <h3>Table of interpreted variants</h3>
+  <h3>Table of variants</h3>
   {{ var_table }}
 </div>
 </div>
@@ -381,14 +389,38 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
         </div>
         <hr>
         <h5>Comments regarding this specific variant?</h5>
+        <!-- -->
+        
         <form action="{{ url_for('showdb') }}/{{ pID }}" method=POST enctype="multipart/form-data">
-          {{ ivform.hidden_tag() }}
-          
-          <fieldset class="form-group">
-            {{ ivform.comments(class="form-control", placeholder="This should fill with info is a comment is already present") }}
-          </fieldset>
-          {{ ivform.submit(class="btn btn-primary") }}
+        {{ varIntForm.hidden_tag() }}
+        <fieldset class="form-group">
+        
+        {{ varIntForm.comments(class="form-control", placeholder="This should fill with info is a comment is already present") }}
+        </fieldset>
+        <div class="input-group">
+        <fieldset class="form-group">
+        {{ varIntForm.inhouse_class(class="form-control") }}
+        </fieldset>
+        
+        <fieldset class="form-group">
+        {{ varIntForm.acmg_class(class="form-control") }}
+        </fieldset>
+        </div>
+        
+        <fieldset class="form-group">
+        {{ varIntForm.varid(class="form-control") }}
+        </fieldset>
+        <fieldset class="form-group">
+        {{ varIntForm.submit(class="btn btn-primary") }}
+        </fieldset>
         </form>
+        
+          <!-- -->
+        
+          <!-- -->
+        
+        
+        
         <br>
 
         
@@ -400,7 +432,7 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
           <div class="well">
             <input class="form-control" id="cDNARequest" name="cDNARequest" placeholder="NM_12341.4:c.234C>G" type="text" value="">
             <br>
-           <!-- <input class="btn btn-primary" id="submitcDNARequest" name="cDNAsubmit" type="submit" value="submit">
+           <!-- <input class="btn btn-primary" id="submitcDNARequest" name="cDNAsubmit" type="submit" value="submit"> -->
           </div>
         </div>
         

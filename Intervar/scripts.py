@@ -1,6 +1,6 @@
 import sqlite3
 from flask.ext.wtf import Form
-from wtforms import TextField, TextAreaField, SubmitField, FileField, SelectField, validators
+from wtforms import TextField, TextAreaField, SubmitField, FileField, SelectField, HiddenField, validators
 
 from flask_table import Table, Col
 from flask import g, request
@@ -33,11 +33,14 @@ class SearchForm(Form):
 
 class Interpret_overallForm(Form):
     comment = TextAreaField("Comment")
-    submit = SubmitField("Submit or update")
+    submit = SubmitField("Update")
 
-class InterpretForm(Form):
+class InterpretVariantForm(Form):
     comments = TextAreaField("Comments")
-    submit = SubmitField("Submit or replace")
+    varid = HiddenField("varid", default="testing")
+    inhouse_class = SelectField('Inhouse Class', choices=[('1', '1'),('2', '2'), ('3', '3'), ('4', '4'), ('5', '5')], default='3')
+    acmg_class = SelectField('ACMG Class', choices=[('1', '1'),('2', '2'), ('3', '3'), ('4', '4'), ('5', '5')], default='3')
+    submit = SubmitField("Submit comment")
 
 # Declare your table
 class PatientTable(Table):
@@ -47,7 +50,7 @@ class PatientTable(Table):
     sex = Col('sex')
     classes = ['table table-striped']
 
-class VariantTable(Table):
+class VariantTable(Table): # add signed as a column
     ID = Col('ID')
     chrom = Col('chrom')
     start = Col('start')
@@ -103,8 +106,6 @@ def insertsize_to_tuple(is_file, sample_name):
 def get_values_from_form(type='first_input'):
     if type == 'first_input':
         form_tuple = (request.form['patient_ID'], request.form['familyID'], request.form['clinInfo'], request.form['sex'], request.form['panel'], request.form['dis_category'] )
-    elif type == 'Interpret_overall':
-        form_tuple = (request.form['comments'])
     return form_tuple
 
 def get_variants_from_form():
