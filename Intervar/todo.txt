@@ -1,4 +1,12 @@
 FIX!!
+SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt, p2r.zygosity,
+am.ID, am.gene, am.cNomen AS cDNA, am.pNomen AS protein, am.exacAllFreq,
+i.inhouse_class, i.comments
+FROM patient_info2raw_variants AS p2r
+LEFT JOIN alamut_annotation AS am ON p2r.chr = am.chrom AND p2r.start = am.gDNAstart
+LEFT JOIN interpretations AS i ON p2r.patient_ID = i.SAMPLE_NAME AND p2r.chr = i.chr AND p2r.start =i.start
+WHERE patient_ID = '123_15'
+
 
 
 
