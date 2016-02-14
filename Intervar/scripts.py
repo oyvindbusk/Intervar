@@ -42,6 +42,14 @@ class InterpretVariantForm(Form):
     acmg_class = SelectField('ACMG Class', choices=[('1', '1'),('2', '2'), ('3', '3'), ('4', '4'), ('5', '5')], default='3')
     submit = SubmitField("Submit comment")
 
+class PublicationsForm(Form):
+    PMID = TextField("PMID")
+    reference = TextField("Reference")
+    year = TextField("Year")
+    comment = TextAreaField("Comment")
+    submit = SubmitField("Submit publication")
+
+
 # Declare your table
 class PatientTable(Table):
     PID = Col('Patient ID')

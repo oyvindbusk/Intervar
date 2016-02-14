@@ -9,7 +9,7 @@ from datetime import datetime
 
 #importere egne scripts
 from scripts import PatientForm, VariantForm, SearchForm, PatientTable, VariantTable, listOfdictsFromCur, dictFromCur, print_file, hsmetrics_to_tuple, insert_data, get_values_from_form, insertsize_to_tuple, insert_data_is, get_variants_from_form
-from scripts import alamut_dict_to_DB, str_to_int_float, Interpret_overallForm, InterpretVariantForm
+from scripts import alamut_dict_to_DB, str_to_int_float, Interpret_overallForm, InterpretVariantForm, PublicationsForm
 import json
 
 
@@ -211,6 +211,7 @@ def showdb(pID):
     pform = PatientForm()
     iform = Interpret_overallForm()
     varIntForm = InterpretVariantForm()
+    pubForm = PublicationsForm()
     db = get_db()
     cur = get_db().cursor()    
     #variabler
@@ -244,12 +245,18 @@ def showdb(pID):
             db.commit()
         elif varIntForm.validate_on_submit() and not request.is_xhr and request.form['submit'] == 'Submit comment':
             print('#5#')
-            print(request.form['submit'])
-            print(request.form['comments'])
-            print(request.form['varid'].split('|'))
             #must get variant chr, start, ref, alt
             cur.execute('INSERT OR REPLACE INTO interpretations (SAMPLE_NAME, comments, chr, start, stop, ref, alt, inhouse_class, acmg_class, signed) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (pID, request.form['comments'], request.form['varid'].split('|')[0] , request.form['varid'].split('|')[1] ,request.form['varid'].split('|')[2] ,request.form['varid'].split('|')[3] ,request.form['varid'].split('|')[4], request.form['inhouse_class'], request.form['acmg_class'], str(datetime.now()).split(' ')[0]))
             db.commit()
+        elif varIntForm.validate_on_submit() and not request.is_xhr and request.form['submit'] == 'Submit publication':
+            print('#6#')
+            print(request.form('PMID'))
+            print(request.form('Year'))
+            print(request.form('Reference'))
+            print(request.form('Comment'))
+            
+            
+
         
     #hente ut pasientinfo for alle som er kjort
     cur.execute('SELECT * FROM patient_info')
@@ -284,7 +291,7 @@ def showdb(pID):
     else:
         pass
     db.close()
-    return render_template('showdb.html', patient_table=patient_table, var_table=var_table, form=form, pform=pform, iform=iform,varIntForm=varIntForm,  pID=pID, pID_patient=pID_patient, patient_comment=patient_comment)
+    return render_template('showdb.html', patient_table=patient_table, var_table=var_table, form=form, pform=pform, iform=iform, pubForm=pubForm, varIntForm=varIntForm,  pID=pID, pID_patient=pID_patient, patient_comment=patient_comment)
 
 ################################################################################################################################################
 

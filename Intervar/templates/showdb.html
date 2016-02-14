@@ -194,13 +194,13 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
 <div class="row">
   <div class="col-sm-6">
     <form action="{{ url_for('showdb') }}/{{ pID }}" method=POST enctype="multipart/form-data">
-        {{ iform.hidden_tag() }}
+      {{ iform.hidden_tag() }}
       <fieldset class="form-group">
         {{ iform.comment.label }}
         {{ iform.comment(class="form-control", placeholder="This should fill with info is a comment is already present") }}
       </fieldset>
       <fieldset class="form-group">
-      {{ iform.submit(class="btn btn-primary") }}
+        {{ iform.submit(class="btn btn-primary") }}
       </fieldset>
     </form>
   </div>
@@ -329,7 +329,7 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
         <h4 class="modal-title">Edit info for the variant in sample: {{ pID }}</h4>
       </div>
       <div class="modal-body">
-        
+
         <div class="row">
           <div class="col-sm-5">
             <dl class="dl-horizontal">
@@ -359,6 +359,16 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
               <dd id="hgmdSubCategory"></dd>
               <dt>Clinvar phenotype</dt>
               <dd id="clinVarPhenotypes"></dd>
+              
+            </dl>
+          </div>
+
+          <div class="col-sm-6">
+            <dl class="dl-horizontal">
+              <dt>AlamutClass</dt>
+              <dd id="alaclass">some text</dd>
+              <dt>Grantham score</dt>
+              <dd id="granthamDist"></dd>
               <dt>dbSNP</dt>
               <dd id="adbsnp"></dd>
               <dt>1000 genomes(?)</dt>
@@ -377,47 +387,71 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
               <dd></dd>
             </dl>
           </div>
+        </div>
+        <hr>
+        
+        <!-- -->
+        <h5 data-toggle="collapse" href="#publications_collapsible" aria-expanded="false" aria-controls="collapsePublications">
+        Add a publication
+        </h5>
+        <div class="collapse" id="publications_collapsible">
+          <div class="well">
+            <form action="{{ url_for('showdb') }}/{{ pID }}" method=POST enctype="multipart/form-data">
+              {{ pubForm.hidden_tag() }}
+              <fieldset class="form-group">
+                {{ pubForm.PMID(class="form-control", placeholder="PMID") }}
+              </fieldset>
+              <div class="input-group">
+                <fieldset class="form-group">
+                  {{ pubForm.reference(class="form-control", placeholder="Reference") }}
+                </fieldset>
 
-          <div class="col-sm-6">
-            <dl class="dl-horizontal">
-              <dt>AlamutClass</dt>
-              <dd id="alaclass">some text</dd>
-              <dt>Grantham score</dt>
-              <dd id="granthamDist"></dd>
-            </dl>
+                <fieldset class="form-group">
+                  {{ pubForm.year(class="form-control", placeholder="Year") }}
+                </fieldset>
+              </div>
+              <fieldset class="form-group">
+                {{ pubForm.comment(class="form-control", placeholder="Comments/info") }}
+              </fieldset>
+              <fieldset class="form-group">
+                {{ pubForm.submit(class="btn btn-primary") }}
+              </fieldset>
+            </form>
+            <!-- <input class="btn btn-primary" id="submitcDNARequest" name="cDNAsubmit" type="submit" value="submit"> -->
           </div>
         </div>
         <hr>
+        <!-- -->
+
         <h5>Comments regarding this specific variant?</h5>
         <!-- -->
-        
         <form action="{{ url_for('showdb') }}/{{ pID }}" method=POST enctype="multipart/form-data">
-        {{ varIntForm.hidden_tag() }}
-        <fieldset class="form-group">
-        
-        {{ varIntForm.comments(class="form-control", placeholder="This should fill with info is a comment is already present") }}
-        </fieldset>
-        <div class="input-group">
-        <fieldset class="form-group">
-        {{ varIntForm.inhouse_class(class="form-control") }}
-        </fieldset>
-        
-        <fieldset class="form-group">
-        {{ varIntForm.acmg_class(class="form-control") }}
-        </fieldset>
-        </div>
-        
-        <fieldset class="form-group">
-        {{ varIntForm.varid(class="form-control") }}
-        </fieldset>
-        <fieldset class="form-group">
-        {{ varIntForm.submit(class="btn btn-primary") }}
-        </fieldset>
+          {{ varIntForm.hidden_tag() }}
+          <fieldset class="form-group">
+
+            {{ varIntForm.comments(class="form-control", placeholder="This should fill with info is a comment is already present") }}
+          </fieldset>
+          <div class="input-group">
+            <fieldset class="form-group">
+              {{ varIntForm.inhouse_class(class="form-control") }}
+            </fieldset>
+
+            <fieldset class="form-group">
+              {{ varIntForm.acmg_class(class="form-control") }}
+            </fieldset>
+          </div>
+
+          <fieldset class="form-group">
+            {{ varIntForm.varid(class="form-control") }}
+          </fieldset>
+          <fieldset class="form-group">
+            {{ varIntForm.submit(class="btn btn-primary") }}
+          </fieldset>
         </form>
         
-          <!-- -->
+        <!-- -->
         
-          <!-- -->
+        <!-- -->
         
         
         
@@ -432,13 +466,12 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
           <div class="well">
             <input class="form-control" id="cDNARequest" name="cDNARequest" placeholder="NM_12341.4:c.234C>G" type="text" value="">
             <br>
-           <!-- <input class="btn btn-primary" id="submitcDNARequest" name="cDNAsubmit" type="submit" value="submit"> -->
+            <!-- <input class="btn btn-primary" id="submitcDNARequest" name="cDNAsubmit" type="submit" value="submit"> -->
           </div>
         </div>
         
         
-        <div class="btn-group">  
-        </div>
+
         <!-- should contain two text inputs and a class selector along with a ACMGclass button-->
       </div>
       <div class="modal-footer">
