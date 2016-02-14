@@ -7,6 +7,8 @@
     $('#comment').val('{{ patient_comment }}')
     // hide ID col of table
     $('#test td:nth-child(1),th:nth-child(1)').hide();
+    // hide signed col of table
+    $('#test td:nth-child(14),th:nth-child(14)').hide();
     //tooltip on classes form selector
     $('#inhouse_class').tooltip({'trigger':'focus', 'title': 'Inhouse Class'});
     $('#acmg_class').tooltip({'trigger':'focus', 'title': 'ACMG Class'});
@@ -188,15 +190,14 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
   <div class="col-sm-1"></div>
   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#pID_Modal">edit patient info</button> 
 </div>
-<div class="row"><hr></div>
-<div class="col-sm-1"></div>
-<div class="col-sm-4"><h3>Interpretation comments:</h3></div>
+
+<hr>
 <div class="row">
-  <div class="col-sm-6">
+  <div class="col-sm-6 col-sm-offset-3" >
+  <h5>Comment regarding this interpretation/analysis</h5>
     <form action="{{ url_for('showdb') }}/{{ pID }}" method=POST enctype="multipart/form-data">
       {{ iform.hidden_tag() }}
       <fieldset class="form-group">
-        {{ iform.comment.label }}
         {{ iform.comment(class="form-control", placeholder="This should fill with info is a comment is already present") }}
       </fieldset>
       <fieldset class="form-group">
@@ -207,7 +208,6 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
 </div>
 <div class="row"><hr></div>
 <div class="row">
- <div class="col-sm-1"></div>
  <div class="col-sm-12">
   <h3>Table of variants</h3>
   {{ var_table }}
@@ -455,7 +455,7 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
         
         
         
-        <br>
+        <hr>
 
         
         

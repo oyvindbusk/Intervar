@@ -72,6 +72,7 @@ class VariantTable(Table): # add signed as a column
     exacAll = Col('exacAllFreq')
     inclass = Col('inhouse_class')
     comments = Col('comments')
+    signed = Col('Signed')
     classes = ['table table-striped"  id="test'] # make sortable like in the exac-page?
 
 ################################################################################################################################################
@@ -93,7 +94,7 @@ def listOfdictsFromCur(dbcursor, type):
         if type == 'patient_info':
             list_items.append(dict(PID=i[0], clinInfo=i[1], familyID=i[2], sex=i[3] ))
         elif type == 'int_variants':
-            list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], zygosity=i[5], ID=i[6], gene=i[7], cDNA=i[8], protein=i[9], exacAll=i[10], inclass=i[11], comments=i[12] ))
+            list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], zygosity=i[5], ID=i[6], gene=i[7], cDNA=i[8], protein=i[9], exacAll=i[10], inclass=i[11], comments=i[12], signed=i[13] ))
     return list_items
         
     

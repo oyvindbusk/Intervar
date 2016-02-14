@@ -240,7 +240,6 @@ def showdb(pID):
             return json.dumps({'success': True}), 200, {'ContentType':'application/json'}
         elif iform.validate_on_submit() and not request.is_xhr and request.form['submit'] == 'Update':
             print('#4#')
-            print(request.form['submit'])
             cur.execute('INSERT OR REPLACE INTO interpretations_pr_patient (patient_ID, comments, date) VALUES (?, ?, ?)', (pID, request.form['comment'], str(datetime.now()).split(' ')[0]))
             db.commit()
         elif varIntForm.validate_on_submit() and not request.is_xhr and request.form['submit'] == 'Submit comment':
@@ -265,11 +264,12 @@ def showdb(pID):
     #hente ut tolkede varianter for en pasient
     cur.execute('SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt, p2r.zygosity,\
     am.ID, am.gene, am.cNomen AS cDNA, am.pNomen AS protein, am.exacAllFreq,\
-    i.inhouse_class, i.comments\
+    i.inhouse_class, i.comments, MAX(i.signed)\
     FROM patient_info2raw_variants AS p2r\
     LEFT JOIN alamut_annotation AS am ON p2r.chr = am.chrom AND p2r.start = am.gDNAstart\
     LEFT JOIN interpretations AS i ON p2r.patient_ID = i.SAMPLE_NAME AND p2r.chr = i.chr AND p2r.start =i.start\
-    WHERE patient_ID = ?', (pID, ))
+    WHERE patient_ID = ?\
+    GROUP BY p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt', (pID, ))
     var_items = listOfdictsFromCur(cur.fetchall(), 'int_variants')
     var_table = VariantTable(var_items,)
     #get patientinfo for a single patient assigned by pID
