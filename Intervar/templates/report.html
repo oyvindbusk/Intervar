@@ -50,22 +50,45 @@
 <p>Have to provide a dict or list from Flask, and use Jinja to iterate with a couple of br`s in between.</p>
 <span><p>A snippet for each variant, with:</p></span>
 <p>Gene: ; cNOMEN</p>
-<p></p>
-<p></p>
-<p></p>
-<p></p>
-<p></p>
-<dl>
-      {% for item in var_items %}
-            <dt>{{ item }}</dt>
-            <dd>Chr{{ item.chrom }}:{{ item.start }}-{{ item.stop }} {{ item.ref }} {{ item.alt }}                               </dd>            
-            <dd>Zygositet: {{ item.zygosity }}</dd>
-            <dd>Gene: {{ item.gene }}</dd>
-            <dd>Alamut cDNA: {{ item.cDNA }}</dd>
-            <dd>Alamut protein: {{ item.protein }}</dd>
-            <br><p>----------------------------------</p>
-      {% endfor %}
-</dl>
+<hr>
+
+
+{% for item in var_items %}
+<div class="row">
+  
+  <div class="col-md-6">
+
+    <dl class="dl-horizontal">
+      <dt>Position:</dt>
+      <dd>Chr{{ item.chrom }}:{{ item.start }}-{{ item.stop }} {{ item.ref }} {{ item.alt }}</dd>            
+      <dt>Zygosity:</dt>
+      <dd>{{ item.zygosity }}</dd>
+      <dt>Gene</dt>
+      <dd>{{ item.gene }}</dd>
+      <dt>Alamut cDNA: </dt>
+      <dd>{{ item.cDNA }}</dd>
+      <dt>Alamut protein: </dt>
+      <dd>{{ item.protein }}</dd>
+      
+      
+      
+      
+      
+    </dl>
+  </div>
+  <div class="col-md-6">
+    <dl class="dl-horizontal">
+      <dt>Test</dt>
+      <dd> {{ item.cDNA }} </dd>
+    </dl>
+  </div>
+</div>
+<hr>
+{% endfor %}
+
+
+
+
 
 
 

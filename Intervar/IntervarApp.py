@@ -313,15 +313,16 @@ def report(pID="123_15"):
     #hente ut tolkede varianter for en pasient
     cur.execute('SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt, p2r.zygosity,\
     am.ID, am.gene, am.cNomen AS cDNA, am.pNomen AS protein, am.exacAllFreq,\
-    i.inhouse_class, i.comments\
+    i.inhouse_class, i.comments, MAX(i.signed)\
     FROM patient_info2raw_variants AS p2r\
     LEFT JOIN alamut_annotation AS am ON p2r.chr = am.chrom AND p2r.start = am.gDNAstart\
     LEFT JOIN interpretations AS i ON p2r.patient_ID = i.SAMPLE_NAME AND p2r.chr = i.chr AND p2r.start =i.start\
-    WHERE patient_ID = ?', (pID, ))
+    WHERE patient_ID = ?\
+    GROUP BY p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt', (pID, ))
     var_items = listOfdictsFromCur(cur.fetchall(), 'int_variants')
    
     #get patientinfo for a single patient assigned by pID
-    cur.execute('SELECT pat.patient_ID, pat.clinical_info, pat.family_ID, pat.sex, pan.panel_name,QC.MEAN_TARGET_COVERAGE,\
+    cur.execute('SELECT pat.patient_ID, pat.clinical_info, pat.family_ID, pat.sex, pat.disease_category, pan.panel_name, QC.MEAN_TARGET_COVERAGE,\
     QC.PCT_TARGET_BASES_20X, QC.PCT_TARGET_BASES_30X, ins.median_insert_size, ins.mean_insert_size\
     FROM patient_info AS pat JOIN patient_info2panels AS pan ON pat.patient_ID=pan.patient_ID\
     JOIN QC ON pat.patient_ID=QC.SAMPLE_NAME LEFT JOIN insert_size AS ins ON pat.patient_ID=ins.SAMPLE_NAME\
@@ -356,8 +357,8 @@ def _return_alamut_for_variant():
 ################################################################################################################################################
 
 if __name__ == '__main__':
-    app.run('172.16.0.56')
-    #app.run('0.0.0.0', port=8080)
+    #app.run('172.16.0.56')
+    app.run('0.0.0.0', port=8080)
 
 
     
