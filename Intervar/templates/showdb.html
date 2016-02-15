@@ -4,7 +4,7 @@
 <!-- Choose a row of a table and use some method on it. In this case, change background color. -->
 <script type=text/javascript>
   $(function() {
-    $('#comment').val('{{ patient_comment }}')
+    $('#comment').val('{{ patient_comment | safe }}')
     // hide ID col of table
     $('#test td:nth-child(1),th:nth-child(1)').hide();
     // hide signed col of table
@@ -420,6 +420,21 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
             <!-- <input class="btn btn-primary" id="submitcDNARequest" name="cDNAsubmit" type="submit" value="submit"> -->
           </div>
         </div>
+        
+        <!-- -->
+        <h5 data-toggle="collapse" href="#cDNARequest_collapsible" aria-expanded="false" aria-controls="collapseExample">
+          Alamut request 
+        </h5>
+        <div class="collapse" id="cDNARequest_collapsible">
+          <div class="well">
+            <input class="form-control" id="cDNARequest" name="cDNARequest" placeholder="NM_12341.4:c.234C>G" type="text" value="">
+            <br>
+            <input class="btn btn-primary" id="submitcDNARequest" name="cDNAsubmit" type="submit" value="submit">
+          </div>
+        </div>
+        
+        
+        
         <hr>
         <!-- -->
 
@@ -451,24 +466,11 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
         
         <!-- -->
         
-        <!-- -->
+        <!-- -->    
         
         
-        
-        <hr>
 
         
-        
-        <a class="btn btn-primary" role="button" data-toggle="collapse" href="#cDNARequest_collapsible" aria-expanded="false" aria-controls="collapseExample">
-          Alamut request 
-        </a>
-        <div class="collapse" id="cDNARequest_collapsible">
-          <div class="well">
-            <input class="form-control" id="cDNARequest" name="cDNARequest" placeholder="NM_12341.4:c.234C>G" type="text" value="">
-            <br>
-            <!-- <input class="btn btn-primary" id="submitcDNARequest" name="cDNAsubmit" type="submit" value="submit"> -->
-          </div>
-        </div>
         
         
 

@@ -282,8 +282,10 @@ def showdb(pID):
     print(pID_patient)
     #get comments for the interpretations of one patient:
     cur.execute('SELECT comments FROM interpretations_pr_patient WHERE patient_ID = ?', (pID, ))
+    
     try:
         patient_comment = cur.fetchall()[0][0]
+        
     except:
         pass
     if len(patient_comment) == 0:
@@ -354,8 +356,8 @@ def _return_alamut_for_variant():
 ################################################################################################################################################
 
 if __name__ == '__main__':
-    #app.run('172.16.0.56')
-    app.run('0.0.0.0', port=8080)
+    app.run('172.16.0.56')
+    #app.run('0.0.0.0', port=8080)
 
 
     
