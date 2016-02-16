@@ -55,7 +55,7 @@
 
 {% for item in var_items %}
 <div class="row">
-  
+ 
   <div class="col-md-6">
 
     <dl class="dl-horizontal">
@@ -65,12 +65,12 @@
       <dd>{{ item.zygosity }}</dd>
       <dt>Gene</dt>
       <dd>{{ item.gene }}</dd>
-      <dt>Alamut cDNA: </dt>
+      <dt>gDNA: </dt>
       <dd>{{ item.cDNA }}</dd>
-      <dt>Alamut protein: </dt>
+      <dt>cDNA: </dt>
+      <dd>{{ item.cDNA }}</dd>
+      <dt>protein: </dt>
       <dd>{{ item.protein }}</dd>
-      
-      
       
       
       
@@ -78,18 +78,51 @@
   </div>
   <div class="col-md-6">
     <dl class="dl-horizontal">
-      <dt>Test</dt>
-      <dd> {{ item.cDNA }} </dd>
+      <dt>HGMD ID:</dt>
+      <dd> {{ item.hgmdId }} </dd>
+      <dt>Clinvar phenotype:</dt>
+      <dd> {{ item.clinVarPhenotypes }} </dd>
+
+
+
+
     </dl>
   </div>
 </div>
+<dt>Comments:</dt>
+<dd>{{ item.comments }}</dd>
+
+
 <hr>
 {% endfor %}
+<!--
 
-
-
-
-
+$('#agene').text(data.gene)
+    $('#atrans').text(data.transcript)
+    $('#agDNA').text(data.gNomen)
+    $('#acDNA').text(data.cNomen)
+    $('#aprot').text(data.pNomen)
+    $('#atype').text(data.codingEffect)
+    $('#hgmdId').text(data.hgmdId)
+    $('#hgmdPhenotype').text(data.hgmdPhenotype)
+    $('#hgmdSubCategory').text(data.hgmdSubCategory)
+    $('#clinVarPhenotypes').text(data.clinVarPhenotypes)
+    $('#adbsnp').text(data.rsId)
+    $('#a1kg').text(data.rsMAF)
+    $('#aESP').text(data.espAllMAF+ "(" + data.espAltAllCount + "/" + data.espRefAllCount + ")" )
+    $('#aExac').text(data.exacAllFreq + "(" + data.exacAlleleCount + ")" )
+    $('#aProtDom1').text(data.proteinDomain1)
+    $('#aProtDom2').text(data.proteinDomain2)
+    $('#aProtDom3').text(data.proteinDomain3)
+    $('#Exon').text(data.exon)
+    $('#alaclass').text(data.pathogenicityClass)
+    $('#granthamDist').text(data.granthamDist)
+    $('#comments').val(comments)
+    $('#pub2varID').val(ID)
+    $('#zygo').text(zyg)
+    $('#mgmseen').text('Kommer!')
+    $('funcStud').text('Kommer!')
+  -->
 
 
 </div>

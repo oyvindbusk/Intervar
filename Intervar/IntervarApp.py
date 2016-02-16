@@ -245,14 +245,15 @@ def showdb(pID):
         elif varIntForm.validate_on_submit() and not request.is_xhr and request.form['submit'] == 'Submit comment':
             print('#5#')
             #must get variant chr, start, ref, alt
-            cur.execute('INSERT OR REPLACE INTO interpretations (SAMPLE_NAME, comments, chr, start, stop, ref, alt, inhouse_class, acmg_class, signed) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (pID, request.form['comments'], request.form['varid'].split('|')[0] , request.form['varid'].split('|')[1] ,request.form['varid'].split('|')[2] ,request.form['varid'].split('|')[3] ,request.form['varid'].split('|')[4], request.form['inhouse_class'], request.form['acmg_class'], str(datetime.now()).split(' ')[0]))
+            cur.execute('INSERT OR REPLACE INTO interpretations (SAMPLE_NAME, comments, chr, start, stop, ref, alt, inhouse_class, acmg_class, signed) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (pID, request.form['comments'].replace('\n','').replace('\r',''), request.form['varid'].split('|')[0] , request.form['varid'].split('|')[1] ,request.form['varid'].split('|')[2] ,request.form['varid'].split('|')[3] ,request.form['varid'].split('|')[4], request.form['inhouse_class'], request.form['acmg_class'], str(datetime.now()).split(' ')[0]))
             db.commit()
         elif varIntForm.validate_on_submit() and not request.is_xhr and request.form['submit'] == 'Submit publication':
             print('#6#')
-            print(request.form('PMID'))
-            print(request.form('Year'))
-            print(request.form('Reference'))
-            print(request.form('Comment'))
+            print(request.form['pub2varID'])
+            cur.execute('INSERT OR REPLACE INTO publications (PMID, reference, year, comment) VALUES (?, ?, ?, ?)',(request.form['PMID'],request.form['reference'], request.form['year'], request.form['pcomment'].replace('\n','').replace('\r','')))
+            cur.execute('INSERT OR REPLACE INTO publications2variants (PMID, varID) VALUES (?, ?)',(request.form['PMID'], int(request.form['pub2varID']) ))
+            db.commit()
+            #pubForm
             
             
 
@@ -279,13 +280,13 @@ def showdb(pID):
     JOIN QC ON pat.patient_ID=QC.SAMPLE_NAME LEFT JOIN insert_size AS ins ON pat.patient_ID=ins.SAMPLE_NAME\
     WHERE pat.patient_ID = ?', (pID, ))
     pID_patient = dictFromCur(cur.fetchall(), 'pID_patient')
-    print(pID_patient)
+    #print(pID_patient)
     #get comments for the interpretations of one patient:
     cur.execute('SELECT comments FROM interpretations_pr_patient WHERE patient_ID = ?', (pID, ))
     
     try:
-        patient_comment = cur.fetchall()[0][0]
-        
+        patient_comment = cur.fetchall()[0][0].replace('\n','').replace('\r','')
+
     except:
         pass
     if len(patient_comment) == 0:
@@ -310,16 +311,16 @@ def report(pID="123_15"):
     db = get_db()
     cur = get_db().cursor()
     
-    #hente ut tolkede varianter for en pasient
+    #hente ut tolkede varianter for en pasient Ha med alt relevant fra Alamut..
     cur.execute('SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt, p2r.zygosity,\
-    am.ID, am.gene, am.cNomen AS cDNA, am.pNomen AS protein, am.exacAllFreq,\
+    am.ID, am.gene, am.cNomen AS cDNA, am.pNomen AS protein, am.exacAllFreq, am.clinVarPhenotypes,\
     i.inhouse_class, i.comments, MAX(i.signed)\
     FROM patient_info2raw_variants AS p2r\
     LEFT JOIN alamut_annotation AS am ON p2r.chr = am.chrom AND p2r.start = am.gDNAstart\
     LEFT JOIN interpretations AS i ON p2r.patient_ID = i.SAMPLE_NAME AND p2r.chr = i.chr AND p2r.start =i.start\
     WHERE patient_ID = ?\
     GROUP BY p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt', (pID, ))
-    var_items = listOfdictsFromCur(cur.fetchall(), 'int_variants')
+    var_items = listOfdictsFromCur(cur.fetchall(), 'int_variants_report')
    
     #get patientinfo for a single patient assigned by pID
     cur.execute('SELECT pat.patient_ID, pat.clinical_info, pat.family_ID, pat.sex, pat.disease_category, pan.panel_name, QC.MEAN_TARGET_COVERAGE,\
