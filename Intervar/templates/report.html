@@ -3,7 +3,7 @@
 
 <div class="container">
 	<div class="row">
-   <div class="col-md-10 col-xs-offset-1 col-md-offset-1">        
+   <div class="col-md-10">        
      <h1>Report for: {{ pID }}</h1>
    </div>
  </div>
@@ -45,19 +45,21 @@
 </table>
 </div>
 </div>
-<hr>
-<h5>What should come below:</h5>
-<p>Have to provide a dict or list from Flask, and use Jinja to iterate with a couple of br`s in between.</p>
-<span><p>A snippet for each variant, with:</p></span>
-<p>Gene: ; cNOMEN</p>
-<hr>
+<div class="row">
+<div class="col-sm-3">
+<dl class="dl-horizontal">
+<dt>Patient comment:</dt>
+<dd>{{ patient_comment }}</dd>
+</dl>
+</div>
+</div>
 
+<h3>Interpreted variants for {{ pID }}:</h3> 
+<hr>
 
 {% for item in var_items %}
 <div class="row">
- 
   <div class="col-md-6">
-
     <dl class="dl-horizontal">
       <dt>Position:</dt>
       <dd>Chr{{ item.chrom }}:{{ item.start }}-{{ item.stop }} {{ item.ref }} {{ item.alt }}</dd>            
@@ -65,65 +67,92 @@
       <dd>{{ item.zygosity }}</dd>
       <dt>Gene</dt>
       <dd>{{ item.gene }}</dd>
+      <dt>Transcript ID:</dt>
+      <dd> {{ item.transcript }} </dd>
       <dt>gDNA: </dt>
       <dd>{{ item.cDNA }}</dd>
       <dt>cDNA: </dt>
       <dd>{{ item.cDNA }}</dd>
       <dt>protein: </dt>
       <dd>{{ item.protein }}</dd>
-      
-      
-      
+      <dt>Coding effect</dt>
+      <dd> {{ item.codingEffect }} </dd>
+      <dt>Variant location:</dt>
+      <dd> {{ item.varLocation }} </dd>
+      <dt>Exon:</dt>
+      <dd> {{ item.exon }} </dd>
+      <dt>Splice sites:</dt>
+      <dd> {{ item.localSpliceEffect }} </dd>
+      <dt>dbSNP clin sign:</dt>
+      <dd> {{ item.rsClinicalSignificance }} </dd>
+      <dt>dbSNP ID:</dt>
+      <dd> {{ item.rsId }} </dd>
     </dl>
   </div>
   <div class="col-md-6">
     <dl class="dl-horizontal">
       <dt>HGMD ID:</dt>
       <dd> {{ item.hgmdId }} </dd>
+      <dt>HGMD Phenotype</dt>
+      <dd> {{ item.hgmdPhenotype }} </dd>
       <dt>Clinvar phenotype:</dt>
       <dd> {{ item.clinVarPhenotypes }} </dd>
-
-
-
-
+      <dt>Clinvar phenotypes</dt>
+      <dd> {{ item.clinVarPhenotypes }} </dd>
+      <dt>Clinvar significance:</dt>
+      <dd> {{ item.clinVarClinSignifs }} </dd>
+      <dt>Exac All:</dt>
+      <dd> {{ item.exacAll }} </dd>
+      <dt>ExaC NFEfreq:</dt>
+      <dd> {{ item.exacNFEFreq }} </dd>
+      <dt>ESP EA MAF:</dt>
+      <dd> {{ item. espEAMAF }} </dd>
+      <dt>espAltEACount:</dt>
+      <dd> {{ item.espAltEACount }} </dd>
+      <dt>espRefEACount:</dt>
+      <dd> {{ item.espRefEACount }} </dd>
+      <dt>Conserved orthos:</dt>
+      <dd> {{ item.conservedOrthos }} </dd>
+      <dt>AGVGD:</dt>
+      <dd> {{ item.AGVGDclass }} </dd>
+      <dt>SIFT:</dt>
+      <dd> {{ item.SIFTprediction }} </dd>
+      <dt>Mutationtaster:</dt>
+      <dd> {{ item.TASTERprediction }} </dd>
+      <dt>Inhouse class:</dt>
+      <dd> {{ item.inclass }} </dd>
+      <dt>Signed:</dt>
+      <dd> {{ item.signed }} </dd>
     </dl>
   </div>
 </div>
+<div class="row">
+<div class="col-sm-3 col-sm-offset-3">
+<dl class="dl-horizontal" style="border: 2px solid black">
+      <dt>Inhouse class:</dt>
+      <dd> {{ item.inclass }} </dd>
+      <dt>ACMG class:</dt>
+      <dd> {{ item.acmg_class }} </dd>
+      <dt>Interpreted by:</dt>
+      <dd> {{ item.interpretor }} </dd>
+      <dt>Date:</dt>
+      <dd> {{ item.signed }} </dd>
+</dl>
+</div>
+</div>
 <dt>Comments:</dt>
 <dd>{{ item.comments }}</dd>
-
-
 <hr>
 {% endfor %}
+<div class="jumbotron container-fluid">
+<p>Signature:</p>
+<small>Comments:</small>
+</div> 
 <!--
+On the bottom of the page, the comment pr patient should be displayed, and a field for the geneticist to enter initials and comments
 
-$('#agene').text(data.gene)
-    $('#atrans').text(data.transcript)
-    $('#agDNA').text(data.gNomen)
-    $('#acDNA').text(data.cNomen)
-    $('#aprot').text(data.pNomen)
-    $('#atype').text(data.codingEffect)
-    $('#hgmdId').text(data.hgmdId)
-    $('#hgmdPhenotype').text(data.hgmdPhenotype)
-    $('#hgmdSubCategory').text(data.hgmdSubCategory)
-    $('#clinVarPhenotypes').text(data.clinVarPhenotypes)
-    $('#adbsnp').text(data.rsId)
-    $('#a1kg').text(data.rsMAF)
-    $('#aESP').text(data.espAllMAF+ "(" + data.espAltAllCount + "/" + data.espRefAllCount + ")" )
-    $('#aExac').text(data.exacAllFreq + "(" + data.exacAlleleCount + ")" )
-    $('#aProtDom1').text(data.proteinDomain1)
-    $('#aProtDom2').text(data.proteinDomain2)
-    $('#aProtDom3').text(data.proteinDomain3)
-    $('#Exon').text(data.exon)
-    $('#alaclass').text(data.pathogenicityClass)
-    $('#granthamDist').text(data.granthamDist)
-    $('#comments').val(comments)
-    $('#pub2varID').val(ID)
-    $('#zygo').text(zyg)
-    $('#mgmseen').text('Kommer!')
-    $('funcStud').text('Kommer!')
-  -->
 
+--> 
 
 </div>
 {% endblock %}

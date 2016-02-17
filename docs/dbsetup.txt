@@ -88,9 +88,13 @@ FOREIGN KEY(SAMPLE_NAME) REFERENCES patient_info(patient_ID)
 
 CREATE TABLE runs(
 patient_ID VARCHAR(10) REFERENCES patient_info,
-sbs VARCHAR(12) PRIMARY KEY,
-date DATETIME
+sbs VARCHAR(12),
+date DATETIME,
+PRIMARY KEY (patient_ID, sbs)
 );
+
+
+
 
 CREATE TABLE raw_variants(
 chr VARCHAR(5),

@@ -185,9 +185,26 @@ def overview():
     #get mean coverage for alle samples
     #SELECT AVG(MEAN_TARGET_COVERAGE) FROM QC;
 
-
+    
+    # get data for plot of coverage pr run
+    cur.execute('SELECT runs.sbs, pi2p.panel_name, qc.MEAN_TARGET_COVERAGE, qc.SAMPLE_NAME FROM QC AS qc \
+    JOIN runs ON runs.patient_ID=qc.SAMPLE_NAME \
+    JOIN patient_info2panels AS pi2p ON pi2p.patient_ID=qc.SAMPLE_NAME WHERE runs.sbs = "SBS321"')
+    coverage_data = cur.fetchall()
+    '''
+    Select for the average coverage grouped by panel and run.
+    SELECT runs.sbs, pi2p.panel_name, AVG(qc.MEAN_TARGET_COVERAGE) FROM QC AS qc
+JOIN runs ON runs.patient_ID=qc.SAMPLE_NAME
+JOIN patient_info2panels AS pi2p ON pi2p.patient_ID=qc.SAMPLE_NAME
+GROUP BY runs.sbs, pi2p.panel_name
+    
+    '''
+    
+    
+    
+    
     db.close()
-    return render_template('overview.html', overview_dict=overview_dict)
+    return render_template('overview.html', overview_dict=overview_dict, coverage_data=coverage_data)
 
 ################################################################################################################################################
 
@@ -217,30 +234,31 @@ def showdb(pID):
     #variabler
     patient_comment = ''
     if request.method == 'POST':
-        if pform.validate_on_submit() and not request.is_xhr:
-            print('#1#')
-            cur.execute("INSERT OR REPLACE INTO patient_info (patient_ID, family_ID, clinical_info, sex, disease_category) VALUES ( ?, ?, ?, ?, ?)", (pID, request.form['familyID'], request.form['clinInfo'], request.form['sex'], request.form['dis_category']) )
-            cur.execute("UPDATE patient_info2panels SET panel_name = ? WHERE patient_ID = ?", (request.form['panel'], pID)) 
-            db.commit()
-            
-        elif form.validate_on_submit() and not request.is_xhr:
-            print('#2#')
-            variant_form_tuple = get_variants_from_form()
-            cur.execute("INSERT OR IGNORE INTO raw_variants (chr, start, stop, ref, alt, hg) VALUES (?, ?, ?, ?, ?, 'hg19')", [variant_form_tuple[0], variant_form_tuple[1], variant_form_tuple[2], variant_form_tuple[3], variant_form_tuple[4]])
-            variant_form_tuple = (pID,) + variant_form_tuple
-            cur.execute("INSERT INTO patient_info2raw_variants (patient_ID, chr, start, stop, ref, alt, zygosity, denovo ) VALUES (?, ?, ?, ?, ?, ?, ?,?)", variant_form_tuple) 
-            #insert into interpretations
-            db.commit()
-        elif request.is_xhr: # checking if this comes 
+        if request.is_xhr: # checking if this comes 
             print('#3#')
             alamut_dict = request.get_json(force=True)
             print(alamut_dict)
             cur.execute("INSERT INTO alamut_annotation (geneId, strand, gDNAstart, gDNAend, cDNAstart, cDNAend, exon, intron, omimId, distNearestSS, rsValidationNumber, rsMAFCount, exacAlleleCount, espRefEACount, espRefAACount, espRefAllCount, espAltEACount, espAltAACount, espAltAllCount, hgmdPubMedId, clinVarReviewStatus, posAA, nOrthos, conservedOrthos, BLOSUM45, BLOSUM62, BLOSUM80, wtAAcomposition, wtAAvolume, varAAvolume, granthamDist, SIFTweight, wtSSFScore, wtMaxEntScore, wtNNSScore, wtGSScore, wtHSFScore, varSSFScore, varMaxEntScore, varNNSScore, varGSScore, varHSFScore, nearestSSChange, rsHeterozygosity, rsMAF, exacAllFreq, exacAFRFreq, exacAMRFreq, exacEASFreq, exacSASFreq, exacNFEFreq, exacFINFreq, exacOTHFreq, espEAMAF, espAAMAF, espAllMAF, espEAAAF, espAAAAF, espAllAAF, phastCons, phyloP, wtCodonFreq, varCodonFreq, varAAcomposition, wtAApolarity, varAApolarity, AGVGDgv, AGVGDgd, SIFTmedian, PPH2score, MAPPpValue, MAPPpValueMedian, TASTERpValue, rsAncestralAllele, hgmdSubCategory, gene, varLocation, rsId, varAA_1, transcript, protein, Uniprot, varType, codingEffect, gNomen, cNomen, pNomen, alt_pNomen, pathogenicityClass, rsValidations, rsClinicalSignificance, rsMAFAllele, exacQuality, exacFilter, exacDP, espAvgReadDepth, hgmdId, clinVarIds, clinVarOrigins, clinVarMethods, clinVarClinSignifs, cosmicIds, substType, nucChange, AGVGDclass, chrom, rsValidated, rsSuspect, localSpliceEffect, wtNuc, varNuc, wtAA_1, wtAA_3, wtCodon, varAA_3, varCodon, proteinDomain1, proteinDomain2, proteinDomain3, proteinDomain4, conservedDistSpecies, SIFTprediction, PPH2prediction,PPH2class,MAPPprediction, TASTERprediction, assembly, hgmdPhenotype, hgmdWebLink, clinVarPhenotypes, cosmicTissues) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [str_to_int_float(alamut_dict['geneId'], 'int'), str_to_int_float(alamut_dict['strand'], 'int'), str_to_int_float(alamut_dict['gDNAstart'], 'int'), str_to_int_float(alamut_dict['gDNAend'], 'int'), str_to_int_float(alamut_dict['cDNAstart'], 'int'), str_to_int_float(alamut_dict['cDNAend'], 'int'), str_to_int_float(alamut_dict['exon'], 'int'), str_to_int_float(alamut_dict['intron'], 'int'), str_to_int_float(alamut_dict['omimId'], 'int'), str_to_int_float(alamut_dict['distNearestSS'], 'int'), str_to_int_float(alamut_dict['rsValidationNumber'], 'int'), str_to_int_float(alamut_dict['rsMAFCount'], 'int'), str_to_int_float(alamut_dict['exacAlleleCount'], 'int'), str_to_int_float(alamut_dict['espRefEACount'], 'int'), str_to_int_float(alamut_dict['espRefAACount'], 'int'), str_to_int_float(alamut_dict['espRefAllCount'], 'int'), str_to_int_float(alamut_dict['espAltEACount'], 'int'), str_to_int_float(alamut_dict['espAltAACount'], 'int'), str_to_int_float(alamut_dict['espAltAllCount'], 'int'), str_to_int_float(alamut_dict['hgmdPubMedId'], 'int'), str_to_int_float(alamut_dict['clinVarReviewStatus'], 'int'), str_to_int_float(alamut_dict['posAA'], 'int'), str_to_int_float(alamut_dict['nOrthos'], 'int'), str_to_int_float(alamut_dict['conservedOrthos'], 'int'), str_to_int_float(alamut_dict['BLOSUM45'], 'int'), str_to_int_float(alamut_dict['BLOSUM62'], 'int'), str_to_int_float(alamut_dict['BLOSUM80'], 'int'), str_to_int_float(alamut_dict['wtAAcomposition'], 'int'), str_to_int_float(alamut_dict['wtAAvolume'], 'int'), str_to_int_float(alamut_dict['varAAvolume'], 'int'), str_to_int_float(alamut_dict['granthamDist'], 'int'), str_to_int_float(alamut_dict['SIFTweight'], 'int'), str_to_int_float(alamut_dict['wtSSFScore'], 'float'), str_to_int_float(alamut_dict['wtMaxEntScore'], 'float'), str_to_int_float(alamut_dict['wtNNSScore'], 'float'), str_to_int_float(alamut_dict['wtGSScore'], 'float'), str_to_int_float(alamut_dict['wtHSFScore'], 'float'), str_to_int_float(alamut_dict['varSSFScore'], 'float'), str_to_int_float(alamut_dict['varMaxEntScore'], 'float'), str_to_int_float(alamut_dict['varNNSScore'], 'float'), str_to_int_float(alamut_dict['varGSScore'], 'float'), str_to_int_float(alamut_dict['varHSFScore'], 'float'), str_to_int_float(alamut_dict['nearestSSChange'], 'float'), str_to_int_float(alamut_dict['rsHeterozygosity'], 'float'), str_to_int_float(alamut_dict['rsMAF'], 'float'), str_to_int_float(alamut_dict['exacAllFreq'], 'float'), str_to_int_float(alamut_dict['exacAFRFreq'], 'float'), str_to_int_float(alamut_dict['exacAMRFreq'], 'float'), str_to_int_float(alamut_dict['exacEASFreq'], 'float'), str_to_int_float(alamut_dict['exacSASFreq'], 'float'), str_to_int_float(alamut_dict['exacNFEFreq'], 'float'), str_to_int_float(alamut_dict['exacFINFreq'], 'float'), str_to_int_float(alamut_dict['exacOTHFreq'], 'float'), str_to_int_float(alamut_dict['espEAMAF'], 'float'), str_to_int_float(alamut_dict['espAAMAF'], 'float'), str_to_int_float(alamut_dict['espAllMAF'], 'float'), str_to_int_float(alamut_dict['espEAAAF'], 'float'), str_to_int_float(alamut_dict['espAAAAF'], 'float'), str_to_int_float(alamut_dict['espAllAAF'], 'float'), str_to_int_float(alamut_dict['phastCons'], 'float'), str_to_int_float(alamut_dict['phyloP'], 'float'), str_to_int_float(alamut_dict['wtCodonFreq'], 'float'), str_to_int_float(alamut_dict['varCodonFreq'], 'float'), str_to_int_float(alamut_dict['varAAcomposition'], 'float'), str_to_int_float(alamut_dict['wtAApolarity'], 'float'), str_to_int_float(alamut_dict['varAApolarity'], 'float'), str_to_int_float(alamut_dict['AGVGDgv'], 'float'), str_to_int_float(alamut_dict['AGVGDgd'], 'float'), str_to_int_float(alamut_dict['SIFTmedian'], 'float'), str_to_int_float(alamut_dict['PPH2score'], 'float'), str_to_int_float(alamut_dict['MAPPpValue'], 'float'), str_to_int_float(alamut_dict['MAPPpValueMedian'], 'float'), str_to_int_float(alamut_dict['TASTERpValue'], 'float'), str(alamut_dict['rsAncestralAllele']), str(alamut_dict['hgmdSubCategory']), str(alamut_dict['gene']), str(alamut_dict['varLocation']), str(alamut_dict['rsId']), str(alamut_dict['varAA_1']), str(alamut_dict['transcript']), str(alamut_dict['protein']), str(alamut_dict['Uniprot']), str(alamut_dict['varType']), str(alamut_dict['codingEffect']), str(alamut_dict['gNomen']), str(alamut_dict['cNomen']), str(alamut_dict['pNomen']), str(alamut_dict['alt_pNomen']), str(alamut_dict['pathogenicityClass']), str(alamut_dict['rsValidations']), str(alamut_dict['rsClinicalSignificance']), str(alamut_dict['rsMAFAllele']), str(alamut_dict['exacQuality']), str(alamut_dict['exacFilter']), str(alamut_dict['exacDP']), str(alamut_dict['espAvgReadDepth']), str(alamut_dict['hgmdId']), str(alamut_dict['clinVarIds']), str(alamut_dict['clinVarOrigins']), str(alamut_dict['clinVarMethods']), str(alamut_dict['clinVarClinSignifs']), str(alamut_dict['cosmicIds']), str(alamut_dict['substType']), str(alamut_dict['nucChange']), str(alamut_dict['AGVGDclass']), str(alamut_dict['chrom']), str(alamut_dict['rsValidated']), str(alamut_dict['rsSuspect']), str(alamut_dict['localSpliceEffect']), str(alamut_dict['wtNuc']), str(alamut_dict['varNuc']), str(alamut_dict['wtAA_1']), str(alamut_dict['wtAA_3']), str(alamut_dict['wtCodon']), str(alamut_dict['varAA_3']), str(alamut_dict['varCodon']), str(alamut_dict['proteinDomain1']), str(alamut_dict['proteinDomain2']), str(alamut_dict['proteinDomain3']), str(alamut_dict['proteinDomain4']), str(alamut_dict['conservedDistSpecies']), str(alamut_dict['SIFTprediction']), str(alamut_dict['PPH2prediction']), str(alamut_dict['PPH2class']), str(alamut_dict['MAPPprediction']), str(alamut_dict['TASTERprediction']), str(alamut_dict['assembly']), str(alamut_dict['hgmdPhenotype']), str(alamut_dict['hgmdWebLink']), str(alamut_dict['clinVarPhenotypes']), str(alamut_dict['cosmicTissues']) ])
             db.commit()
             return json.dumps({'success': True}), 200, {'ContentType':'application/json'}
+        elif pform.validate_on_submit() and not request.is_xhr:
+            print('#1#')
+            cur.execute("INSERT OR REPLACE INTO patient_info (patient_ID, family_ID, clinical_info, sex, disease_category) VALUES ( ?, ?, ?, ?, ?)", (pID, request.form['familyID'], request.form['clinInfo'], request.form['sex'], request.form['dis_category']) )
+            cur.execute("UPDATE patient_info2panels SET panel_name = ? WHERE patient_ID = ?", (request.form['panel'], pID)) 
+            db.commit()
+        elif form.validate_on_submit() and not request.is_xhr and request.form['submit'] == "Submit to DB":
+            print('#2#')
+            print(request.form['submit'])
+            variant_form_tuple = get_variants_from_form()
+            cur.execute("INSERT OR IGNORE INTO raw_variants (chr, start, stop, ref, alt, hg) VALUES (?, ?, ?, ?, ?, 'hg19')", [variant_form_tuple[0], variant_form_tuple[1], variant_form_tuple[2], variant_form_tuple[3], variant_form_tuple[4]])
+            variant_form_tuple = (pID,) + variant_form_tuple
+            cur.execute("INSERT INTO patient_info2raw_variants (patient_ID, chr, start, stop, ref, alt, zygosity, denovo ) VALUES (?, ?, ?, ?, ?, ?, ?,?)", variant_form_tuple) 
+            #insert into interpretations
+            db.commit()
+        
         elif iform.validate_on_submit() and not request.is_xhr and request.form['submit'] == 'Update':
             print('#4#')
-            cur.execute('INSERT OR REPLACE INTO interpretations_pr_patient (patient_ID, comments, date) VALUES (?, ?, ?)', (pID, request.form['comment'], str(datetime.now()).split(' ')[0]))
+            cur.execute('INSERT OR REPLACE INTO interpretations_pr_patient (patient_ID, comments, date) VALUES (?, ?, ?)', (pID, request.form['comment'].replace('\n','').replace('\r',''), str(datetime.now()).split(' ')[0]))
             db.commit()
         elif varIntForm.validate_on_submit() and not request.is_xhr and request.form['submit'] == 'Submit comment':
             print('#5#')
@@ -255,9 +273,6 @@ def showdb(pID):
             db.commit()
             #pubForm
             
-            
-
-        
     #hente ut pasientinfo for alle som er kjort
     cur.execute('SELECT * FROM patient_info')
     patient_items = listOfdictsFromCur(cur.fetchall(), 'patient_info')
@@ -310,17 +325,30 @@ def report(pID="123_15"):
     
     db = get_db()
     cur = get_db().cursor()
-    
+    patient_comment = ''
     #hente ut tolkede varianter for en pasient Ha med alt relevant fra Alamut..
     cur.execute('SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt, p2r.zygosity,\
     am.ID, am.gene, am.cNomen AS cDNA, am.pNomen AS protein, am.exacAllFreq, am.clinVarPhenotypes,\
-    i.inhouse_class, i.comments, MAX(i.signed)\
+    am.clinVarClinSignifs, am.transcript, am.codingEffect, am.hgmdId, am.hgmdPhenotype, am.varLocation, am.localSpliceEffect, am.rsClinicalSignificance, am.exacNFEFreq, am.espEAMAF, am.espAltEACount, am.espRefEACount, am.conservedOrthos, am.AGVGDclass, am.SIFTprediction, am.TASTERprediction, am.exon, am.rsId, \
+    i.inhouse_class, i.acmg_class, i.interpretor, i.comments, MAX(i.signed)\
     FROM patient_info2raw_variants AS p2r\
     LEFT JOIN alamut_annotation AS am ON p2r.chr = am.chrom AND p2r.start = am.gDNAstart\
     LEFT JOIN interpretations AS i ON p2r.patient_ID = i.SAMPLE_NAME AND p2r.chr = i.chr AND p2r.start =i.start\
     WHERE patient_ID = ?\
     GROUP BY p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt', (pID, ))
     var_items = listOfdictsFromCur(cur.fetchall(), 'int_variants_report')
+    cur.execute('SELECT ipp.comments FROM interpretations_pr_patient AS ipp WHERE patient_ID = ?', (pID,))
+    try:
+        patient_comment = cur.fetchall()[0][0]
+    except:
+        pass
+    if len(patient_comment) == 0:
+        patient_comment = ''
+    else:
+        pass
+   
+    
+   
    
     #get patientinfo for a single patient assigned by pID
     cur.execute('SELECT pat.patient_ID, pat.clinical_info, pat.family_ID, pat.sex, pat.disease_category, pan.panel_name, QC.MEAN_TARGET_COVERAGE,\
@@ -332,7 +360,7 @@ def report(pID="123_15"):
     db.close()
     variant_dict = {}
     
-    return render_template('report.html', var_items=var_items, pID=pID, pID_patient=pID_patient)
+    return render_template('report.html', var_items=var_items, pID=pID, pID_patient=pID_patient, patient_comment=patient_comment)
 
 ################################################################################################################################################
 
@@ -358,8 +386,8 @@ def _return_alamut_for_variant():
 ################################################################################################################################################
 
 if __name__ == '__main__':
-    #app.run('172.16.0.56')
-    app.run('0.0.0.0', port=8080)
+    app.run('172.16.0.56')
+    #app.run('0.0.0.0', port=8080)
 
 
     

@@ -7,29 +7,46 @@
   google.charts.setOnLoadCallback(drawChart);
   function drawChart() {
     var data = google.visualization.arrayToDataTable([
-      ['Samples', 'Mean coverage'],
-      [ 8,      12],
-      [ 4,      5.5],
-      [ 11,     14],
-      [ 4,      5],
-      [ 3,      3.5],
-      [ 6.5,    7]
+    ['Samples', 'Mean coverage'],
+      [ '8',      12],
+      [ '4',      5.5],
+      [ '11',     14],
+      [ '42',      5],
+      [ '3',      3.5],
+      [ '6.5',    7]
       ]);
 
     var options = {
-      title: 'Samples vs. Mean coveraga comparison',
+      title: 'Samples vs. Mean coverage comparison',
       hAxis: {title: 'Samples', minValue: 0, maxValue: 15},
       vAxis: {title: 'Mean coverage', minValue: 0, maxValue: 15},
       legend: 'none'
     };
+    
+    var data2 = google.visualization.arrayToDataTable([
+    ['Samples', 'Mean coverage'],
+      {% for item in coverage_data %}
+      ['{{ item[3] }}', {{ item[2] }}],
+      {% endfor %}
+      ]);
 
+    var options2 = {
+      title: 'Samples vs. Mean coverage comparison for SBS321',
+      hAxis: {title: 'Samples', minValue: 0, maxValue: 15, slantedText: true, slantedTextAngle: 315},
+      vAxis: {title: 'Mean coverage', minValue: 0, maxValue: 15},
+      legend: 'none'
+    };
     var chart = new google.visualization.ScatterChart(document.getElementById('chart_div'));
-
     chart.draw(data, options);
+    var chart2 = new google.visualization.ScatterChart(document.getElementById('chart_div2'));
+    chart2.draw(data2, options2);
   }
+  
+  
+  
+  
+  
 </script>
-
-
 
 <div class="container">
 	<div class="row">
@@ -82,11 +99,28 @@
    <h3>Test to see if we can show a google chart</h3>
    {{ var_table }}
    <div id="chart_div" style="width: 900px; height: 500px;"></div>
+   <hr>
+   <div id="chart_div2" style="width: 900px; height: 500px;"></div>
 
  </div>
 </div>
 
 </div>
 </div>
+
+<!-- 
+
+['Samples', 'Mean coverage'],
+      [ 8,      12],
+      [ 4,      5.5],
+      [ 11,     14],
+      [ 4,      5],
+      [ 3,      3.5],
+      [ 6.5,    7]
+
+-->
+
+
+
 
 {% endblock %}

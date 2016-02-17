@@ -97,7 +97,7 @@ def listOfdictsFromCur(dbcursor, type):
         elif type == 'int_variants':
             list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], zygosity=i[5], ID=i[6], gene=i[7], cDNA=i[8], protein=i[9], exacAll=i[10], inclass=i[11], comments=i[12], signed=i[13] ))
         elif type == 'int_variants_report':
-            list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], zygosity=i[5], ID=i[6], gene=i[7], cDNA=i[8], protein=i[9], exacAll=i[10], clinVarPhenotypes=i[11], inclass=i[12], comments=i[13], signed=i[14] ))
+            list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], zygosity=i[5], ID=i[6], gene=i[7], cDNA=i[8], protein=i[9], exacAll=i[10], clinVarPhenotypes=i[11], clinVarClinSignifs=i[12], transcript=i[13], codingEffect=i[14], hgmdId=i[15], hgmdPhenotype=i[16], varLocation=i[17], localSpliceEffect=i[18], rsClinicalSignificance=i[19], exacNFEFreq=i[20], espEAMAF=i[21], espAltEACount=i[22] , espRefEACount=i[23], conservedOrthos=i[24], AGVGDclass=i[25], SIFTprediction=i[26],TASTERprediction=i[27], exons=i[28], rsId=i[29], inclass=i[30], acmg_class=i[31], interpretor=i[32], comments=i[33], signed=i[34] ))
 
     return list_items
         

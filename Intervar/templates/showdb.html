@@ -12,11 +12,57 @@
     //tooltip on classes form selector
     $('#inhouse_class').tooltip({'trigger':'focus', 'title': 'Inhouse Class', 'placement': 'right'});
     $('#acmg_class').tooltip({'trigger':'focus', 'title': 'ACMG Class', 'placement': 'right'});
+  
+  
+   //Check if a ref & alt is letter as opposed to -. And also check if length == 1. This would mean missense.
+ function isOneLetter(str) {
+  return str.length === 1 && str.match(/[a-z]/i);
+}
+function isLetter(str) {
+  return str.match(/[a-z]/i);
+}
+// Check if variant is:
+// missense
+// del
+// insertion
+// duplication -> get_alamut
+$('#get_alamut').click(function () {
+  var chrom = $('#chrom').val()
+  var start = $('#start').val()
+  var stop = $('#stop').val()
+  var ref = $('#ref').val()
+  var alt = $('#alt').val()
+  var assembly = "(GRCh37)"
+  var alamut_request = "" 
+// Get input 
+if (isOneLetter(ref) && isOneLetter(alt)) {
+  var alamut_request = "chr" + chrom  +assembly + ":g." + start + ref + ">" + alt
+} else if (isLetter(ref) && isLetter(alt) !== true) {
+  var alamut_request = "chr" + chrom + assembly + ":g." + start + "_" + stop + "del"
+} else if ( isLetter(ref) !== true && isLetter(alt)) {
+  var alamut_request = "chr" + chrom + assembly + ":g." + start + "_" + stop + "ins" + alt
+}  
+ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronous=true", function(result){
+    $.ajax({
+      type: "POST",
+      contentType: "application/json; charset=utf-8",
+      url: "/showdb/" + '{{ pID }}',
+      data: JSON.stringify(result),
+      success: function (data) {
+        alert("ferdig " + chrom +"-"+ start +" "+ stop +" "+ ref +" "+ alt)
+      },
+      dataType: "json"
+    });
+  });     
+});
+  
+  
+  //   
   //on click of: submitcDNARequest get value from: cDNARequest
   $('#submitcDNARequest').click(function () {
-    var alamut_request = $('#cDNARequest').val()
+    var alamut_request_cDNA = $('#cDNARequest').val()
   // maa testes
-  $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronous=true", function(result){
+  $.getJSON("http://localhost:10000/show?request=" + alamut_request_cDNA + "&synchronous=true", function(result){
     $.ajax({
       type: "POST",
       contentType: "application/json; charset=utf-8",
@@ -90,6 +136,16 @@ $('#variant_table tr').click(function () {
     $('#zygo').text(zyg)
     $('#mgmseen').text('Kommer!')
     $('funcStud').text('Kommer!')
+    $('#varLocation').text(data.varLocation)  
+    $('#localSpliceEffect').text(data.localSpliceEffect)
+    $('#rsClinicalSignificance').text(data.rsClinicalSignificance)
+    $('#exacNFEFreq').text(data.exacNFEFreq)
+    $('#espEAMAF').text(data.espEAMAF + "(" + data.espAltEACount + ")" + data.espRefEACount)
+    $('#clinVarClinSignifs').text(data.clinVarClinSignifs)
+    $('#conservedOrthos').text(data.conservedOrthos)
+    $('#AGVDclass').text(data.AGVGDclass)
+    $('#SIFTPrediction').text(data.SIFTprediction)
+    $('#TASTERprediction').text(data.TASTERprediction)
   });
   console.log("test")
   //$('.variant_info').html(chrom + " " + start + " " + stop);
@@ -98,55 +154,14 @@ $('#variant_table tr').click(function () {
   //alert(chr + "|"+ start+ "|"+stop+ "|"+ref+ "|"+alt)
 });
 
- //Check if a ref & alt is letter as opposed to -. And also check if length == 1. This would mean missense.
- function isOneLetter(str) {
-  return str.length === 1 && str.match(/[a-z]/i);
-}
-function isLetter(str) {
-  return str.match(/[a-z]/i);
-}
 
-// Check if variant is:
-// missense
-// del
-// insertion
-// duplication
-$('#get_alamut').click(function () {
-  var chrom = $('#chrom').val()
-  var start = $('#start').val()
-  var stop = $('#stop').val()
-  var ref = $('#ref').val()
-  var alt = $('#alt').val()
-  var assembly = "(GRCh37)"
-  var alamut_request = "" 
-// Get input 
-if (isOneLetter(ref) && isOneLetter(alt)) {
-  var alamut_request = "chr" + chrom  +assembly + ":g." + start + ref + ">" + alt
-} else if (isLetter(ref) && isLetter(alt) !== true) {
-  var alamut_request = "chr" + chrom + assembly + ":g." + start + "_" + stop + "del"
-} else if ( isLetter(ref) !== true && isLetter(alt)) {
-  var alamut_request = "chr" + chrom + assembly + ":g." + start + "_" + stop + "ins" + alt
-}  
-$.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronous=true", function(result){
-  $.ajax({
-    type: "POST",
-    contentType: "application/json; charset=utf-8",
-    url: "/showdb/" + '{{ pID }}',
-    data: JSON.stringify(result),
-    success: function (data) {
-      alert("ferdig" + chrom +"-"+ start +" "+ stop +" "+ ref +" "+ alt)
-    },
-    dataType: "json"
-  });
-});       
-});
 });
 </script>
 
 
 <div class="container">
 	<div class="row">
-   <div class="col-md-10 col-xs-offset-1 col-md-offset-1">        
+   <div class="col-md-10">        
      <h1>Interpretation window for: {{ pID }}</h1>
    </div>
  </div>
@@ -191,13 +206,18 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
 </div>
 </div>
 <div class="row">
-  <div class="col-sm-1"></div>
+  <div class="col-sm-1">
   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#pID_Modal">edit patient info</button> 
+  </div>
+  <div class="col-sm-1 col-sm-offset-10">
+    <a href="{{ url_for('report') }}/{{ pID }}">
+    <button type="button" class="btn btn-primary">Produce report</button> 
+    </a>
+  </div>
 </div>
-
 <hr>
 <div class="row">
-  <div class="col-sm-6 col-sm-offset-3" >
+  <div class="col-sm-6" >
     <h5>Comment regarding this interpretation/analysis</h5>
     <form action="{{ url_for('showdb') }}/{{ pID }}" method=POST enctype="multipart/form-data">
       {{ iform.hidden_tag() }}
@@ -212,16 +232,17 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
 </div>
 <div class="row"><hr></div>
 <div class="row">
- <div class="col-sm-12">
+  <div class="col-md-12"> 
   <h3>Table of variants</h3>
   {{ var_table }}
-</div>
+ </div>
 </div>
 <br>
 <div class="row">
-  <div class="col-sm-4"></div>
+  <div class="col-sm-2">
   <!-- Trigger the modal with a button -->
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Enter variant</button>	
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Enter variant</button>
+  </div>
   <!-- Modal -->
   <div id="myModal" class="modal fade" role="dialog">
    <div class="modal-dialog">
@@ -280,7 +301,8 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
          </form>
        </div>
        <div class="col-sm-2">
-         <button id="get_alamut" type="submit" class="btn btn-default">Get Alamut</button>
+         <button id="get_alamut" type="button" class="btn btn-default">Get Alamut</button>
+         
        </div>
      </div>
    </div>
@@ -363,6 +385,22 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
               <dd id="aprot"></dd>
               <dt>Type of mutation</dt>
               <dd id="atype"></dd>
+              <dt>Variant location</dt>
+              <dd id="varLocation"></dd>
+              <dt>localSpliceEffect</dt>
+              <dd id="localSpliceEffect"></dd>
+              
+              <dt>Conserved orthos</dt>
+              <dd id="conservedOrthos"></dd>
+              
+              <dt>AGVDclass</dt>
+              <dd id="AGVDclass"></dd>
+              <dt>SIFTPrediction</dt>
+              <dd id="SIFTPrediction"></dd>
+              <dt>TASTERprediction</dt>
+              <dd id="TASTERprediction"></dd>
+              
+              
               <dt>Protein domain 1</dt>
               <dd id="aProtDom1"></dd>
               <dt>Protein domain 2</dt>
@@ -377,7 +415,8 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
               <dd id="hgmdSubCategory"></dd>
               <dt>Clinvar phenotype</dt>
               <dd id="clinVarPhenotypes"></dd>
-              
+              <dt>Clinvarclinsign</dt>
+              <dd id="clinVarClinSignifs"></dd>
             </dl>
           </div>
 
@@ -389,12 +428,18 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
               <dd id="granthamDist"></dd>
               <dt>dbSNP</dt>
               <dd id="adbsnp"></dd>
+              <dt>rsClinicalSignificance</dt>
+              <dd id="rsClinicalSignificance"></dd>
               <dt>1000 genomes(?)</dt>
               <dd id="a1kg"></dd>
               <dt>ESP (all)</dt>
               <dd id="aESP"></dd>
+              <dt>espEAMAF</dt>
+              <dd id="espEAMAF"></dd>
               <dt>Exac (all)</dt>
               <dd id="aExac"></dd>
+              <dt>exacNFEFreq</dt>
+              <dd id="exacNFEFreq"></dd>
               <dt>Exon</dt>
               <dd id="Exon"></dd>
               <dt>Zygosity</dt>
@@ -454,8 +499,6 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
           </div>
         </div>
         
-        
-        
         <hr>
         <!-- -->
 
@@ -490,17 +533,7 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronou
             {{ varIntForm.submit(class="btn btn-primary") }}
           </fieldset>
         </form>
-        
-        <!-- -->
-        
-        <!-- -->    
-        
-        
-
-        
-        
-        
-
+    
         <!-- should contain two text inputs and a class selector along with a ACMGclass button-->
       </div>
       <div class="modal-footer">
