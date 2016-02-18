@@ -9,7 +9,7 @@ from datetime import datetime
 
 #importere egne scripts
 from scripts import PatientForm, VariantForm, SearchForm, PatientTable, VariantTable, listOfdictsFromCur, dictFromCur, print_file, hsmetrics_to_tuple, insert_data, get_values_from_form, insertsize_to_tuple, insert_data_is, get_variants_from_form
-from scripts import alamut_dict_to_DB, str_to_int_float, Interpret_overallForm, InterpretVariantForm, PublicationsForm
+from scripts import alamut_dict_to_DB, str_to_int_float, Interpret_overallForm, InterpretVariantForm, PublicationsForm, SampleOverviewTable
 import json
 
 
@@ -191,6 +191,11 @@ def overview():
     JOIN runs ON runs.patient_ID=qc.SAMPLE_NAME \
     JOIN patient_info2panels AS pi2p ON pi2p.patient_ID=qc.SAMPLE_NAME WHERE runs.sbs = "SBS321"')
     coverage_data = cur.fetchall()
+    # get overall data on number of samples and mean coverage grouped on run and panel:
+    cur.execute("SELECT r.sbs, pi2p.panel_name AS 'Panel name', COUNT(qc.SAMPLE_NAME) AS 'Number of samples', AVG(qc.MEAN_TARGET_COVERAGE) AS 'Average coverage' FROM QC as qc JOIN runs AS r ON r.patient_ID=qc.SAMPLE_NAME JOIN patient_info2panels AS pi2p ON pi2p.patient_ID=qc.SAMPLE_NAME GROUP BY r.sbs, pi2p.panel_name")
+    overview_items = listOfdictsFromCur(cur.fetchall(), 'overview_table')
+    overview_table = SampleOverviewTable(overview_items,)
+    
     '''
     Select for the average coverage grouped by panel and run.
     SELECT runs.sbs, pi2p.panel_name, AVG(qc.MEAN_TARGET_COVERAGE) FROM QC AS qc
@@ -198,13 +203,21 @@ JOIN runs ON runs.patient_ID=qc.SAMPLE_NAME
 JOIN patient_info2panels AS pi2p ON pi2p.patient_ID=qc.SAMPLE_NAME
 GROUP BY runs.sbs, pi2p.panel_name
     
+
+
+SELECT r.sbs, pi2p.panel_name AS "Panel name", COUNT(qc.SAMPLE_NAME) AS "Number of samples", AVG(qc.MEAN_TARGET_COVERAGE) AS "Average coverage" FROM QC as qc
+JOIN runs AS r ON r.patient_ID=qc.SAMPLE_NAME
+JOIN patient_info2panels AS pi2p ON pi2p.patient_ID=qc.SAMPLE_NAME
+GROUP BY r.sbs, pi2p.panel_name
+listOfdictsFromCur(cur.fetchall,overview_table)
+
     '''
     
     
     
     
     db.close()
-    return render_template('overview.html', overview_dict=overview_dict, coverage_data=coverage_data)
+    return render_template('overview.html', overview_dict=overview_dict, coverage_data=coverage_data, overview_table=overview_table)
 
 ################################################################################################################################################
 
@@ -298,7 +311,6 @@ def showdb(pID):
     #print(pID_patient)
     #get comments for the interpretations of one patient:
     cur.execute('SELECT comments FROM interpretations_pr_patient WHERE patient_ID = ?', (pID, ))
-    
     try:
         patient_comment = cur.fetchall()[0][0].replace('\n','').replace('\r','')
 
@@ -386,8 +398,8 @@ def _return_alamut_for_variant():
 ################################################################################################################################################
 
 if __name__ == '__main__':
-    app.run('172.16.0.56')
-    #app.run('0.0.0.0', port=8080)
+    #app.run('172.16.0.56')
+    app.run('0.0.0.0', port=8080)
 
 
     

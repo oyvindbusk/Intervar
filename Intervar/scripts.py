@@ -74,7 +74,14 @@ class VariantTable(Table): # add signed as a column
     inclass = Col('inhouse_class')
     comments = Col('comments')
     signed = Col('Signed')
-    classes = ['table table-striped"  id="variant_table'] # make sortable like in the exac-page?
+    classes = ['table table-striped" id="variant_table'] # make sortable like in the exac-page?
+
+class SampleOverviewTable(Table):
+    sbs = Col('SBS')
+    panel = Col('panel')
+    sample_count = Col('Sample count')
+    mean_cov = Col('Mean Coverage')
+    classes = ['table table-striped" id="overview_table']
 
 ################################################################################################################################################
 def dictFromCur(dbcursor, type):
@@ -98,6 +105,8 @@ def listOfdictsFromCur(dbcursor, type):
             list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], zygosity=i[5], ID=i[6], gene=i[7], cDNA=i[8], protein=i[9], exacAll=i[10], inclass=i[11], comments=i[12], signed=i[13] ))
         elif type == 'int_variants_report':
             list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], zygosity=i[5], ID=i[6], gene=i[7], cDNA=i[8], protein=i[9], exacAll=i[10], clinVarPhenotypes=i[11], clinVarClinSignifs=i[12], transcript=i[13], codingEffect=i[14], hgmdId=i[15], hgmdPhenotype=i[16], varLocation=i[17], localSpliceEffect=i[18], rsClinicalSignificance=i[19], exacNFEFreq=i[20], espEAMAF=i[21], espAltEACount=i[22] , espRefEACount=i[23], conservedOrthos=i[24], AGVGDclass=i[25], SIFTprediction=i[26],TASTERprediction=i[27], exons=i[28], rsId=i[29], inclass=i[30], acmg_class=i[31], interpretor=i[32], comments=i[33], signed=i[34] ))
+        elif type == 'overview_table':
+            list_items.append(dict(sbs=i[0], panel=i[1], sample_count=i[2], mean_cov=i[3] ))
 
     return list_items
         
