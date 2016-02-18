@@ -246,6 +246,7 @@ def showdb(pID):
     cur = get_db().cursor()    
     #variabler
     patient_comment = ''
+    
     if request.method == 'POST':
         if request.is_xhr: # checking if this comes 
             print('#3#')
@@ -271,7 +272,7 @@ def showdb(pID):
         
         elif iform.validate_on_submit() and not request.is_xhr and request.form['submit'] == 'Update':
             print('#4#')
-            cur.execute('INSERT OR REPLACE INTO interpretations_pr_patient (patient_ID, comments, date) VALUES (?, ?, ?)', (pID, request.form['comment'].replace('\n','').replace('\r',''), str(datetime.now()).split(' ')[0]))
+            cur.execute('INSERT OR REPLACE INTO interpretations_pr_patient (patient_ID, comments, date, filtus_settings) VALUES (?, ?, ?, ?)', (pID, request.form['comment'], str(datetime.now()).split(' ')[0], request.form['filtus_settings']))
             db.commit()
         elif varIntForm.validate_on_submit() and not request.is_xhr and request.form['submit'] == 'Submit comment':
             print('#5#')
@@ -308,18 +309,17 @@ def showdb(pID):
     JOIN QC ON pat.patient_ID=QC.SAMPLE_NAME LEFT JOIN insert_size AS ins ON pat.patient_ID=ins.SAMPLE_NAME\
     WHERE pat.patient_ID = ?', (pID, ))
     pID_patient = dictFromCur(cur.fetchall(), 'pID_patient')
-    #print(pID_patient)
+    
     #get comments for the interpretations of one patient:
-    cur.execute('SELECT comments FROM interpretations_pr_patient WHERE patient_ID = ?', (pID, ))
+    cur.execute('SELECT comments, filtus_settings FROM interpretations_pr_patient WHERE patient_ID = ?', (pID, ))
+    
     try:
-        patient_comment = cur.fetchall()[0][0].replace('\n','').replace('\r','')
-
+        patient_comment = cur.fetchall()[0]     
     except:
         pass
     if len(patient_comment) == 0:
         patient_comment = ''
-    else:
-        pass
+    
     db.close()
     return render_template('showdb.html', patient_table=patient_table, var_table=var_table, form=form, pform=pform, iform=iform, pubForm=pubForm, varIntForm=varIntForm,  pID=pID, pID_patient=pID_patient, patient_comment=patient_comment)
 
@@ -398,8 +398,8 @@ def _return_alamut_for_variant():
 ################################################################################################################################################
 
 if __name__ == '__main__':
-    #app.run('172.16.0.56')
-    app.run('0.0.0.0', port=8080)
+    app.run('172.16.0.56')
+    #app.run('0.0.0.0', port=8080)
 
 
     

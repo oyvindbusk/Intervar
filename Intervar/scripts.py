@@ -33,6 +33,7 @@ class SearchForm(Form):
 
 class Interpret_overallForm(Form):
     comment = TextAreaField("Comment")
+    filtus_settings = TextAreaField("Filtus settings")
     submit = SubmitField("Update")
 
 class InterpretVariantForm(Form):

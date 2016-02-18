@@ -110,6 +110,7 @@ CREATE TABLE interpretations_pr_patient(
 ID INTEGER PRIMARY KEY,
 patient_ID VARCHAR(10),
 comments TEXT,
+filtus_settings TEXT,
 date DATETIME,
 FOREIGN KEY(patient_ID) REFERENCES patient_info(patient_ID),
 UNIQUE (patient_ID)
