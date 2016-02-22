@@ -1,6 +1,17 @@
 {% extends 'base.html' %}
 {% block content %}
-
+<script type=text/javascript>
+  $(function() {
+    //find empty cols, and hide or make them grey
+    $("dd:empty").prev().andSelf().css('opacity', '0.5');
+    $( "dd[name|='pub']:contains('None')").parent('dl').css('opacity', '0.5');
+    $("dd:contains('None')").prev().andSelf().css('opacity', '0.5');
+    
+    
+    
+    
+  });
+</script>
 <div class="container">
 	<div class="row">
    <div class="col-md-10">        
@@ -46,10 +57,18 @@
 </div>
 </div>
 <div class="row">
-<div class="col-sm-6">
+<div class="col-sm-4">
+<hr>
 <dl class="dl-horizontal">
 <dt>Patient comment:</dt>
-<dd>{{ patient_comment }}</dd>
+<dd>{{ filtus_and_comment[0] }}</dd>
+</dl>
+</div>
+<div class="col-sm-8">
+<hr>
+<dl class="dl-horizontal">
+<dt>Filtus settings:</dt>
+<dd>{{ filtus_and_comment[1]| replace("\r\n", "<br>")|safe  }}</dd>
 </dl>
 </div>
 </div>
@@ -68,7 +87,7 @@
       <dt>Gene</dt>
       <dd>{{ item.gene }}</dd>
       <dt>Transcript ID:</dt>
-      <dd> {{ item.transcript }} </dd>
+      <dd>{{ item.transcript }}</dd>
       <dt>gDNA: </dt>
       <dd>{{ item.cDNA }}</dd>
       <dt>cDNA: </dt>
@@ -76,53 +95,55 @@
       <dt>protein: </dt>
       <dd>{{ item.protein }}</dd>
       <dt>Coding effect</dt>
-      <dd> {{ item.codingEffect }} </dd>
+      <dd>{{ item.codingEffect }}</dd>
       <dt>Variant location:</dt>
-      <dd> {{ item.varLocation }} </dd>
+      <dd>{{ item.varLocation }}</dd>
       <dt>Exon:</dt>
-      <dd> {{ item.exon }} </dd>
+      <dd>{{ item.exons }}</dd>
       <dt>Splice sites:</dt>
-      <dd> {{ item.localSpliceEffect }} </dd>
+      <dd>{{ item.localSpliceEffect }}</dd>
       <dt>dbSNP clin sign:</dt>
-      <dd> {{ item.rsClinicalSignificance }} </dd>
+      <dd>{{ item.rsClinicalSignificance }}</dd>
       <dt>dbSNP ID:</dt>
-      <dd> {{ item.rsId }} </dd>
+      <dd>{{ item.rsId }}</dd>
     </dl>
   </div>
   <div class="col-md-6">
     <dl class="dl-horizontal">
       <dt>HGMD ID:</dt>
-      <dd> {{ item.hgmdId }} </dd>
+      <dd>{{ item.hgmdId}}</dd>
       <dt>HGMD Phenotype</dt>
-      <dd> {{ item.hgmdPhenotype }} </dd>
+      <dd>{{ item.hgmdPhenotype}}</dd>
       <dt>Clinvar phenotype:</dt>
-      <dd> {{ item.clinVarPhenotypes }} </dd>
+      <dd>{{ item.clinVarPhenotypes}}</dd>
       <dt>Clinvar phenotypes</dt>
-      <dd> {{ item.clinVarPhenotypes }} </dd>
+      <dd>{{ item.clinVarPhenotypes}}</dd>
       <dt>Clinvar significance:</dt>
-      <dd> {{ item.clinVarClinSignifs }} </dd>
+      <dd>{{ item.clinVarClinSignifs}}</dd>
       <dt>Exac All:</dt>
-      <dd> {{ item.exacAll }} </dd>
+      <dd>{{ item.exacAll}}</dd>
       <dt>ExaC NFEfreq:</dt>
-      <dd> {{ item.exacNFEFreq }} </dd>
+      <dd>{{ item.exacNFEFreq}}</dd>
       <dt>ESP EA MAF:</dt>
-      <dd> {{ item. espEAMAF }} </dd>
+      <dd>{{ item. espEAMAF}}</dd>
       <dt>espAltEACount:</dt>
-      <dd> {{ item.espAltEACount }} </dd>
+      <dd>{{ item.espAltEACount}}</dd>
       <dt>espRefEACount:</dt>
-      <dd> {{ item.espRefEACount }} </dd>
+      <dd>{{ item.espRefEACount}}</dd>
       <dt>Conserved orthos:</dt>
-      <dd> {{ item.conservedOrthos }} </dd>
+      <dd>{{ item.conservedOrthos }}</dd>
       <dt>AGVGD:</dt>
-      <dd> {{ item.AGVGDclass }} </dd>
+      <dd>{{ item.AGVGDclass }}</dd>
       <dt>SIFT:</dt>
-      <dd> {{ item.SIFTprediction }} </dd>
+      <dd>{{ item.SIFTprediction }}</dd>
       <dt>Mutationtaster:</dt>
-      <dd> {{ item.TASTERprediction }} </dd>
+      <dd>{{ item.TASTERprediction }}</dd>
       <dt>Inhouse class:</dt>
-      <dd> {{ item.inclass }} </dd>
+      <dd>{{ item.inclass }}</dd>
       <dt>Signed:</dt>
-      <dd> {{ item.signed }} </dd>
+      <dd>{{ item.signed }}</dd>
+      <dt>previous</dt>
+      <dd>{{ item.concat|safe }}</dd>
     </dl>
   </div>
 </div>
@@ -131,18 +152,47 @@
 <div class="col-md-12">
 <dl class="dl-horizontal" style="border: 2px solid black">
 <dt>Publications:</dt>
-<dd>{{ item.publications|safe }}</dd>
+<dd name="pub">{{ item.publications|safe }}</dd>
 </dl>
 </div>
 </div>
-
 <!-- -->
-
 <div class="row">
-<div class="col-sm-3 col-sm-offset-3">
+<div class="col-sm-4">
+<table class="table table-striped" id="data_2">
+  <thead>
+    <tr>
+      <th>Algorithm</th>
+      <th>wt</th>
+      <th>mut</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>MaxEnt</td>
+      <td id="wtMaxEntScore">{{ item.wtMaxEntScore }}</td>
+      <td id="varMaxEntScore">{{ item.varMaxEntScore }}</td>
+    </tr>
+    <tr>
+      <td>NNSPLICE</td>
+      <td id="wtNNSScore">{{ item.wtNNSScore }}</td>
+      <td id="varNNSScore">{{ item.varNNSScore }}</td>
+    </tr>
+    <tr>
+      <td>HSF</td>
+      <td id="wtHSFScore">{{ item.wtHSFScore }}</td>
+      <td id="varHSFScore">{{ item.varHSFScore }}</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<div class="col-sm-4">
+
+</div>
+<div class="col-sm-4">
 <dl class="dl-horizontal" style="border: 2px solid black">
       <dt>Inhouse class:</dt>
-      <dd> {{ item.inclass }} </dd>
+      <dd>{{ item.inclass }}</dd>
       <dt>ACMG class:</dt>
       <dd> {{ item.acmg_class }} </dd>
       <dt>Interpreted by:</dt>
@@ -150,10 +200,11 @@
       <dt>Date:</dt>
       <dd> {{ item.signed }} </dd>
 </dl>
-</div>
-</div>
 <dt>Comments:</dt>
 <dd>{{ item.comments }}</dd>
+</div>
+</div>
+
 <hr>
 {% endfor %}
 <div class="jumbotron container-fluid">

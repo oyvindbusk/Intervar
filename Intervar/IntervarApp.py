@@ -289,14 +289,18 @@ def showdb(pID):
     #hente ut tolkede varianter for en pasient
     cur.execute('SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt, p2r.zygosity,\
     am.ID, am.gene, am.cNomen AS cDNA, am.pNomen AS protein, am.exacAllFreq,\
-    i.inhouse_class, i.comments, MAX(i.signed)\
+    i.inhouse_class, i.comments, MAX(i.signed), sub.concat\
     FROM patient_info2raw_variants AS p2r\
     LEFT JOIN alamut_annotation AS am ON p2r.chr = am.chrom AND p2r.start = am.gDNAstart\
+    LEFT JOIN interpretations AS i ON p2r.patient_ID = i.SAMPLE_NAME AND p2r.chr=i.chr AND p2r.start=i.start\
+    LEFT JOIN (SELECT GROUP_CONCAT(DISTINCT p2r.patient_ID||";"||pi.disease_category||";"||i.inhouse_class) AS concat,am.ID AS ID\
+    FROM (SELECT * FROM patient_info2raw_variants WHERE patient_ID != ?) AS p2r\
+    LEFT JOIN alamut_annotation AS am ON p2r.chr = am.chrom AND p2r.start = am.gDNAstart\
     LEFT JOIN interpretations AS i ON p2r.patient_ID = i.SAMPLE_NAME AND p2r.chr = i.chr AND p2r.start =i.start\
+    LEFT JOIN patient_info AS pi ON pi.patient_ID=p2r.patient_ID\
+    GROUP BY p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt) AS sub ON sub.ID=am.ID\
     WHERE patient_ID = ?\
-    GROUP BY p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt', (pID, ))
-
-    #
+    GROUP BY p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt', (pID, pID ))
     var_items = listOfdictsFromCur(cur.fetchall(), 'int_variants')
     print(var_items[0])
     var_table = VariantTable(var_items,)
@@ -333,31 +337,51 @@ def report(pID="123_15"):
     
     db = get_db()
     cur = get_db().cursor()
-    patient_comment = ''
+    filtus_and_comment = ''
     #hente ut tolkede varianter for en pasient Ha med alt relevant fra Alamut..
+     
+    
+    #
     cur.execute('SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt, p2r.zygosity,\
     am.ID, am.gene, am.cNomen AS cDNA, am.pNomen AS protein, am.exacAllFreq, am.clinVarPhenotypes,\
-    am.clinVarClinSignifs, am.transcript, am.codingEffect, am.hgmdId, am.hgmdPhenotype, am.varLocation, am.localSpliceEffect, am.rsClinicalSignificance, am.exacNFEFreq, am.espEAMAF, am.espAltEACount, am.espRefEACount, am.conservedOrthos, am.AGVGDclass, am.SIFTprediction, am.TASTERprediction, am.exon, am.rsId, \
-    i.inhouse_class, i.acmg_class, i.interpretor, i.comments, MAX(i.signed), GROUP_CONCAT(DISTINCT "PMID:"||p.PMID||"\tRef:"||reference||"\tYear:"||year||"\tComment:"||comment||"<br>") AS publications \
+    am.clinVarClinSignifs, am.transcript, am.codingEffect, am.hgmdId, am.hgmdPhenotype, am.varLocation, am.localSpliceEffect, am.rsClinicalSignificance, am.exacNFEFreq, am.espEAMAF, am.espAltEACount, am.espRefEACount, am.conservedOrthos, am.AGVGDclass, am.SIFTprediction, am.TASTERprediction, \
+    am.exon, am.rsId, am.wtMaxEntScore, am.varMaxEntScore, am.wtNNSScore, am.varNNSScore, am.wtHSFScore, am.varHSFScore,\
+    i.inhouse_class, i.acmg_class, i.interpretor, i.comments, MAX(i.signed), GROUP_CONCAT(DISTINCT "PMID:"||p.PMID||"\tRef:"||reference||"\tYear:"||year||"\tComment:"||comment||"<br>") AS publications, sub.concat\
     FROM patient_info2raw_variants AS p2r\
     LEFT JOIN alamut_annotation AS am ON p2r.chr = am.chrom AND p2r.start = am.gDNAstart\
     LEFT JOIN interpretations AS i ON p2r.patient_ID = i.SAMPLE_NAME AND p2r.chr = i.chr AND p2r.start =i.start\
     LEFT JOIN publications2variants AS p2v ON p2v.varID = am.ID\
     LEFT JOIN publications AS p ON p.PMID = p2v.PMID\
+    LEFT JOIN (SELECT GROUP_CONCAT(DISTINCT p2r.patient_ID||"\t"||pi.disease_category||"\t"||i.inhouse_class||"<br>") AS concat,am.ID AS ID\
+    FROM (SELECT * FROM patient_info2raw_variants WHERE patient_ID != ?) AS p2r\
+    LEFT JOIN alamut_annotation AS am ON p2r.chr = am.chrom AND p2r.start = am.gDNAstart\
+    LEFT JOIN interpretations AS i ON p2r.patient_ID = i.SAMPLE_NAME AND p2r.chr = i.chr AND p2r.start =i.start\
+    LEFT JOIN patient_info AS pi ON pi.patient_ID=p2r.patient_ID\
+    GROUP BY p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt) AS sub ON sub.ID=am.ID\
     WHERE patient_ID = ?\
-    GROUP BY p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt', (pID, ))
+    GROUP BY p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt', (pID, pID ))
+    #
+    
+   
+    
+    
     var_items = listOfdictsFromCur(cur.fetchall(), 'int_variants_report')
-    print(var_items[1]['publications'])
+   
+    
     for i in var_items:
         if i['publications'] != None:
             i['publications'] = i['publications'].replace('<br>,','<br>')
-    cur.execute('SELECT ipp.comments FROM interpretations_pr_patient AS ipp WHERE patient_ID = ?', (pID,))
+        if i['concat'] != None:
+            i['concat'] = i['concat'].replace('<br>,','<br>')
+            
+    cur.execute('SELECT ipp.comments, filtus_settings FROM interpretations_pr_patient AS ipp WHERE patient_ID = ?', (pID,))
+   
     try:
-        patient_comment = cur.fetchall()[0][0]
+        filtus_and_comment = cur.fetchall()[0]
     except:
         pass
-    if len(patient_comment) == 0:
-        patient_comment = ''
+    if len(filtus_and_comment) == 0:
+        filtus_and_comment = ['','']
     else:
         pass
     #get patientinfo for a single patient assigned by pID
@@ -370,7 +394,7 @@ def report(pID="123_15"):
     db.close()
     variant_dict = {}
     
-    return render_template('report.html', var_items=var_items, pID=pID, pID_patient=pID_patient, patient_comment=patient_comment)
+    return render_template('report.html', var_items=var_items, pID=pID, pID_patient=pID_patient, filtus_and_comment=filtus_and_comment)
 
 ################################################################################################################################################
 
@@ -391,7 +415,6 @@ def _return_alamut_for_variant():
     LEFT JOIN publications2variants AS p2v ON p2v.varID = alamut_annotation.ID\
     LEFT JOIN publications AS p ON p.PMID = p2v.PMID\
     WHERE ID = ?', [variant_id])
-    
     #obs index out of bounds nar den er tom
     result = cur.fetchall()[0]
     
@@ -408,8 +431,8 @@ def _return_alamut_for_variant():
 ################################################################################################################################################
 
 if __name__ == '__main__':
-    #app.run('172.16.0.56')
-    app.run('0.0.0.0', port=8080)
+    app.run('172.16.0.56')
+    #app.run('0.0.0.0', port=8080)
 
 
     

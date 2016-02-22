@@ -37,3 +37,19 @@ FROM patient_info2raw_variants AS p2r
 LEFT JOIN alamut_annotation AS am ON p2r.chr = am.chrom AND p2r.start = am.gDNAstart
 LEFT JOIN interpretations AS i ON p2r.chr = i.chr AND p2r.start = i.start AND p2r.patient_ID = i.SAMPLE_NAME
 WHERE patient_ID ='123_15'
+
+#Variant info for variant table
+SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt, p2r.zygosity,
+am.ID, am.gene, am.cNomen AS cDNA, am.pNomen AS protein, am.exacAllFreq,
+i.inhouse_class, i.comments, MAX(i.signed), sub.concat
+FROM patient_info2raw_variants AS p2r
+LEFT JOIN alamut_annotation AS am ON p2r.chr = am.chrom AND p2r.start = am.gDNAstart
+LEFT JOIN interpretations AS i ON p2r.patient_ID = i.SAMPLE_NAME AND p2r.chr=i.chr AND p2r.start=i.start
+LEFT JOIN (SELECT GROUP_CONCAT(DISTINCT p2r.patient_ID||";"||pi.disease_category||";"||i.inhouse_class) AS concat,am.ID AS ID
+FROM (SELECT * FROM patient_info2raw_variants WHERE patient_ID != "123_15") AS p2r
+LEFT JOIN alamut_annotation AS am ON p2r.chr = am.chrom AND p2r.start = am.gDNAstart
+LEFT JOIN interpretations AS i ON p2r.patient_ID = i.SAMPLE_NAME AND p2r.chr = i.chr AND p2r.start =i.start
+LEFT JOIN patient_info AS pi ON pi.patient_ID=p2r.patient_ID
+GROUP BY p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt) AS sub ON sub.ID=am.ID
+WHERE patient_ID = '123_15'
+GROUP BY p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt

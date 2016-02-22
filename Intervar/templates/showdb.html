@@ -9,8 +9,6 @@
     $('#filtus_settings').html(' {{ patient_comment[1] | replace("\r\n", "\\n")    }}' )
     // hide ID col of table
     $('#variant_table td:nth-child(1),th:nth-child(1)').hide();
-    
-    
     // hide signed col of table
     $('#variant_table td:nth-child(14),th:nth-child(14)').hide();
     //tooltip on classes form selector
@@ -59,9 +57,6 @@ if (isOneLetter(ref) && isOneLetter(alt)) {
     });
   });     
 });
-  
-  
-  //   
   //on click of: submitcDNARequest get value from: cDNARequest
   $('#submitcDNARequest').click(function () {
     var alamut_request_cDNA = $('#cDNARequest').val()
@@ -150,7 +145,45 @@ $('#variant_table tr').click(function () {
     $('#AGVDclass').text(data.AGVGDclass)
     $('#SIFTPrediction').text(data.SIFTprediction)
     $('#TASTERprediction').text(data.TASTERprediction)
-    $('#pubs').html(data.publications)
+    // only show if present
+    if (data.publications) {
+        $('#pubs').show()
+        $('#pubsTitle').show()
+        $('#pubs').html(data.publications)
+    }  else {
+        $('#pubs').hide()
+        $('#pubsTitle').hide()
+    }    
+    // Set to 0 if empty:
+    if (data.wtMaxEntScore) {
+        $('#wtMaxEntScore').html(data.wtMaxEntScore)
+    } else {
+        $('#wtMaxEntScore').html(0)
+    }
+    if (data.varMaxEntScore) {
+        $('#varMaxEntScore').html(data.varMaxEntScore)
+    } else {
+        $('#varMaxEntScore').html(0)
+    }
+    if (data.wtNNSScore) {
+       $('#wtNNSScore').html(data.wtNNSScore)
+    } else {
+        $('#wtNNSScore').html(0)
+    }
+    if (data.varNNSScore) {
+        $('#varNNSScore').html(data.varNNSScore)
+    } else {
+        $('#varNNSScore').html(0)
+    }
+    if (data.wtHSFScore) {
+       $('#wtHSFScore').html(data.wtHSFScore)
+    } else {
+        $('#wtHSFScore').html(0)
+    }if (data.varHSFScore) {
+        $('#varHSFScore').html(data.varHSFScore)
+    } else {
+        $('#varHSFScore').html(0)
+    }
   });
   console.log("test")
   //$('.variant_info').html(chrom + " " + start + " " + stop);

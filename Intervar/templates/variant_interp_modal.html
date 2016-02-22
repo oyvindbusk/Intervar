@@ -23,6 +23,8 @@
               <dd id="aprot"></dd>
               <dt>Type of mutation</dt>
               <dd id="atype"></dd>
+               <dt>Exon</dt>
+              <dd id="Exon"></dd>
               <dt>Variant location</dt>
               <dd id="varLocation"></dd>
               <dt>localSpliceEffect</dt>
@@ -73,29 +75,56 @@
               <dd id="aExac"></dd>
               <dt>exacNFEFreq</dt>
               <dd id="exacNFEFreq"></dd>
-              <dt>Exon</dt>
-              <dd id="Exon"></dd>
               <dt>Zygosity</dt>
               <dd id="zygo"></dd>
               <dt>Seen @ MGM</dt>
               <dd id="mgmseen"></dd>
               <dt>Functional studies</dt>
               <dd id="funcStud"></dd>
+              
             </dl>
           </div>
         </div>
         <div class="row">
         <div class="col-md-12">
-          <dt>Publications</dt>
+        <dl class="dl-horizontal">
+          <dt id="pubsTitle">Publications</dt>
               <dd id=pubs></dd>
-            </dl>
-        </div>
+          </dl>
+          </div>
+            
+<div class="col-md-6"> 
+<table class="table table-striped" id="data_2">
+  <thead>
+    <tr>
+      <th></th>
+      <th style="padding-top: 4px;">Algorithm</th>
+      <th style="padding-top: 4px;">wt</th>
+      <th style="padding-top: 4px;" class="tooltip-table-header" >mut</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>MaxEnt</td>
+      <td id="wtMaxEntScore"></td>
+      <td id="varMaxEntScore"></td>
+    </tr>
+    <tr>
+      <td>NNSPLICE</td>
+      <td id="wtNNSScore"></td>
+      <td id="varNNSScore"></td>
+    </tr>
+    <tr>
+      <td>HSF</td>
+      <td id="wtHSFScore"></td>
+      <td id="varHSFScore"></td>
+    </tr>
+  </tbody>
+</table>
+</div>
         </div>
         <!-- -->
-        
-
         <hr>
-        
         <!-- -->
         <h5 data-toggle="collapse" href="#publications_collapsible" aria-expanded="false" aria-controls="collapsePublications">
           Add a publication
@@ -111,7 +140,6 @@
                 <fieldset class="form-group">
                   {{ pubForm.reference(class="form-control", placeholder="Reference") }}
                 </fieldset>
-
                 <fieldset class="form-group">
                   {{ pubForm.year(class="form-control", placeholder="Year") }}
                 </fieldset>
