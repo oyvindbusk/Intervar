@@ -32,7 +32,7 @@
 
     var options2 = {
       title: 'Samples vs. Mean coverage comparison for SBS321',
-      hAxis: {title: 'Samples', minValue: 0, maxValue: 15, slantedText: true, slantedTextAngle: 315},
+      hAxis: {title: '', minValue: 0, maxValue: 15, slantedText: true, slantedTextAngle: 315},
       vAxis: {title: 'Mean coverage', minValue: 0, maxValue: 15},
       legend: 'none'
     };
@@ -59,7 +59,10 @@
     <dd>{{ overview_dict.total_patients }}</dd>
     <dt>Samples PASS QC</dt>
     <dd>100</dd>
-    
+    <dt># class 5 variants</dt>
+    <dd>23</dd>
+    <dt># class 4 variants</dt>
+    <dd>12</dd>
   </dl>
 
 </div>
@@ -88,21 +91,25 @@
 </table>
 </div>
 </div>
+<hr>
 <div class="row">
-<div class=col-md-6>
+<div class=col-md-5>
 <h5>Table with some data</h5>
 {{ overview_table }}
+</div>
+<div class="col-md-7">
+<div id="chart_div2" style="width: 650px; height: 350px;"></div>
 </div>
 </div>
 <hr>
 <div class="row">
- <div class="col-sm-1"></div>
+ 
  <div class="col-sm-8">
    <h3>Test to see if we can show a google chart</h3>
    {{ var_table }}
    <div id="chart_div" style="width: 900px; height: 500px;"></div>
    <hr>
-   <div id="chart_div2" style="width: 900px; height: 500px;"></div>
+   
 
  </div>
 </div>

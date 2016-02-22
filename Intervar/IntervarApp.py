@@ -212,10 +212,7 @@ GROUP BY r.sbs, pi2p.panel_name
 listOfdictsFromCur(cur.fetchall,overview_table)
 
     '''
-    
-    
-    
-    
+        
     db.close()
     return render_template('overview.html', overview_dict=overview_dict, coverage_data=coverage_data, overview_table=overview_table)
 
@@ -269,7 +266,6 @@ def showdb(pID):
             cur.execute("INSERT INTO patient_info2raw_variants (patient_ID, chr, start, stop, ref, alt, zygosity, denovo ) VALUES (?, ?, ?, ?, ?, ?, ?,?)", variant_form_tuple) 
             #insert into interpretations
             db.commit()
-        
         elif iform.validate_on_submit() and not request.is_xhr and request.form['submit'] == 'Update':
             print('#4#')
             cur.execute('INSERT OR REPLACE INTO interpretations_pr_patient (patient_ID, comments, date, filtus_settings) VALUES (?, ?, ?, ?)', (pID, request.form['comment'], str(datetime.now()).split(' ')[0], request.form['filtus_settings']))
@@ -286,7 +282,6 @@ def showdb(pID):
             cur.execute('INSERT OR REPLACE INTO publications2variants (PMID, varID) VALUES (?, ?)',(request.form['PMID'], int(request.form['pub2varID']) ))
             db.commit()
             #pubForm
-            
     #hente ut pasientinfo for alle som er kjort
     cur.execute('SELECT * FROM patient_info')
     patient_items = listOfdictsFromCur(cur.fetchall(), 'patient_info')
@@ -300,7 +295,10 @@ def showdb(pID):
     LEFT JOIN interpretations AS i ON p2r.patient_ID = i.SAMPLE_NAME AND p2r.chr = i.chr AND p2r.start =i.start\
     WHERE patient_ID = ?\
     GROUP BY p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt', (pID, ))
+
+    #
     var_items = listOfdictsFromCur(cur.fetchall(), 'int_variants')
+    print(var_items[0])
     var_table = VariantTable(var_items,)
     #get patientinfo for a single patient assigned by pID
     cur.execute('SELECT pat.patient_ID, pat.clinical_info, pat.family_ID, pat.sex, pat.disease_category, pan.panel_name, QC.MEAN_TARGET_COVERAGE,\
@@ -309,10 +307,8 @@ def showdb(pID):
     JOIN QC ON pat.patient_ID=QC.SAMPLE_NAME LEFT JOIN insert_size AS ins ON pat.patient_ID=ins.SAMPLE_NAME\
     WHERE pat.patient_ID = ?', (pID, ))
     pID_patient = dictFromCur(cur.fetchall(), 'pID_patient')
-    
     #get comments for the interpretations of one patient:
     cur.execute('SELECT comments, filtus_settings FROM interpretations_pr_patient WHERE patient_ID = ?', (pID, ))
-    
     try:
         patient_comment = cur.fetchall()[0]     
     except:
@@ -342,13 +338,19 @@ def report(pID="123_15"):
     cur.execute('SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt, p2r.zygosity,\
     am.ID, am.gene, am.cNomen AS cDNA, am.pNomen AS protein, am.exacAllFreq, am.clinVarPhenotypes,\
     am.clinVarClinSignifs, am.transcript, am.codingEffect, am.hgmdId, am.hgmdPhenotype, am.varLocation, am.localSpliceEffect, am.rsClinicalSignificance, am.exacNFEFreq, am.espEAMAF, am.espAltEACount, am.espRefEACount, am.conservedOrthos, am.AGVGDclass, am.SIFTprediction, am.TASTERprediction, am.exon, am.rsId, \
-    i.inhouse_class, i.acmg_class, i.interpretor, i.comments, MAX(i.signed)\
+    i.inhouse_class, i.acmg_class, i.interpretor, i.comments, MAX(i.signed), GROUP_CONCAT(DISTINCT "PMID:"||p.PMID||"\tRef:"||reference||"\tYear:"||year||"\tComment:"||comment||"<br>") AS publications \
     FROM patient_info2raw_variants AS p2r\
     LEFT JOIN alamut_annotation AS am ON p2r.chr = am.chrom AND p2r.start = am.gDNAstart\
     LEFT JOIN interpretations AS i ON p2r.patient_ID = i.SAMPLE_NAME AND p2r.chr = i.chr AND p2r.start =i.start\
+    LEFT JOIN publications2variants AS p2v ON p2v.varID = am.ID\
+    LEFT JOIN publications AS p ON p.PMID = p2v.PMID\
     WHERE patient_ID = ?\
     GROUP BY p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt', (pID, ))
     var_items = listOfdictsFromCur(cur.fetchall(), 'int_variants_report')
+    print(var_items[1]['publications'])
+    for i in var_items:
+        if i['publications'] != None:
+            i['publications'] = i['publications'].replace('<br>,','<br>')
     cur.execute('SELECT ipp.comments FROM interpretations_pr_patient AS ipp WHERE patient_ID = ?', (pID,))
     try:
         patient_comment = cur.fetchall()[0][0]
@@ -358,10 +360,6 @@ def report(pID="123_15"):
         patient_comment = ''
     else:
         pass
-   
-    
-   
-   
     #get patientinfo for a single patient assigned by pID
     cur.execute('SELECT pat.patient_ID, pat.clinical_info, pat.family_ID, pat.sex, pat.disease_category, pan.panel_name, QC.MEAN_TARGET_COVERAGE,\
     QC.PCT_TARGET_BASES_20X, QC.PCT_TARGET_BASES_30X, ins.median_insert_size, ins.mean_insert_size\
@@ -389,17 +387,29 @@ def _return_alamut_for_variant():
     db = get_db()
     db.row_factory = dict_factory
     cur = get_db().cursor()
-    cur.execute('SELECT * FROM alamut_annotation WHERE ID = ?', [variant_id])
+    cur.execute('SELECT GROUP_CONCAT(DISTINCT "PMID:"||p.PMID||"\tRef:"||reference||"\tYear:"||year||"\tComment:"||comment||"<br>") AS publications, * FROM alamut_annotation\
+    LEFT JOIN publications2variants AS p2v ON p2v.varID = alamut_annotation.ID\
+    LEFT JOIN publications AS p ON p.PMID = p2v.PMID\
+    WHERE ID = ?', [variant_id])
+    
     #obs index out of bounds nar den er tom
     result = cur.fetchall()[0]
+    
+    #fjerne komma
+    try:
+        result['publications'] = result['publications'].replace('<br>,','<br>')
+    except:
+        pass
+
+
     db.close()
     return jsonify(result)
 
 ################################################################################################################################################
 
 if __name__ == '__main__':
-    app.run('172.16.0.56')
-    #app.run('0.0.0.0', port=8080)
+    #app.run('172.16.0.56')
+    app.run('0.0.0.0', port=8080)
 
 
     

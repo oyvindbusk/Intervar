@@ -46,7 +46,7 @@
 </div>
 </div>
 <div class="row">
-<div class="col-sm-3">
+<div class="col-sm-6">
 <dl class="dl-horizontal">
 <dt>Patient comment:</dt>
 <dd>{{ patient_comment }}</dd>
@@ -126,6 +126,18 @@
     </dl>
   </div>
 </div>
+<!-- publications-->
+<div class="row">
+<div class="col-md-12">
+<dl class="dl-horizontal" style="border: 2px solid black">
+<dt>Publications:</dt>
+<dd>{{ item.publications|safe }}</dd>
+</dl>
+</div>
+</div>
+
+<!-- -->
+
 <div class="row">
 <div class="col-sm-3 col-sm-offset-3">
 <dl class="dl-horizontal" style="border: 2px solid black">

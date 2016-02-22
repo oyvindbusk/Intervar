@@ -1,0 +1,69 @@
+<div id="myModal" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+       <button type="button" class="close" data-dismiss="modal">&times;</button>
+       <h4 class="modal-title">Enter variant</h4>
+     </div>
+     <div class="modal-body">
+       <p>Fill inn variant identification and get data from Alamut</p>
+       <form action="{{ url_for('showdb') }}/{{ pID }}" method=POST enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div class="row">
+          <div class="col-sm-6">
+            <fieldset class="form-group">
+             {{ form.chrom.label }}
+             {{ form.chrom(class="form-control") }}
+           </fieldset>
+         </div></div>
+         <div class="row">
+          <div class="col-sm-6">
+           <fieldset class="form-group">
+             {{ form.start.label }}
+             {{ form.start(class="form-control") }}
+           </fieldset>
+           <fieldset class="form-group">
+             {{ form.ref.label }}
+             {{ form.ref(class="form-control") }}
+           </fieldset>
+           <fieldset class="form-group">
+             {{ form.zyg.label }}
+             {{ form.zyg(class="form-control") }}
+           </fieldset>
+         </div>
+         <div class="col-sm-6">
+           <fieldset class="form-group">
+             {{ form.stop.label }}
+             {{ form.stop(class="form-control") }}
+           </fieldset>
+           <fieldset class="form-group">
+             {{ form.alt.label }}
+             {{ form.alt(class="form-control") }}
+           </fieldset>       
+           <fieldset class="form-group">
+             {{ form.denovo.label }}
+             {{ form.denovo(class="form-control") }}
+           </fieldset>
+         </div>
+       </div>
+       <div class="row">
+         <div class="col-sm-3">
+           <fieldset class="form-group">          
+             {{ form.submit(class="btn btn-primary") }}
+           </fieldset>
+         </form>
+       </div>
+       <div class="col-sm-2">
+         <button id="get_alamut" type="button" class="btn btn-default">Get Alamut</button>
+         
+       </div>
+     </div>
+   </div>
+
+   <div class="modal-footer">
+     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+   </div>
+ </div>
+</div>
+</div>
