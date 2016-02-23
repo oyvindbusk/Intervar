@@ -7,6 +7,8 @@
     // fill comment if exists:
     $('#comment').val('{{ patient_comment[0] | replace("\r\n", "\\n") }}')
     $('#filtus_settings').html(' {{ patient_comment[1] | replace("\r\n", "\\n")    }}' )
+    //autoadjust size according to text within
+    $('#filtus_settings').autosize();
     // hide ID col of table
     $('#variant_table td:nth-child(1),th:nth-child(1)').hide();
     // hide signed col of table

@@ -28,6 +28,9 @@ class VariantForm(Form):
     denovo = SelectField('Denovo', choices=[('0','No'),('1','Yes')], default='0')
     combo = TextField('Combofield')
     submit = SubmitField("Submit to DB")
+
+class deleteVariantForm(Form):
+    submit = SubmitField("Delete variant")
 	
 class SearchForm(Form):
     search = TextField("Search for Sample")

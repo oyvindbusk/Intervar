@@ -9,7 +9,7 @@ from datetime import datetime
 
 #importere egne scripts
 from scripts import PatientForm, VariantForm, SearchForm, PatientTable, VariantTable, listOfdictsFromCur, dictFromCur, print_file, hsmetrics_to_tuple, insert_data, get_values_from_form, insertsize_to_tuple, insert_data_is, get_variants_from_form
-from scripts import alamut_dict_to_DB, str_to_int_float, Interpret_overallForm, InterpretVariantForm, PublicationsForm, SampleOverviewTable
+from scripts import alamut_dict_to_DB, str_to_int_float, Interpret_overallForm, InterpretVariantForm, PublicationsForm, SampleOverviewTable, deleteVariantForm
 import json
 
 
@@ -239,6 +239,7 @@ def showdb(pID):
     iform = Interpret_overallForm()
     varIntForm = InterpretVariantForm()
     pubForm = PublicationsForm()
+    delform = deleteVariantForm()
     db = get_db()
     cur = get_db().cursor()    
     #variabler
@@ -286,6 +287,8 @@ def showdb(pID):
             cur.execute('INSERT OR REPLACE INTO publications (PMID, reference, year, comment) VALUES (?, ?, ?, ?)',(request.form['PMID'],request.form['reference'], request.form['year'], request.form['pcomment'].replace('\n','').replace('\r','')))
             cur.execute('INSERT OR REPLACE INTO publications2variants (PMID, varID) VALUES (?, ?)',(request.form['PMID'], int(request.form['pub2varID']) ))
             db.commit()
+        elif delform.validate_on_submit() and not request.is_xhr and request.form['submit'] == 'Delete variant':
+            print('oh yeah')
             #pubForm
     #hente ut pasientinfo for alle som er kjort
     cur.execute('SELECT * FROM patient_info')
@@ -326,7 +329,7 @@ def showdb(pID):
         patient_comment = ''
     
     db.close()
-    return render_template('showdb.html', patient_table=patient_table, var_table=var_table, form=form, pform=pform, iform=iform, pubForm=pubForm, varIntForm=varIntForm,  pID=pID, pID_patient=pID_patient, patient_comment=patient_comment)
+    return render_template('showdb.html', patient_table=patient_table, var_table=var_table, form=form, pform=pform, iform=iform, pubForm=pubForm, varIntForm=varIntForm,  pID=pID, pID_patient=pID_patient, patient_comment=patient_comment, delform=delform)
 
 ################################################################################################################################################
 
@@ -436,8 +439,8 @@ def _return_alamut_for_variant():
 ################################################################################################################################################
 
 if __name__ == '__main__':
-    app.run('172.16.0.56')
-    #app.run('0.0.0.0', port=8080)
+    #app.run('172.16.0.56')
+    app.run('0.0.0.0', port=8080)
 
 
     
