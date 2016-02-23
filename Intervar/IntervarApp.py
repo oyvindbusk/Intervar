@@ -259,12 +259,17 @@ def showdb(pID):
             db.commit()
         elif form.validate_on_submit() and not request.is_xhr and request.form['submit'] == "Submit to DB":
             print('#2#')
-            print(request.form['submit'])
-            variant_form_tuple = get_variants_from_form()
-            cur.execute("INSERT OR IGNORE INTO raw_variants (chr, start, stop, ref, alt, hg) VALUES (?, ?, ?, ?, ?, 'hg19')", [variant_form_tuple[0], variant_form_tuple[1], variant_form_tuple[2], variant_form_tuple[3], variant_form_tuple[4]])
-            variant_form_tuple = (pID,) + variant_form_tuple
-            cur.execute("INSERT INTO patient_info2raw_variants (patient_ID, chr, start, stop, ref, alt, zygosity, denovo ) VALUES (?, ?, ?, ?, ?, ?, ?,?)", variant_form_tuple) 
-            #insert into interpretations
+            if len(request.form['combo']) != 0:
+                variant_form_tuple = get_variants_from_form('combo')
+                cur.execute("INSERT OR IGNORE INTO raw_variants (chr, start, stop, ref, alt, hg) VALUES (?, ?, ?, ?, ?, 'hg19')", [variant_form_tuple[0], variant_form_tuple[1], variant_form_tuple[2], variant_form_tuple[3], variant_form_tuple[4]])
+                variant_form_tuple = (pID,) + variant_form_tuple
+                cur.execute("INSERT INTO patient_info2raw_variants (patient_ID, chr, start, stop, ref, alt, zygosity, denovo ) VALUES (?, ?, ?, ?, ?, ?, ?,?)", variant_form_tuple) 
+            else:
+                variant_form_tuple = get_variants_from_form('regular')
+                variant_form_tuple = get_variants_from_form()
+                cur.execute("INSERT OR IGNORE INTO raw_variants (chr, start, stop, ref, alt, hg) VALUES (?, ?, ?, ?, ?, 'hg19')", [variant_form_tuple[0], variant_form_tuple[1], variant_form_tuple[2], variant_form_tuple[3], variant_form_tuple[4]])
+                variant_form_tuple = (pID,) + variant_form_tuple
+                cur.execute("INSERT INTO patient_info2raw_variants (patient_ID, chr, start, stop, ref, alt, zygosity, denovo ) VALUES (?, ?, ?, ?, ?, ?, ?,?)", variant_form_tuple) 
             db.commit()
         elif iform.validate_on_submit() and not request.is_xhr and request.form['submit'] == 'Update':
             print('#4#')
@@ -302,7 +307,7 @@ def showdb(pID):
     WHERE patient_ID = ?\
     GROUP BY p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt', (pID, pID ))
     var_items = listOfdictsFromCur(cur.fetchall(), 'int_variants')
-    print(var_items[0])
+    #print(var_items[0])
     var_table = VariantTable(var_items,)
     #get patientinfo for a single patient assigned by pID
     cur.execute('SELECT pat.patient_ID, pat.clinical_info, pat.family_ID, pat.sex, pat.disease_category, pan.panel_name, QC.MEAN_TARGET_COVERAGE,\

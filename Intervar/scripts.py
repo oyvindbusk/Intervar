@@ -26,6 +26,7 @@ class VariantForm(Form):
     alt = TextField("Alternate Allele")
     zyg = SelectField('Zygosity', choices=[('HOM', 'Homozygous'),('HET', 'Heterozygous'), ('HEM', 'Hemizygous')])
     denovo = SelectField('Denovo', choices=[('0','No'),('1','Yes')], default='0')
+    combo = TextField('Combofield')
     submit = SubmitField("Submit to DB")
 	
 class SearchForm(Form):
@@ -132,8 +133,11 @@ def get_values_from_form(type='first_input'):
         form_tuple = (request.form['patient_ID'], request.form['familyID'], request.form['clinInfo'], request.form['sex'], request.form['panel'], request.form['dis_category'] )
     return form_tuple
 
-def get_variants_from_form():
-    variant_tuple = (request.form['chrom'], request.form['start'], request.form['stop'], request.form['ref'], request.form['alt'], request.form['zyg'], request.form['denovo'])
+def get_variants_from_form(type):
+    if type == 'regular':
+        variant_tuple = (request.form['chrom'], request.form['start'], request.form['stop'], request.form['ref'], request.form['alt'], request.form['zyg'], request.form['denovo'])
+    elif type == 'combo':
+        variant_tuple = (request.form['combo'].split()[0], request.form['combo'].split()[1], request.form['combo'].split()[2], request.form['combo'].split()[3], request.form['combo'].split()[4], request.form['zyg'], request.form['denovo'])
     return variant_tuple
 	
 #get info from hsmetrics-file into tuple (exluding sample name)
