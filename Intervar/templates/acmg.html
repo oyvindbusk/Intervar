@@ -86,8 +86,11 @@
       <dl>
         <dt>PVS1</dt>
         <dd>PVS1 null variant (nonsense, frameshift, canonical ±1 or 2 splice sites, initiation codon, single or multiexon deletion) in a gene where LOF is a known mechanism of disease</dd>
+      
       </dl>
+
     </div>
+
     <div class="col-sm-3">
       <div class="checkbox">
         <label>
@@ -95,6 +98,7 @@
         </label>
       </div>
     </div>
+
   </div>
   <!-- -->
   <div class="row"><div class="col-sm-7"><dl>
@@ -148,20 +152,81 @@
   <dd></dd>
 </dl></div><div class="col-sm-3"><div class="checkbox">
 <label>
-  <input type="checkbox" id="chkbx_PS5">
+  <input type="checkbox" id="chkbx_PM1">
+</label>
+</div></div></div>
+
+<!-- -->
+<div class="row"><div class="col-sm-7"><dl>
+  <dt>PM2</dt>
+  <dd></dd>
+</dl></div><div class="col-sm-3"><div class="checkbox">
+<label>
+  <input type="checkbox" id="chkbx_PM2">
+</label>
+</div></div></div>
+
+<!-- -->
+<div class="row"><div class="col-sm-7"><dl>
+  <dt>PM3</dt>
+  <dd></dd>
+</dl></div><div class="col-sm-3"><div class="checkbox">
+<label>
+  <input type="checkbox" id="chkbx_PM3">
+</label>
+</div></div></div>
+<!-- -->
+<div class="row"><div class="col-sm-7"><dl>
+  <dt>PM4</dt>
+  <dd></dd>
+</dl></div><div class="col-sm-3"><div class="checkbox">
+<label>
+  <input type="checkbox" id="chkbx_PM4">
+</label>
+</div></div></div>
+<!-- -->
+<div class="row"><div class="col-sm-7"><dl>
+  <dt>PM5</dt>
+  <dd></dd>
+</dl></div><div class="col-sm-3"><div class="checkbox">
+<label>
+  <input type="checkbox" id="chkbx_PM5">
+</label>
+</div></div></div>
+<!-- -->
+<div class="row"><div class="col-sm-7"><dl>
+  <dt>PM6</dt>
+  <dd></dd>
+</dl></div><div class="col-sm-3"><div class="checkbox">
+<label>
+  <input type="checkbox" id="chkbx_PM6">
 </label>
 </div></div></div>
 
 
 
-
-
-
-
-
-
-
-
+<!-- PP -->
+<!-- iteration to create PP5 -->
+{% set info_text = ['testing', 'test2', '','',''] %}
+{% for n in range(1,6) %}
+  <div class="row">
+    <div class="col-sm-7">
+      <dl>
+        <dt>PP{{ n }}</dt>
+        <dd>{{ info_text[n - 1] }}</dd>
+      </dl>
+    </div>
+    <div class="col-sm-3">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" id="chkbx_PP{{ n }}">
+        </label>
+      </div>
+    </div>
+  </div>  
+   
+    
+{% endfor %}
 
 
 
