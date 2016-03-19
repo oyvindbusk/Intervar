@@ -78,7 +78,6 @@
       }); 
   });
 </script>
-
 <div class="jumbotron container-fluid">
 <h2>ACMG Standards And Guidelines interpretations.</h2><hr>
   <div class="row">
@@ -86,11 +85,8 @@
       <dl>
         <dt>PVS1</dt>
         <dd>PVS1 null variant (nonsense, frameshift, canonical ±1 or 2 splice sites, initiation codon, single or multiexon deletion) in a gene where LOF is a known mechanism of disease</dd>
-      
       </dl>
-
     </div>
-
     <div class="col-sm-3">
       <div class="checkbox">
         <label>
@@ -98,116 +94,73 @@
         </label>
       </div>
     </div>
-
   </div>
-  <!-- -->
-  <div class="row"><div class="col-sm-7"><dl>
-    <dt>PS1</dt>
-    <dd>PS1 Same amino acid change as a previously established pathogenic variant regardless of nucleotide change</dd>
-  </dl>
-</div>
-<div class="col-sm-3">
-  <div class="checkbox">
-    <label>
-      <input type="checkbox" id="chkbx_PS1">
-    </label>
-  </div>
-</div>
-</div>
-
-<!-- -->
-<div class="row"><div class="col-sm-7"><dl>
-  <dt>PS2</dt>
-  <dd>De novo (both maternity and paternity confirmed) in a patient with the disease and no family history<br>
-    Note: Confirmation of paternity only is insufficient. Egg donation, surrogate motherhood, errors in embryo transfer, and so on, can contribute to nonmaternity.</dd>
-  </dl></div><div class="col-sm-3"><div class="checkbox">
-  <label>
-    <input type="checkbox" id="chkbx_PS2">
-  </label>
-</div></div>
-</div>
-<!-- -->
-<div class="row"><div class="col-sm-7"><dl>
-  <dt>PS3</dt>
-  <dd>Well-established in vitro or in vivo functional studies supportive of a damaging effect on the gene or gene  product</dd>
-</dl></div><div class="col-sm-3"><div class="checkbox">
-<label>
-  <input type="checkbox" id="chkbx_PS3">
-</label>
-</div></div></div>
-
-<!-- -->
-<div class="row"><div class="col-sm-7"><dl>
-  <dt>PS4</dt>
-  <dd>The prevalence of the variant in affected individuals is significantly increased compared with the prevalence in controls</dd>
-</dl></div><div class="col-sm-3"><div class="checkbox">
-<label>
-  <input type="checkbox" id="chkbx_PS4">
-</label>
-</div></div></div>
-
-<!-- -->
-<div class="row"><div class="col-sm-7"><dl>
-  <dt>PM1</dt>
-  <dd></dd>
-</dl></div><div class="col-sm-3"><div class="checkbox">
-<label>
-  <input type="checkbox" id="chkbx_PM1">
-</label>
-</div></div></div>
-
-<!-- -->
-<div class="row"><div class="col-sm-7"><dl>
-  <dt>PM2</dt>
-  <dd></dd>
-</dl></div><div class="col-sm-3"><div class="checkbox">
-<label>
-  <input type="checkbox" id="chkbx_PM2">
-</label>
-</div></div></div>
-
-<!-- -->
-<div class="row"><div class="col-sm-7"><dl>
-  <dt>PM3</dt>
-  <dd></dd>
-</dl></div><div class="col-sm-3"><div class="checkbox">
-<label>
-  <input type="checkbox" id="chkbx_PM3">
-</label>
-</div></div></div>
-<!-- -->
-<div class="row"><div class="col-sm-7"><dl>
-  <dt>PM4</dt>
-  <dd></dd>
-</dl></div><div class="col-sm-3"><div class="checkbox">
-<label>
-  <input type="checkbox" id="chkbx_PM4">
-</label>
-</div></div></div>
-<!-- -->
-<div class="row"><div class="col-sm-7"><dl>
-  <dt>PM5</dt>
-  <dd></dd>
-</dl></div><div class="col-sm-3"><div class="checkbox">
-<label>
-  <input type="checkbox" id="chkbx_PM5">
-</label>
-</div></div></div>
-<!-- -->
-<div class="row"><div class="col-sm-7"><dl>
-  <dt>PM6</dt>
-  <dd></dd>
-</dl></div><div class="col-sm-3"><div class="checkbox">
-<label>
-  <input type="checkbox" id="chkbx_PM6">
-</label>
-</div></div></div>
 
 
+
+
+
+<!-- PS -->
+<!-- iteration to create PS4 -->
+{% set info_text = ['Same amino acid change as a previously established pathogenic variant regardless of nucleotide change',
+ 'De novo (both maternity and paternity confirmed) in a patient with the disease and no family history
+    Note: Confirmation of paternity only is insufficient. Egg donation, surrogate motherhood, errors in embryo transfer, and so on, can contribute to nonmaternity.',
+     'Well-established in vitro or in vivo functional studies supportive of a damaging effect on the gene or gene  product',
+     'The prevalence of the variant in affected individuals is significantly increased compared with the prevalence in controls'] %}
+{% for n in range(1,5) %}
+  <div class="row">
+    <div class="col-sm-7">
+      <dl>
+        <dt>PS{{ n }}</dt>
+        <dd>{{ info_text[n - 1] }}</dd>
+      </dl>
+    </div>
+    <div class="col-sm-3">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" id="chkbx_PS{{ n }}">
+        </label>
+      </div>
+    </div>
+  </div>  
+{% endfor %}
+
+
+
+<!-- PM -->
+<!-- iteration to create PM6 -->
+{% set info_text = ['Located in a mutational hot spot and/or critical and well-established functional domain (e.g., active site of an enzyme) without benign variation',
+ 'Absent from controls (or at extremely low frequency if recessive) (Table 6) in Exome Sequencing Project, 1000 Genomes Project, or Exome Aggregation Consortium',
+  'For recessive disorders, detected in trans with a pathogenic variant',
+  'Protein length changes as a result of in-frame deletions/insertions in a nonrepeat region or stop-loss variants',
+  'Novel missense change at an amino acid residue where a different missense change determined to be pathogenic has been seen before',
+  'Assumed de novo, but without confirmation of paternity and maternity'] %}
+{% for n in range(1,7) %}
+  <div class="row">
+    <div class="col-sm-7">
+      <dl>
+        <dt>PM{{ n }}</dt>
+        <dd>{{ info_text[n - 1] }}</dd>
+      </dl>
+    </div>
+    <div class="col-sm-3">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" id="chkbx_PM{{ n }}">
+        </label>
+      </div>
+    </div>
+  </div>  
+{% endfor %}
 
 <!-- PP -->
 <!-- iteration to create PP5 -->
-{% set info_text = ['testing', 'test2', '','',''] %}
+{% set info_text = ['Cosegregation with disease in multiple affected family members in a gene definitively known to cause the disease',
+ 'Missense variant in a gene that has a low rate of benign missense variation and in which missense variants
+are a common mechanism of disease',
+  'Multiple lines of computational evidence support a deleterious effect on the gene or gene product  (conservation, evolutionary, splicing impact, etc.)',
+  'Patient’s phenotype or family history is highly specific for a disease with a single genetic etiology',
+  'Reputable source recently reports variant as pathogenic, but the evidence is not available to the laboratory to perform an independent evaluation'] %}
 {% for n in range(1,6) %}
   <div class="row">
     <div class="col-sm-7">
@@ -224,20 +177,11 @@
       </div>
     </div>
   </div>  
-   
-    
 {% endfor %}
-
-
-
-
 
 
 <hr>
 <p id="class"></p>
-
-
-
 
 </div> 
 
