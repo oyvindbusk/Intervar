@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<script type=text/javascript>
+  $(function() {
+    $('#class').text('ACMG class: 3');
+    var PVS1 = false;
+    var PS_count = 0
+    var PS1 = false;
+    var PS2 = false;
+    var PS3 = false;
+    var PS4 = false;
+    var PM_count = 0 ;
+    var PM1 = false;
+    var PM2 = false;
+    var PM3 = false;
+    var PM4 = false;
+    var PM5 = false;
+    var PM6 = false;
+    var PP_count = 1;
+    var PP1 = false;
+    var PP2 = false;
+    var PP3 = false;
+    var PP4 = false;
+    var PP5 = false;
+    var pathogenic_class = 3;
+    var benign_class = 3;
+    
+    // Set zero on all the variables:
+    function setzero(){
+      PVS1 = false;
+      PS1 = false;
+      PS2 = false;
+      PS3 = false;
+      PS4 = false;
+      PS_count = 0;
+      pathogenic_class = 3;
+      benign_class = 3;
+    };
+    
+    // Use the checkbox values to get an ACMG-class
+    function pathogenic_get_class() {
+      if ( PVS1 == true ) {
+        pathogenic_class = 5
+      } 
+    };
+
+    // Collect the values from the checkboxes
+    function get_values_from_checkboxes() {
+      if ( $('#chkbx_PVS1').prop('checked') == true ) {
+        PVS1 = true
+      }
+      if ( $('#chkbx_PS1').prop('checked') == true ) {
+        PS_count += 1
+      }
+      if ( $('#chkbx_PS2').prop('checked') == true ) {
+        PS_count += 1
+      }
+      if ( $('#chkbx_PS3').prop('checked') == true ) {
+        PS_count += 1
+      }
+      if ( $('#chkbx_PS4').prop('checked') == true ) {
+        PS_count += 1
+      }
+     
+    };
+
+    //When a box status is altered:
+    $(':checkbox').change(function() {
+      // set all variables back to scracth
+      setzero()
+        get_values_from_checkboxes()
+        pathogenic_get_class()
+
+        $('#class').text('ACMG class: ' + String(pathogenic_class));
+        console.log(PS_count)
+
+      }); 
+  });
+</script>
+<div class="jumbotron container-fluid">
+<h2>ACMG Standards And Guidelines interpretations.</h2><hr>
+  <div class="row">
+    <div class="col-sm-7">
+      <dl>
+        <dt>PVS1</dt>
+        <dd>PVS1 null variant (nonsense, frameshift, canonical ±1 or 2 splice sites, initiation codon, single or multiexon deletion) in a gene where LOF is a known mechanism of disease</dd>
+      </dl>
+    </div>
+    <div class="col-sm-3">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" id="chkbx_PVS1">
+        </label>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+<!-- PS -->
+<!-- iteration to create PS4 -->
+{% set info_text = ['Same amino acid change as a previously established pathogenic variant regardless of nucleotide change',
+ 'De novo (both maternity and paternity confirmed) in a patient with the disease and no family history
+    Note: Confirmation of paternity only is insufficient. Egg donation, surrogate motherhood, errors in embryo transfer, and so on, can contribute to nonmaternity.',
+     'Well-established in vitro or in vivo functional studies supportive of a damaging effect on the gene or gene  product',
+     'The prevalence of the variant in affected individuals is significantly increased compared with the prevalence in controls'] %}
+{% for n in range(1,5) %}
+  <div class="row">
+    <div class="col-sm-7">
+      <dl>
+        <dt>PS{{ n }}</dt>
+        <dd>{{ info_text[n - 1] }}</dd>
+      </dl>
+    </div>
+    <div class="col-sm-3">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" id="chkbx_PS{{ n }}">
+        </label>
+      </div>
+    </div>
+  </div>  
+{% endfor %}
+
+
+
+<!-- PM -->
+<!-- iteration to create PM6 -->
+{% set info_text = ['Located in a mutational hot spot and/or critical and well-established functional domain (e.g., active site of an enzyme) without benign variation',
+ 'Absent from controls (or at extremely low frequency if recessive) (Table 6) in Exome Sequencing Project, 1000 Genomes Project, or Exome Aggregation Consortium',
+  'For recessive disorders, detected in trans with a pathogenic variant',
+  'Protein length changes as a result of in-frame deletions/insertions in a nonrepeat region or stop-loss variants',
+  'Novel missense change at an amino acid residue where a different missense change determined to be pathogenic has been seen before',
+  'Assumed de novo, but without confirmation of paternity and maternity'] %}
+{% for n in range(1,7) %}
+  <div class="row">
+    <div class="col-sm-7">
+      <dl>
+        <dt>PM{{ n }}</dt>
+        <dd>{{ info_text[n - 1] }}</dd>
+      </dl>
+    </div>
+    <div class="col-sm-3">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" id="chkbx_PM{{ n }}">
+        </label>
+      </div>
+    </div>
+  </div>  
+{% endfor %}
+
+<!-- PP -->
+<!-- iteration to create PP5 -->
+{% set info_text = ['Cosegregation with disease in multiple affected family members in a gene definitively known to cause the disease',
+ 'Missense variant in a gene that has a low rate of benign missense variation and in which missense variants
+are a common mechanism of disease',
+  'Multiple lines of computational evidence support a deleterious effect on the gene or gene product  (conservation, evolutionary, splicing impact, etc.)',
+  'Patient’s phenotype or family history is highly specific for a disease with a single genetic etiology',
+  'Reputable source recently reports variant as pathogenic, but the evidence is not available to the laboratory to perform an independent evaluation'] %}
+{% for n in range(1,6) %}
+  <div class="row">
+    <div class="col-sm-7">
+      <dl>
+        <dt>PP{{ n }}</dt>
+        <dd>{{ info_text[n - 1] }}</dd>
+      </dl>
+    </div>
+    <div class="col-sm-3">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" id="chkbx_PP{{ n }}">
+        </label>
+      </div>
+    </div>
+  </div>  
+{% endfor %}
+
+
+<hr>
+<p id="class"></p>
+
+</div> 
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+
+<!--
+
+PVS1 null variant (nonsense, frameshift, canonical ±1 or 2 splice sites, initiation codon, single or multiexon deletion) in a gene where LOF is a known mechanism of disease
+  Caveats:
+    •  Beware of genes where LOF is not a known disease mechanism (e.g., GFAP, MYH7)
+    •  Use caution interpreting LOF variants at the extreme 3′ end of a gene
+    •   Use caution with splice variants that are predicted to lead to exon skipping but leave the remainder of the  protein intact
+    •  Use caution in the presence of multiple transcripts
+
+PS1 Same amino acid change as a previously established pathogenic variant regardless of nucleotide change
+  Example: Val→Leu caused by either G>C or G>T in the same codon
+  Caveat: Beware of changes that impact splicing rather than at the amino acid/protein level
+
+PS2 De novo (both maternity and paternity confirmed) in a patient with the disease and no family history
+  Note: Confirmation of paternity only is insufficient. Egg donation, surrogate motherhood, errors in embryo transfer, and so on, can contribute to nonmaternity.
+PS3 Well-established in vitro or in vivo functional studies supportive of a damaging effect on the gene or gene  product
+  Note: Functional studies that have been validated and shown to be reproducible and robust in a clinical diagnostic laboratory setting are considered the most well established.
+PS4 The prevalence of the variant in affected individuals is significantly increased compared with the prevalence in controls
+  Note 1: Relative risk or OR, as obtained from case–control studies, is >5.0, and the confidence interval around the estimate of relative risk or OR does not include 1.0. See the article for detailed guidance.
+  Note 2: In instances of very rare variants where case–control studies may not reach statistical significance, the prior observation of the variant in multiple unrelated patients with the same phenotype, and its absence in controls, may be used as moderate level of evidence.
+
+PM1 Located in a mutational hot spot and/or critical and well-established functional domain (e.g., active site of an enzyme) without benign variation
+PM2 Absent from controls (or at extremely low frequency if recessive) (Table 6) in Exome Sequencing Project, 1000 Genomes Project, or Exome Aggregation Consortium
+  Caveat: Population data for insertions/deletions may be poorly called by next-generation sequencing.
+PM3 For recessive disorders, detected in trans with a pathogenic variant
+  Note: This requires testing of parents (or offspring) to determine phase.
+PM4 Protein length changes as a result of in-frame deletions/insertions in a nonrepeat region or stop-loss variants
+PM5 Novel missense change at an amino acid residue where a different missense change determined to be pathogenic has been seen before
+  Example: Arg156His is pathogenic; now you observe Arg156Cys
+  Caveat: Beware of changes that impact splicing rather than at the amino acid/protein level.
+PM6 Assumed de novo, but without confirmation of paternity and maternity
+
+PP1 Cosegregation with disease in multiple affected family members in a gene definitively known to cause the disease
+  Note: May be used as stronger evidence with increasing segregation data
+PP2 Missense variant in a gene that has a low rate of benign missense variation and in which missense variants
+are a common mechanism of disease
+PP3 Multiple lines of computational evidence support a deleterious effect on the gene or gene product  (conservation, evolutionary, splicing impact, etc.)
+  Caveat: Because many in silico algorithms use the same or very similar input for their predictions, each algorithm should not be counted as an independent criterion. PP3 can be used only once in any evaluation of  a variant.
+PP4 Patient’s phenotype or family history is highly specific for a disease with a single genetic etiology
+PP5 Reputable source recently reports variant as pathogenic, but the evidence is not available to the laboratory to perform an independent evaluation
+-->

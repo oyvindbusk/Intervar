@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <h1 id="home-title">InterVar Interpretor (Beta) | A Busk production</h1>
+  <div class="row">
+    <div id="home-searchbox">
+      <!--Insert flask style form??-->
+      <form action="/interpret" method=POST>
+        <input type="submit" style="display: none;"/>
+        {{ form.search(class="form-control input-lg awesomebar", type="text", placeholder="Search for sample") }}
+        <input type="submit" style="position: absolute; left: -9999px"/>
+      </form>
+      <p class="text-muted">
+        Examples - Patient: <a href="{{ url_for('showdb') }}/123_15">123_15</a>         
+      </p>
+      <div class="row" style="font-size: 16px;">
+        <div class="col-md-8">
+          <h3 align="center"> <a href="/about" style="color: black;">About InterVar</a></h3>
+          <div>
+            <p>
+              I should probably write something clever about the app here, but the main thing is it is quite cool how it looks like the ExAC-browser.
+            </p>
+            <p>
+              Same thing here, but what to write...A kingdom for a horse.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <h3 align="center">Recent News</h3>
+          <h4>January 13, 2016</h4> - Version 0.01 InterVar data and browser (beta) is released! 
+          <hr>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+{% endblock %}
