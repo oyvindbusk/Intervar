@@ -435,6 +435,11 @@ def _return_alamut_for_variant():
 
     db.close()
     return jsonify(result)
+#############################
+@app.route('/acmg')
+def acmg():
+    return render_template('acmg.html')
+
 
 ################################################################################################################################################
 
