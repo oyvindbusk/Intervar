@@ -43,7 +43,7 @@ class Interpret_overallForm(Form):
 class InterpretVariantForm(Form):
     comments = TextAreaField("Comments")
     varid = HiddenField("varid", default="testing")
-    inhouse_class = SelectField('Inhouse Class', choices=[('1', '1'),('2', '2'), ('3', '3'), ('4', '4'), ('5', '5')], default='3')
+    inhouse_class = SelectField('Inhouse Class', choices=[('1', '1'),('2', '2'), ('3', '3'), ('4', '4'), ('5', '5'), ('0', '0'), ('6', 'Not considered')], default='3')
     acmg_class = SelectField('ACMG Class', choices=[('1', '1'),('2', '2'), ('3', '3'), ('4', '4'), ('5', '5')], default='3')
     submit = SubmitField("Submit comment")
 
