@@ -352,7 +352,7 @@ def report(pID="123_15"):
     am.ID, am.gene, am.gNomen AS gDNA, am.cNomen AS cDNA, am.pNomen AS protein, am.exacAllFreq, am.clinVarPhenotypes,\
     am.clinVarClinSignifs, am.transcript, am.codingEffect, am.hgmdId, am.hgmdPhenotype, am.varLocation, am.localSpliceEffect, am.rsClinicalSignificance, am.exacNFEFreq, am.espEAMAF, am.espAltEACount, am.espRefEACount, am.conservedOrthos, am.AGVGDclass, am.SIFTprediction, am.TASTERprediction, \
     am.exon, am.rsId, am.wtMaxEntScore, am.varMaxEntScore, am.wtNNSScore, am.varNNSScore, am.wtHSFScore, am.varHSFScore,\
-    MAX(i.ID), i.inhouse_class, i.acmg_class, i.interpretor, i.comments, MAX(i.signed) AS MaxSigned, GROUP_CONCAT(DISTINCT "PMID:"||p.PMID||"\tRef:"||reference||"\tYear:"||year||"\tComment:"||comment||"<br>") AS publications, sub.concat\
+    i.ID, i.inhouse_class, i.acmg_class, i.interpretor, i.comments, MAX(i.signed), GROUP_CONCAT(DISTINCT "PMID:"||p.PMID||"\tRef:"||reference||"\tYear:"||year||"\tComment:"||comment||"<br>") AS publications, sub.concat\
     FROM patient_info2raw_variants AS p2r\
     LEFT JOIN alamut_annotation AS am ON p2r.chr = am.chrom AND p2r.start = am.gDNAstart\
     LEFT JOIN interpretations AS i ON p2r.patient_ID = i.SAMPLE_NAME AND p2r.chr = i.chr AND p2r.start =i.start\
