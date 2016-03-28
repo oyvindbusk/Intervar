@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, abort, redirect, url_for, flash, g, send_from_directory, jsonify
-from flask.ext.login import LoginManager, UserMixin, login_user, logout_user, login_required
+from flask.ext.login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from flask.ext.sqlalchemy import SQLAlchemy
 import os
 import sqlite3
@@ -52,6 +52,8 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String)
     password = db.Column(db.String)
+
+
 
 @login_manager.user_loader
 def user_loader(user_id):
@@ -276,10 +278,10 @@ def showdb(pID):
             print('#4#')
             cur.execute('INSERT OR REPLACE INTO interpretations_pr_patient (patient_ID, comments, date, filtus_settings) VALUES (?, ?, ?, ?)', (pID, request.form['comment'], str(datetime.now()).split(' ')[0], request.form['filtus_settings']))
             db.commit()
-        elif varIntForm.validate_on_submit() and not request.is_xhr and request.form['submit'] == 'Submit comment':
+        elif varIntForm.validate_on_submit() and not request.is_xhr and request.form['submit'] == 'Submit comment/class':
             print('#5#')
             #must get variant chr, start, ref, alt
-            cur.execute('INSERT OR REPLACE INTO interpretations (SAMPLE_NAME, comments, chr, start, stop, ref, alt, inhouse_class, acmg_class, signed) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (pID, request.form['comments'].replace('\n','').replace('\r',''), request.form['varid'].split('|')[0] , request.form['varid'].split('|')[1] ,request.form['varid'].split('|')[2] ,request.form['varid'].split('|')[3] ,request.form['varid'].split('|')[4], request.form['inhouse_class'], request.form['acmg_class'], str(datetime.now()).split(' ')[0]))
+            cur.execute('INSERT OR REPLACE INTO interpretations (SAMPLE_NAME, comments, chr, start, stop, ref, alt, inhouse_class, acmg_class, signed, interpretor) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (pID, request.form['comments'].replace('\n','').replace('\r',''), request.form['varid'].split('|')[0] , request.form['varid'].split('|')[1] ,request.form['varid'].split('|')[2] ,request.form['varid'].split('|')[3] ,request.form['varid'].split('|')[4], request.form['inhouse_class'], request.form['acmg_class'], str(datetime.now()).split(' ')[0], current_user.username))
             db.commit()
         elif varIntForm.validate_on_submit() and not request.is_xhr and request.form['submit'] == 'Submit publication':
             print('#6#')
@@ -332,7 +334,6 @@ def showdb(pID):
     return render_template('showdb.html', patient_table=patient_table, var_table=var_table, form=form, pform=pform, iform=iform, pubForm=pubForm, varIntForm=varIntForm,  pID=pID, pID_patient=pID_patient, patient_comment=patient_comment, delform=delform)
 
 ################################################################################################################################################
-
 
 
 ################################################################################################################################################
