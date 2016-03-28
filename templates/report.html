@@ -6,13 +6,12 @@
     $("dd:empty").prev().andSelf().css('opacity', '0.5');
     $( "dd[name|='pub']:contains('None')").parent('dl').css('opacity', '0.5');
     $("dd:contains('None')").prev().andSelf().css('opacity', '0.5');
-    
-    
+
   });
 </script>
 <div class="container">
 	<div class="row">
-   <div class="col-md-10">        
+   <div class="col-md-10">
      <h1>Report for: {{ pID }}</h1>
    </div>
  </div>
@@ -71,7 +70,7 @@
 </div>
 </div>
 
-<h3>Interpreted variants for {{ pID }}:</h3> 
+<h3>Interpreted variants for {{ pID }}:</h3>
 <hr>
 
 {% for item in var_items %}
@@ -79,7 +78,7 @@
   <div class="col-md-6">
     <dl class="dl-horizontal">
       <dt>Position:</dt>
-      <dd>Chr{{ item.chrom }}:{{ item.start }}-{{ item.stop }} {{ item.ref }} {{ item.alt }}</dd>            
+      <dd>Chr{{ item.chrom }}:{{ item.start }}-{{ item.stop }} {{ item.ref }} {{ item.alt }}</dd>
       <dt>Zygosity:</dt>
       <dd>{{ item.zygosity }}</dd>
       <dt>Gene</dt>
@@ -208,12 +207,12 @@
 <div class="jumbotron container-fluid">
 <p>Signature:</p>
 <small>Comments:</small>
-</div> 
+</div>
 <!--
 On the bottom of the page, the comment pr patient should be displayed, and a field for the geneticist to enter initials and comments
 
 
---> 
+-->
 
 </div>
 {% endblock %}
