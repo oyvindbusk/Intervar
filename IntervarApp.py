@@ -40,7 +40,7 @@ def get_db():
     if db is None:
         db = g._database = connect_to_database()
     return db
-    
+
 @app.teardown_appcontext
 def close_connection(exception):
     db = getattr(g, '_database', None)
@@ -63,7 +63,7 @@ def user_loader(user_id):
 @app.before_first_request
 def init_request():
     db.create_all()
-    
+
 
 @app.route('/logout')
 def logout():
@@ -77,13 +77,11 @@ def register():
     elif request.method == 'POST':
         username = request.form['txtUsername']
         password = request.form['txtPassword']
-
         user = User.query.filter_by(username=username)
         if user.count() == 0:
             user = User(username=username, password=password)
             db.session.add(user)
             db.session.commit()
-
             flash('You have registered the username {0}. Please login'.format(username))
             return redirect(url_for('login'))
         else:
@@ -145,13 +143,15 @@ def testinput():
                 # maa oppdatere databasen first
             db.commit()
             db.close()
-            return "Suksess"
+            flash('Suksess inserting sample {0}'.format(request.form['patient_ID']))
+            return redirect(url_for('testinput'))
+
         else:
             return abort(404)
     elif request.method == "GET":
         return render_template('testinput.html', form=form)
 
-################################################################################################################################################		
+################################################################################################################################################
 
 @app.route('/overview')
 @login_required
@@ -169,7 +169,7 @@ def overview():
     overview_dict.update({'F_patients': cur.fetchall()[0][0]})
     cur.execute('SELECT COUNT(*) FROM patient_info WHERE sex = "M"')
     overview_dict.update({'M_patients': cur.fetchall()[0][0]})
-    
+
     #get number of samples PASS QC
     #SELECT COUNT(*) FROM patient_info
     #LEFT JOIN QC
@@ -185,7 +185,7 @@ def overview():
     #get mean coverage for alle samples
     #SELECT AVG(MEAN_TARGET_COVERAGE) FROM QC;
 
-    
+
     # get data for plot of coverage pr run
     cur.execute('SELECT runs.sbs, pi2p.panel_name, qc.MEAN_TARGET_COVERAGE, qc.SAMPLE_NAME FROM QC AS qc \
     JOIN runs ON runs.patient_ID=qc.SAMPLE_NAME \
@@ -195,24 +195,24 @@ def overview():
     cur.execute("SELECT r.sbs, pi2p.panel_name AS 'Panel name', COUNT(qc.SAMPLE_NAME) AS 'Number of samples', AVG(qc.MEAN_TARGET_COVERAGE) AS 'Average coverage' FROM QC as qc JOIN runs AS r ON r.patient_ID=qc.SAMPLE_NAME JOIN patient_info2panels AS pi2p ON pi2p.patient_ID=qc.SAMPLE_NAME GROUP BY r.sbs, pi2p.panel_name")
     overview_items = listOfdictsFromCur(cur.fetchall(), 'overview_table')
     overview_table = SampleOverviewTable(overview_items,)
-    
+
     '''
     Select for the average coverage grouped by panel and run.
     SELECT runs.sbs, pi2p.panel_name, AVG(qc.MEAN_TARGET_COVERAGE) FROM QC AS qc
-JOIN runs ON runs.patient_ID=qc.SAMPLE_NAME
-JOIN patient_info2panels AS pi2p ON pi2p.patient_ID=qc.SAMPLE_NAME
-GROUP BY runs.sbs, pi2p.panel_name
-    
+    JOIN runs ON runs.patient_ID=qc.SAMPLE_NAME
+    JOIN patient_info2panels AS pi2p ON pi2p.patient_ID=qc.SAMPLE_NAME
+    GROUP BY runs.sbs, pi2p.panel_name
 
 
-SELECT r.sbs, pi2p.panel_name AS "Panel name", COUNT(qc.SAMPLE_NAME) AS "Number of samples", AVG(qc.MEAN_TARGET_COVERAGE) AS "Average coverage" FROM QC as qc
-JOIN runs AS r ON r.patient_ID=qc.SAMPLE_NAME
-JOIN patient_info2panels AS pi2p ON pi2p.patient_ID=qc.SAMPLE_NAME
-GROUP BY r.sbs, pi2p.panel_name
-listOfdictsFromCur(cur.fetchall,overview_table)
+
+    SELECT r.sbs, pi2p.panel_name AS "Panel name", COUNT(qc.SAMPLE_NAME) AS "Number of samples", AVG(qc.MEAN_TARGET_COVERAGE) AS "Average coverage" FROM QC as qc
+    JOIN runs AS r ON r.patient_ID=qc.SAMPLE_NAME
+    JOIN patient_info2panels AS pi2p ON pi2p.patient_ID=qc.SAMPLE_NAME
+    GROUP BY r.sbs, pi2p.panel_name
+    listOfdictsFromCur(cur.fetchall,overview_table)
 
     '''
-        
+
     db.close()
     return render_template('overview.html', overview_dict=overview_dict, coverage_data=coverage_data, overview_table=overview_table)
 
@@ -227,8 +227,8 @@ def interpret():
     return render_template('interpret.html', form=form)
 		#should contain a search bar like:  http://exac.broadinstitute.org which will lead to a specific sample interpetation.
 
-################################################################################################################################################	
-	
+################################################################################################################################################
+
 @app.route('/showdb', methods=['GET', 'POST'])
 @app.route('/showdb/<pID>', methods=['GET', 'POST'])
 @login_required
@@ -241,12 +241,12 @@ def showdb(pID):
     pubForm = PublicationsForm()
     delform = deleteVariantForm()
     db = get_db()
-    cur = get_db().cursor()    
+    cur = get_db().cursor()
     #variabler
     patient_comment = ''
-    
+
     if request.method == 'POST':
-        if request.is_xhr: # checking if this comes 
+        if request.is_xhr: # checking if this comes
             print('#3#')
             alamut_dict = request.get_json(force=True)
             print(alamut_dict)
@@ -256,7 +256,7 @@ def showdb(pID):
         elif pform.validate_on_submit() and not request.is_xhr:
             print('#1#')
             cur.execute("INSERT OR REPLACE INTO patient_info (patient_ID, family_ID, clinical_info, sex, disease_category) VALUES ( ?, ?, ?, ?, ?)", (pID, request.form['familyID'], request.form['clinInfo'], request.form['sex'], request.form['dis_category']) )
-            cur.execute("UPDATE patient_info2panels SET panel_name = ? WHERE patient_ID = ?", (request.form['panel'], pID)) 
+            cur.execute("UPDATE patient_info2panels SET panel_name = ? WHERE patient_ID = ?", (request.form['panel'], pID))
             db.commit()
         elif form.validate_on_submit() and not request.is_xhr and request.form['submit'] == "Submit to DB":
             print('#2#')
@@ -264,13 +264,13 @@ def showdb(pID):
                 variant_form_tuple = get_variants_from_form('combo')
                 cur.execute("INSERT OR IGNORE INTO raw_variants (chr, start, stop, ref, alt, hg) VALUES (?, ?, ?, ?, ?, 'hg19')", [variant_form_tuple[0], variant_form_tuple[1], variant_form_tuple[2], variant_form_tuple[3], variant_form_tuple[4]])
                 variant_form_tuple = (pID,) + variant_form_tuple
-                cur.execute("INSERT INTO patient_info2raw_variants (patient_ID, chr, start, stop, ref, alt, zygosity, denovo ) VALUES (?, ?, ?, ?, ?, ?, ?,?)", variant_form_tuple) 
+                cur.execute("INSERT INTO patient_info2raw_variants (patient_ID, chr, start, stop, ref, alt, zygosity, denovo ) VALUES (?, ?, ?, ?, ?, ?, ?,?)", variant_form_tuple)
             else:
                 variant_form_tuple = get_variants_from_form('regular')
                 variant_form_tuple = get_variants_from_form()
                 cur.execute("INSERT OR IGNORE INTO raw_variants (chr, start, stop, ref, alt, hg) VALUES (?, ?, ?, ?, ?, 'hg19')", [variant_form_tuple[0], variant_form_tuple[1], variant_form_tuple[2], variant_form_tuple[3], variant_form_tuple[4]])
                 variant_form_tuple = (pID,) + variant_form_tuple
-                cur.execute("INSERT INTO patient_info2raw_variants (patient_ID, chr, start, stop, ref, alt, zygosity, denovo ) VALUES (?, ?, ?, ?, ?, ?, ?,?)", variant_form_tuple) 
+                cur.execute("INSERT INTO patient_info2raw_variants (patient_ID, chr, start, stop, ref, alt, zygosity, denovo ) VALUES (?, ?, ?, ?, ?, ?, ?,?)", variant_form_tuple)
             db.commit()
         elif iform.validate_on_submit() and not request.is_xhr and request.form['submit'] == 'Update':
             print('#4#')
@@ -322,12 +322,12 @@ def showdb(pID):
     #get comments for the interpretations of one patient:
     cur.execute('SELECT comments, filtus_settings FROM interpretations_pr_patient WHERE patient_ID = ?', (pID, ))
     try:
-        patient_comment = cur.fetchall()[0]     
+        patient_comment = cur.fetchall()[0]
     except:
         pass
     if len(patient_comment) == 0:
         patient_comment = ''
-    
+
     db.close()
     return render_template('showdb.html', patient_table=patient_table, var_table=var_table, form=form, pform=pform, iform=iform, pubForm=pubForm, varIntForm=varIntForm,  pID=pID, pID_patient=pID_patient, patient_comment=patient_comment, delform=delform)
 
@@ -335,20 +335,20 @@ def showdb(pID):
 
 
 
-################################################################################################################################################	
-	
+################################################################################################################################################
+
 @app.route('/report', methods=['GET', 'POST'])
 @app.route('/report/<pID>', methods=['GET', 'POST'])
 @login_required
 def report(pID="123_15"):
     # legge inn en count paa hvor mange tolkninger som er utfort, og velge den hvis 1, mens hvis det er flere, faa ett valg? vrient... velge en forst og fremst
-    
+
     db = get_db()
     cur = get_db().cursor()
     filtus_and_comment = ''
     #hente ut tolkede varianter for en pasient Ha med alt relevant fra Alamut..
-     
-    
+
+
     #
     cur.execute('SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt, p2r.zygosity,\
     am.ID, am.gene, am.cNomen AS cDNA, am.pNomen AS protein, am.exacAllFreq, am.clinVarPhenotypes,\
@@ -369,21 +369,15 @@ def report(pID="123_15"):
     WHERE patient_ID = ?\
     GROUP BY p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt', (pID, pID ))
     #
-    
-   
-    
-    
+
     var_items = listOfdictsFromCur(cur.fetchall(), 'int_variants_report')
-   
-    
+
     for i in var_items:
         if i['publications'] != None:
             i['publications'] = i['publications'].replace('<br>,','<br>')
         if i['concat'] != None:
             i['concat'] = i['concat'].replace('<br>,','<br>')
-            
     cur.execute('SELECT ipp.comments, filtus_settings FROM interpretations_pr_patient AS ipp WHERE patient_ID = ?', (pID,))
-   
     try:
         filtus_and_comment = cur.fetchall()[0]
     except:
@@ -401,7 +395,6 @@ def report(pID="123_15"):
     pID_patient = dictFromCur(cur.fetchall(), 'pID_patient')
     db.close()
     variant_dict = {}
-    
     return render_template('report.html', var_items=var_items, pID=pID, pID_patient=pID_patient, filtus_and_comment=filtus_and_comment)
 
 ################################################################################################################################################
@@ -425,7 +418,7 @@ def _return_alamut_for_variant():
     WHERE ID = ?', [variant_id])
     #obs index out of bounds nar den er tom
     result = cur.fetchall()[0]
-    
+
     #fjerne komma
     try:
         result['publications'] = result['publications'].replace('<br>,','<br>')
@@ -446,10 +439,3 @@ def acmg():
 if __name__ == '__main__':
     #app.run('172.16.0.56')
     app.run('0.0.0.0', port=8080)
-
-
-    
-    
-    
-    
-    

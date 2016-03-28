@@ -16,8 +16,18 @@
     //tooltip on classes form selector
     $('#inhouse_class').tooltip({'trigger':'focus', 'title': 'Inhouse Class', 'placement': 'right'});
     $('#acmg_class').tooltip({'trigger':'focus', 'title': 'ACMG Class', 'placement': 'right'});
-  
-  
+    // Hide variant table div if variant table is empty (e.g. contains the text: No Items):
+    $("p:contains('No Items')").parent().hide();
+
+
+
+
+
+
+
+
+
+
    //Check if a ref & alt is letter as opposed to -. And also check if length == 1. This would mean missense.
  function isOneLetter(str) {
   return str.length === 1 && str.match(/[a-z]/i);
@@ -37,15 +47,16 @@ $('#get_alamut').click(function () {
   var ref = $('#ref').val()
   var alt = $('#alt').val()
   var assembly = "(GRCh37)"
-  var alamut_request = "" 
-// Get input 
+  var alamut_request = ""
+// Get input
 if (isOneLetter(ref) && isOneLetter(alt)) {
   var alamut_request = "chr" + chrom  +assembly + ":g." + start + ref + ">" + alt
 } else if (isLetter(ref) && isLetter(alt) !== true) {
   var alamut_request = "chr" + chrom + assembly + ":g." + start + "_" + stop + "del"
 } else if ( isLetter(ref) !== true && isLetter(alt)) {
   var alamut_request = "chr" + chrom + assembly + ":g." + start + "_" + stop + "ins" + alt
-}  
+}
+// get info from Alamut on click:
  $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronous=true", function(result){
     $.ajax({
       type: "POST",
@@ -57,7 +68,7 @@ if (isOneLetter(ref) && isOneLetter(alt)) {
       },
       dataType: "json"
     });
-  });     
+  });
 });
   //on click of: submitcDNARequest get value from: cDNARequest
   $('#submitcDNARequest').click(function () {
@@ -74,7 +85,7 @@ if (isOneLetter(ref) && isOneLetter(alt)) {
       },
       dataType: "json"
     });
-  }); 
+  });
 });
   //Then run request
   //fill the patient info modal with info on the specific patient in case you want to alter some values.
@@ -137,7 +148,7 @@ $('#variant_table tr').click(function () {
     $('#zygo').text(zyg)
     $('#mgmseen').text('Kommer!')
     $('funcStud').text('Kommer!')
-    $('#varLocation').text(data.varLocation)  
+    $('#varLocation').text(data.varLocation)
     $('#localSpliceEffect').text(data.localSpliceEffect)
     $('#rsClinicalSignificance').text(data.rsClinicalSignificance)
     $('#exacNFEFreq').text(data.exacNFEFreq)
@@ -155,7 +166,7 @@ $('#variant_table tr').click(function () {
     }  else {
         $('#pubs').hide()
         $('#pubsTitle').hide()
-    }    
+    }
     // Set to 0 if empty:
     if (data.wtMaxEntScore) {
         $('#wtMaxEntScore').html(data.wtMaxEntScore)
@@ -197,7 +208,7 @@ $('#variant_table tr').click(function () {
 </script>
 <div class="container">
 	<div class="row">
-   <div class="col-md-10">        
+   <div class="col-md-10">
      <h1>Interpretation window for: {{ pID }}</h1>
    </div>
  </div>
@@ -243,11 +254,11 @@ $('#variant_table tr').click(function () {
 </div>
 <div class="row">
   <div class="col-sm-1">
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#pID_Modal">edit patient info</button> 
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#pID_Modal">edit patient info</button>
   </div>
   <div class="col-sm-1 col-sm-offset-10">
     <a href="{{ url_for('report') }}/{{ pID }}">
-    <button type="button" class="btn btn-primary">Produce report</button> 
+    <button type="button" class="btn btn-primary">Produce report</button>
     </a>
   </div>
 </div>
@@ -271,12 +282,17 @@ $('#variant_table tr').click(function () {
     </form>
 </div>
 <div class="row"><hr></div>
-<div class="row">
-  <div class="col-md-12"> 
+
+
+
+
+<div id="variant_table_div" class="row">
+  <div class="col-md-12">
   <h3>Table of variants</h3>
   {{ var_table }}
  </div>
 </div>
+
 <br>
 <div class="row">
   <div class="col-sm-2">

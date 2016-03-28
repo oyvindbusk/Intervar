@@ -1,10 +1,19 @@
 {% extends 'base.html' %}
 {% block content %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<div class="row">
+  <div class="alert alert-info" role="alert">{{ message }}</div>
+</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
 <div class="container">
 <div class="row">
-    
+
         <h1>Patient info</h1>
-        
+
         <form action="{{ url_for('testinput') }}" method=POST enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <div class="col-sm-3">
@@ -42,18 +51,16 @@
             </fieldset>
             </div>
             <div class="col-sm-6">
-            
+
             <fieldset class="form-group">
                 {{ form.clinInfo.label }}
                 {{ form.clinInfo(class="form-control", placeholder="Enter clinical info about the patient") }}
             </fieldset>
             </div>
     </div>
-            
+
             {{ form.submit(class="btn btn-primary") }}
         </form>
-    
+
 </div>
 {% endblock %}
-
-

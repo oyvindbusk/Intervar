@@ -12,7 +12,7 @@ class PatientForm(Form):
     sex = SelectField('Sex', choices=[('M', 'Male'),('F', 'Female')])
     panel = SelectField('Panel', choices=[('PV2-1', 'PV2-1'),('F', 'Filtex'), ('E', 'Exome')])
     clinInfo = TextAreaField("Clinical info")
-    dis_category = SelectField('Disease category', choices=[('Atax', 'Ataxia'),('CMT', 'CMT'), ('EDS', 'EDS')])
+    dis_category = SelectField('Disease category', choices=[('Atax', 'Ataxia'),('CMT', 'CMT'), ('EDS', 'EDS'), ('APN', 'APN'), ('HSP', 'HSP'), ('Noonan_Marfan', 'Noonan Marfan'), ('Skeletal', 'Skeletal'), ('ALS', 'ALS'), ('NF', 'NF')])
     familyID = TextField('Family ID')
     hsmFileUpload = FileField("Hsmetrics file")
     fragmentSizeUpload = FileField("Fragment size file")
@@ -31,7 +31,7 @@ class VariantForm(Form):
 
 class deleteVariantForm(Form):
     submit = SubmitField("Delete variant")
-	
+
 class SearchForm(Form):
     search = TextField("Search for Sample")
 
@@ -96,7 +96,7 @@ def dictFromCur(dbcursor, type):
         if type == 'pID_patient':
             patient_dict = {"PID" : i[0], "clinInfo": i[1], "familyID" : i[2], "sex" : i[3], "disease_category" : i[4],"panel_name" : i[5],   "mean_target_cov" : i[6], "pct_target_20" : i[7], "pct_target_30": i[8], "median_is" : i[9], "mean_is" : i[10]}
     return patient_dict
-            
+
 
 def listOfdictsFromCur(dbcursor, type):
     """legge inn en IF saa man bruke denne til aa lage tabeller fra flere forskjellige sporringer
@@ -115,8 +115,8 @@ def listOfdictsFromCur(dbcursor, type):
             list_items.append(dict(sbs=i[0], panel=i[1], sample_count=i[2], mean_cov=i[3] ))
 
     return list_items
-        
-    
+
+
 
 ##DEV!
 #metode for aa hente ut mean og median insert size:
@@ -142,7 +142,7 @@ def get_variants_from_form(type):
     elif type == 'combo':
         variant_tuple = (request.form['combo'].split()[0], request.form['combo'].split()[1], request.form['combo'].split()[2], request.form['combo'].split()[3], request.form['combo'].split()[4], request.form['zyg'], request.form['denovo'])
     return variant_tuple
-	
+
 #get info from hsmetrics-file into tuple (exluding sample name)
 def hsmetrics_to_tuple(hsmfilepath, sample_name):
     hsmetrics_csv_reader = csv.reader(open(hsmfilepath,'r'),delimiter='\t')
@@ -163,7 +163,7 @@ def insert_data(cursor, table, tuple_with_data):
         c.execute("INSERT INTO " + table + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )", t)
     except Exception as e:
         raise e
-    
+
 def insert_data_is(cursor, table, tuple_with_data):
     c = cursor
     t = tuple_with_data
@@ -171,17 +171,17 @@ def insert_data_is(cursor, table, tuple_with_data):
         c.execute("INSERT INTO " + table + " VALUES (?, ?, ?)", t)
     except Exception as e:
         raise e
-    
+
 def print_file(filename):
     reader = csv.reader(open(filename, 'r'))
     for i in reader:
         print(i)
-        
+
 def alamut_dict_to_DB(ala_dict, pID):
     '''
     A dictionary requested from Alamut via Ajax JSON is inserted into the SQLITE db.
     fields:
-    	
+
     '''
     #establish connection to db
     #make a tuple from dict including pID
@@ -217,9 +217,9 @@ def alamut_dict_to_DB(ala_dict, pID):
     ", new_tuple)
     db.commit()
     db.close()
-    
-    
-	
+
+
+
 def str_to_int_float(input, type):
     output = None
     if type == 'int':
@@ -227,7 +227,7 @@ def str_to_int_float(input, type):
             output = int(input)
         except:
             output = str(input)
-    if type == 'float': 
+    if type == 'float':
         try:
             output = float(input)
         except:
