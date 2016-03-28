@@ -347,11 +347,8 @@ def report(pID="123_15"):
     cur = get_db().cursor()
     filtus_and_comment = ''
     #hente ut tolkede varianter for en pasient Ha med alt relevant fra Alamut..
-
-
-    #
     cur.execute('SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt, p2r.zygosity,\
-    am.ID, am.gene, am.cNomen AS cDNA, am.pNomen AS protein, am.exacAllFreq, am.clinVarPhenotypes,\
+    am.ID, am.gene, am.gNomen AS gDNA, am.cNomen AS cDNA, am.pNomen AS protein, am.exacAllFreq, am.clinVarPhenotypes,\
     am.clinVarClinSignifs, am.transcript, am.codingEffect, am.hgmdId, am.hgmdPhenotype, am.varLocation, am.localSpliceEffect, am.rsClinicalSignificance, am.exacNFEFreq, am.espEAMAF, am.espAltEACount, am.espRefEACount, am.conservedOrthos, am.AGVGDclass, am.SIFTprediction, am.TASTERprediction, \
     am.exon, am.rsId, am.wtMaxEntScore, am.varMaxEntScore, am.wtNNSScore, am.varNNSScore, am.wtHSFScore, am.varHSFScore,\
     i.inhouse_class, i.acmg_class, i.interpretor, i.comments, MAX(i.signed), GROUP_CONCAT(DISTINCT "PMID:"||p.PMID||"\tRef:"||reference||"\tYear:"||year||"\tComment:"||comment||"<br>") AS publications, sub.concat\
@@ -369,9 +366,8 @@ def report(pID="123_15"):
     WHERE patient_ID = ?\
     GROUP BY p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt', (pID, pID ))
     #
-
     var_items = listOfdictsFromCur(cur.fetchall(), 'int_variants_report')
-
+    print(var_items)
     for i in var_items:
         if i['publications'] != None:
             i['publications'] = i['publications'].replace('<br>,','<br>')
