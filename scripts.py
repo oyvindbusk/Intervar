@@ -16,6 +16,7 @@ class PatientForm(Form):
     familyID = TextField('Family ID')
     hsmFileUpload = FileField("Hsmetrics file")
     fragmentSizeUpload = FileField("Fragment size file")
+    sbs_run = TextField("SBS")
     submit = SubmitField("Submit")
 
 class VariantForm(Form):
@@ -132,7 +133,7 @@ def insertsize_to_tuple(is_file, sample_name):
 
 def get_values_from_form(type='first_input'):
     if type == 'first_input':
-        form_tuple = (request.form['patient_ID'], request.form['familyID'], request.form['clinInfo'], request.form['sex'], request.form['panel'], request.form['dis_category'] )
+        form_tuple = (request.form['patient_ID'], request.form['familyID'], request.form['clinInfo'], request.form['sex'], request.form['panel'], request.form['dis_category'], request.form['sbs_run'] )
     return form_tuple
 
 def get_variants_from_form(type):

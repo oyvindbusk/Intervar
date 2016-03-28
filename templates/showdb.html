@@ -26,11 +26,6 @@
     //$("dd:contains('None')").prev().andSelf().css('opacity', '0.5');
 
 
-
-
-
-
-
    //Check if a ref & alt is letter as opposed to -. And also check if length == 1. This would mean missense.
  function isOneLetter(str) {
   return str.length === 1 && str.match(/[a-z]/i);
@@ -229,10 +224,12 @@ $('#variant_table tr').click(function () {
     <dd>{{ pID_patient.familyID }}</dd>
     <dt>Panel</dt>
     <dd>{{ pID_patient.panel_name }}</dd>
-    <dt>Disease categor</dt>
+    <dt>Disease category</dt>
     <dd>{{ pID_patient.disease_category }}</dd>
     <dt>Sex</dt>
     <dd>{{ pID_patient.sex }}</dd>
+    <dt>SBS</dt>
+    <dd>Kommer!</dd>
     <dt>Clinical info</dt>
     <dd>{{ pID_patient.clinInfo }}</dd>
   </dl>

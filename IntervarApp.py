@@ -130,6 +130,7 @@ def testinput():
             patient_form_tuple = get_values_from_form()
             cur.execute("INSERT INTO patient_info (patient_ID, family_ID, clinical_info, sex, disease_category) VALUES (?, ?, ?, ?, ?)", (request.form['patient_ID'], request.form['familyID'], request.form['clinInfo'], request.form['sex'], request.form['dis_category']))
             cur.execute("INSERT INTO patient_info2panels (patient_ID, panel_name) VALUES (?, ?)", (request.form['patient_ID'], request.form['panel']))
+            cur.execute("INSERT INTO runs (patient_ID, sbs, date) VALUES (?, ?, ?)", (request.form['patient_ID'], request.form['sbs_run'], str(datetime.now()).split(' ')[0]))
             hsm_file = request.files['hsmFileUpload']
             if hsm_file and allowed_file(hsm_file.filename):
                 filename = secure_filename(hsm_file.filename)
@@ -145,7 +146,7 @@ def testinput():
                 # maa oppdatere databasen first
             db.commit()
             db.close()
-            flash('Suksess inserting sample {0}'.format(request.form['patient_ID']))
+            flash('Success inserting sample {0}'.format(request.form['patient_ID']))
             return redirect(url_for('testinput'))
 
         else:
@@ -204,7 +205,6 @@ def overview():
     JOIN runs ON runs.patient_ID=qc.SAMPLE_NAME
     JOIN patient_info2panels AS pi2p ON pi2p.patient_ID=qc.SAMPLE_NAME
     GROUP BY runs.sbs, pi2p.panel_name
-
 
 
     SELECT r.sbs, pi2p.panel_name AS "Panel name", COUNT(qc.SAMPLE_NAME) AS "Number of samples", AVG(qc.MEAN_TARGET_COVERAGE) AS "Average coverage" FROM QC as qc

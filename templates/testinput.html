@@ -11,9 +11,7 @@
 {% endwith %}
 <div class="container">
 <div class="row">
-
         <h1>Patient info</h1>
-
         <form action="{{ url_for('testinput') }}" method=POST enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <div class="col-sm-3">
@@ -24,6 +22,10 @@
             <fieldset class="form-group">
                 {{ form.sex.label }}
                 {{ form.sex(class="form-control") }}
+            </fieldset>
+            <fieldset class="form-group">
+                {{ form.sbs_run.label }}
+                {{form.sbs_run(class="form-control", placeholder="e.g. SBS123") }}
             </fieldset>
             <fieldset class="form-group">
                 {{ form.hsmFileUpload.label }}
