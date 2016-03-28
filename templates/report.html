@@ -73,7 +73,7 @@
 <h3>Interpreted variants for {{ pID }}:</h3>
 <hr>
 
-{% for item in var_items %}
+{% for item in var_items|sort(attribute='inclass')|reverse %}
 <div class="row">
   <div class="col-md-6">
     <dl class="dl-horizontal">
