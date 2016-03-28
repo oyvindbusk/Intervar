@@ -20,7 +20,10 @@
     $("p:contains('No Items')").parent().hide();
 
 
-
+    //find empty cols, and hide or make them grey
+    //$("dd:empty").prev().andSelf().css('opacity', '0.5');
+    //$( "dd[name|='pub']:contains('None')").parent('dl').css('opacity', '0.5');
+    //$("dd:contains('None')").prev().andSelf().css('opacity', '0.5');
 
 
 
@@ -197,6 +200,11 @@ $('#variant_table tr').click(function () {
     } else {
         $('#varHSFScore').html(0)
     }
+    //find empty cols, and hide or make them grey
+    $("dd:empty").prev().andSelf().css('opacity', '0.5');
+    //$( "dd[name|='pub']:contains('None')").parent('dl').css('opacity', '0.5');
+    //$("dd:contains('None')").prev().andSelf().css('opacity', '0.5');
+
   });
   console.log("test")
   //$('.variant_info').html(chrom + " " + start + " " + stop);

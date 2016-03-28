@@ -302,4 +302,3 @@ patient_ID VARCHAR(10) REFERENCES patient_info,
 panel_name VARCHAR(30) REFERENCES panels,
 PRIMARY KEY (patient_ID, panel_name)
 );
-
