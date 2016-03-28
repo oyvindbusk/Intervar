@@ -174,28 +174,30 @@
           <!-- -->
           <form action="{{ url_for('showdb') }}/{{ pID }}" method=POST enctype="multipart/form-data">
             {{ varIntForm.hidden_tag() }}
-
             <fieldset class="form-group">
               {{ varIntForm.comments(class="form-control", placeholder="This should fill with info is a comment is already present") }}
             </fieldset>
-            <div class="row form-inline">
+            <div class="row form-inline-block">
               <div class="input-group">
-                <div class="col-sm-6">
+                <div class="col-sm-3">
                   <fieldset class="form-group">
                     {{ varIntForm.inhouse_class(class="form-control") }}
                   </fieldset>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-3">
                   <fieldset class="form-group">
                     {{ varIntForm.acmg_class(class="form-control") }}
                   </fieldset>
                 </div>
+
+              <div class="col-sm-4">
+              <fieldset class="form-group">
+                {{ varIntForm.submit(class="btn btn-primary") }}
+              </fieldset>
+              </div>
               </div>
               <fieldset class="form-group">
                 {{ varIntForm.varid(class="form-control") }}
-              </fieldset>
-              <fieldset class="form-group">
-                {{ varIntForm.submit(class="btn btn-primary") }}
               </fieldset>
 
           </form>

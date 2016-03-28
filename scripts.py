@@ -45,7 +45,7 @@ class InterpretVariantForm(Form):
     varid = HiddenField("varid", default="testing")
     inhouse_class = SelectField('Inhouse Class', choices=[('1', '1'),('2', '2'), ('3', '3'), ('4', '4'), ('5', '5'), ('0', '0'), ('6', 'Not considered')], default='3')
     acmg_class = SelectField('ACMG Class', choices=[('1', '1'),('2', '2'), ('3', '3'), ('4', '4'), ('5', '5')], default='3')
-    submit = SubmitField("Submit comment")
+    submit = SubmitField("Submit comment/class")
 
 class PublicationsForm(Form):
     PMID = TextField("PMID")
@@ -54,7 +54,6 @@ class PublicationsForm(Form):
     pcomment = TextAreaField("Comment")
     pub2varID = HiddenField("pub2varID") # to get the variant ID from the table to insert into the publications2variants-table
     submit = SubmitField("Submit publication")
-
 
 # Declare your table
 class PatientTable(Table):
