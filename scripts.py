@@ -25,7 +25,7 @@ class VariantForm(Form):
     ref = TextField("Reference Allele")
     alt = TextField("Alternate Allele")
     zyg = SelectField('Zygosity', default='HET', choices=[('HOM', 'Homozygous'), ('HET', 'Heterozygous'), ('HEM', 'Hemizygous')])
-    denovo = SelectField('Denovo', default='0', choices=[('0','No'),('1','Yes')])
+    denovo = SelectField('Denovo', default='null', choices=[('0','No'),('1','Yes'), ('null', 'Undetermined')])
     combo = TextField('Combofield')
     submit = SubmitField("Submit to DB")
 

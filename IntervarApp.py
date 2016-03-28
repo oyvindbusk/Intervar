@@ -269,7 +269,6 @@ def showdb(pID):
                 cur.execute("INSERT INTO patient_info2raw_variants (patient_ID, chr, start, stop, ref, alt, zygosity, denovo ) VALUES (?, ?, ?, ?, ?, ?, ?,?)", variant_form_tuple)
             else:
                 variant_form_tuple = get_variants_from_form('regular')
-                variant_form_tuple = get_variants_from_form()
                 cur.execute("INSERT OR IGNORE INTO raw_variants (chr, start, stop, ref, alt, hg) VALUES (?, ?, ?, ?, ?, 'hg19')", [variant_form_tuple[0], variant_form_tuple[1], variant_form_tuple[2], variant_form_tuple[3], variant_form_tuple[4]])
                 variant_form_tuple = (pID,) + variant_form_tuple
                 cur.execute("INSERT INTO patient_info2raw_variants (patient_ID, chr, start, stop, ref, alt, zygosity, denovo ) VALUES (?, ?, ?, ?, ?, ?, ?,?)", variant_form_tuple)
