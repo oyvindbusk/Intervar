@@ -127,7 +127,15 @@ $('#variant_table tr').click(function () {
     $('#acDNA').text(data.cNomen)
     $('#aprot').text(data.pNomen)
     $('#atype').text(data.codingEffect)
-    $('#hgmdId').text(data.hgmdId)
+    // if hgmd gene ID is present, insert html link to HGMD:
+    if (data.hgmdId) {
+      // makes an anchor tag, sets the anchor text, creates the URL, connects the URL to the anchor, adds the anchor as a child to the dd-tag.
+      var a = document.createElement('a');
+      a.innerHTML = data.hgmdId;
+      var hgmdvariantLink = "https://portal.biobase-international.com/hgmd/pro/mut.php?accession=" + data.hgmdId;
+      a.setAttribute('href', hgmdvariantLink);
+      $('#hgmdId').append(a);
+    }
     $('#hgmdPhenotype').text(data.hgmdPhenotype)
     $('#hgmdSubCategory').text(data.hgmdSubCategory)
     $('#clinVarPhenotypes').text(data.clinVarPhenotypes)
@@ -199,6 +207,13 @@ $('#variant_table tr').click(function () {
     $("dd:empty").prev().andSelf().css('opacity', '0.5');
     //$( "dd[name|='pub']:contains('None')").parent('dl').css('opacity', '0.5');
     //$("dd:contains('None')").prev().andSelf().css('opacity', '0.5');
+
+    //Fill Anchor tag of exac with link to exac variant.
+    var exacLink = "http://exac.broadinstitute.org/variant/" + chrom + "-" + start + "-" + ref + "-" + alt;
+    var hgmdGeneLink = "https://portal.biobase-international.com/hgmd/pro/gene.php?gene=" + data.gene;
+    document.getElementById("exaclink").setAttribute("href", exacLink);
+    document.getElementById("hgmdgenelink").setAttribute("href", hgmdGeneLink);
+
 
   });
   console.log("test")
