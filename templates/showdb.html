@@ -13,56 +13,68 @@
     $('#variant_table td:nth-child(1),th:nth-child(1)').hide();
     // hide signed col of table
     $('#variant_table td:nth-child(14),th:nth-child(14)').hide();
+    //change font in table:
+    $('#variant_table').css("font-size", "9px");
     //tooltip on classes form selector
     $('#inhouse_class').tooltip({'trigger':'focus', 'title': 'Inhouse Class', 'placement': 'right'});
     $('#acmg_class').tooltip({'trigger':'focus', 'title': 'ACMG Class', 'placement': 'right'});
     // Hide variant table div if variant table is empty (e.g. contains the text: No Items):
     $("p:contains('No Items')").parent().hide();
-
-
+    // set a popover on combo input field containing info on howto:
+    $('#combo').attr({
+      "data-toggle":"popover",
+      title:"How to use this input:",
+      "data-content":"Simply copy the first 5 columns from Filtus and paste them into the field. Select zygosity and indicate denovo status, then press Submit to DB.",
+      "data-trigger":"hover"
+    });
+    // Initialize all popovers and set size of popover:
+    $('[data-toggle="popover"]').popover({
+      container: 'body'
+    });
 
    //Check if a ref & alt is letter as opposed to -. And also check if length == 1. This would mean missense.
- function isOneLetter(str) {
-  return str.length === 1 && str.match(/[a-z]/i);
-}
-function isLetter(str) {
-  return str.match(/[a-z]/i);
-}
-// Check if variant is:
-// missense
-// del
-// insertion
-// duplication -> get_alamut
-$('#get_alamut').click(function () {
-  var chrom = $('#chrom').val()
-  var start = $('#start').val()
-  var stop = $('#stop').val()
-  var ref = $('#ref').val()
-  var alt = $('#alt').val()
-  var assembly = "(GRCh37)"
-  var alamut_request = ""
-// Get input
-if (isOneLetter(ref) && isOneLetter(alt)) {
-  var alamut_request = "chr" + chrom  +assembly + ":g." + start + ref + ">" + alt
-} else if (isLetter(ref) && isLetter(alt) !== true) {
-  var alamut_request = "chr" + chrom + assembly + ":g." + start + "_" + stop + "del"
-} else if ( isLetter(ref) !== true && isLetter(alt)) {
-  var alamut_request = "chr" + chrom + assembly + ":g." + start + "_" + stop + "ins" + alt
-}
-// get info from Alamut on click:
- $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronous=true", function(result){
-    $.ajax({
-      type: "POST",
-      contentType: "application/json; charset=utf-8",
-      url: "/showdb/" + '{{ pID }}',
-      data: JSON.stringify(result),
-      success: function (data) {
-        alert("ferdig " + chrom +"-"+ start +" "+ stop +" "+ ref +" "+ alt)
-      },
-      dataType: "json"
-    });
-  });
-});
+   function isOneLetter(str) {
+     return str.length === 1 && str.match(/[a-z]/i);
+   }
+   function isLetter(str) {
+     return str.match(/[a-z]/i);
+   }
+   // Check if variant is:
+   // missense
+   // del
+   // insertion
+   // duplication -> get_alamut
+   $('#get_alamut').click(function () {
+     var chrom = $('#chrom').val()
+     var start = $('#start').val()
+     var stop = $('#stop').val()
+     var ref = $('#ref').val()
+     var alt = $('#alt').val()
+     var assembly = "(GRCh37)"
+     var alamut_request = ""
+     // Get input
+     if (isOneLetter(ref) && isOneLetter(alt)) {
+       var alamut_request = "chr" + chrom  +assembly + ":g." + start + ref + ">" + alt
+     } else if (isLetter(ref) && isLetter(alt) !== true) {
+       var alamut_request = "chr" + chrom + assembly + ":g." + start + "_" + stop + "del"
+     } else if ( isLetter(ref) !== true && isLetter(alt)) {
+       var alamut_request = "chr" + chrom + assembly + ":g." + start + "_" + stop + "ins" + alt
+     }
+     // get info from Alamut on click:
+     $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronous=true", function(result){
+       $.ajax({
+         type: "POST",
+         contentType: "application/json; charset=utf-8",
+         url: "/showdb/" + '{{ pID }}',
+         data: JSON.stringify(result),
+         success: function (data) {
+           alert("ferdig " + chrom +"-"+ start +" "+ stop +" "+ ref +" "+ alt)
+         },
+         dataType: "json"
+       });
+     });
+   });
+   
   //on click of: submitcDNARequest get value from: cDNARequest
   $('#submitcDNARequest').click(function () {
     var alamut_request_cDNA = $('#cDNARequest').val()
@@ -90,6 +102,13 @@ if (isOneLetter(ref) && isOneLetter(alt)) {
     $('#hsmFileUpload').val('{{ pID_patient.hsmFileUpload }}');
     $('#fragmentSizeUpload').val('{{ pID_patient.fragmentSizeUpload }}');
   })
+//make tooltip on the combo button on click:
+
+
+
+
+
+
 //get from variant table @ click:
 $('#variant_table tr').click(function () {
   var ID = $(this).closest("tr").find('td:eq(0)').text();
@@ -211,7 +230,10 @@ $('#variant_table tr').click(function () {
 
 
   });
-  console.log("test")
+
+  // Fill hidden form field with variant ID for the delete variant button:
+  $('#hidden_variant_ID').val(String(chrom)+'|'+String(start)+'|'+String(stop)+'|'+String(ref)+'|'+String(alt));
+
   //$('.variant_info').html(chrom + " " + start + " " + stop);
   $('#Interp_Modal').modal('show');
   $('#varid').val(String(chrom)+'|'+String(start)+'|'+String(stop)+'|'+String(ref)+'|'+String(alt))
@@ -302,7 +324,7 @@ $('#variant_table tr').click(function () {
 
 
 <div id="variant_table_div" class="row">
-  <div class="col-md-12">
+  <div class="col-lg-12">
   <h3>Table of variants</h3>
   {{ var_table }}
  </div>
