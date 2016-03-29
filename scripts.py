@@ -31,6 +31,7 @@ class VariantForm(Form):
     submit = SubmitField("Submit to DB")
 
 class deleteVariantForm(Form):
+    hidden_variant_ID = HiddenField("Hidden variant field")
     submit = SubmitField("Delete variant")
 
 class SearchForm(Form):

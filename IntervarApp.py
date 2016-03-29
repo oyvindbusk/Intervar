@@ -289,7 +289,16 @@ def showdb(pID):
             cur.execute('INSERT OR REPLACE INTO publications2variants (PMID, varID) VALUES (?, ?)',(request.form['PMID'], int(request.form['pub2varID']) ))
             db.commit()
         elif delform.validate_on_submit() and not request.is_xhr and request.form['submit'] == 'Delete variant':
-            print('oh yeah')
+            print('#7# - oh yeah')
+            del_variant_info = []
+            del_variant_info = request.form['hidden_variant_ID'].split('|')
+            print(del_variant_info)
+            print('DELETE FROM patient_info2raw_variants WHERE patient_ID = {} AND chr = {} AND start = {} AND stop = {} AND ref = {} AND alt = {}'.format(pID, del_variant_info[0], del_variant_info[1], del_variant_info[2], del_variant_info[3], del_variant_info[4]))
+            cur.execute('DELETE FROM patient_info2raw_variants WHERE patient_ID = ? AND chr = ? AND start = ? AND stop = ? AND ref = ? AND alt = ?', (pID, del_variant_info[0], del_variant_info[1], del_variant_info[2], del_variant_info[3], del_variant_info[4]))
+            db.commit()
+            #remove from these tables:
+            #patient_info2raw_variants
+            #
             #pubForm
     #hente ut pasientinfo for alle som er kjort
     cur.execute('SELECT * FROM patient_info')

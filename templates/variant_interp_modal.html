@@ -209,6 +209,7 @@
           <form action="{{ url_for('showdb') }}/{{ pID }}" method=POST enctype="multipart/form-data">
             {{ delform.hidden_tag() }}
             <fieldset class="form-group">
+              {{ hidden_variant_ID }}
               {{ delform.submit(class="btn btn-primary") }}
               </fieldset>
           </form>
