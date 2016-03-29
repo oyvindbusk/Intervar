@@ -11,6 +11,7 @@
     $('#filtus_settings').autosize();
     // hide ID col of table
     $('#variant_table td:nth-child(1),th:nth-child(1)').hide();
+    $('th:first').show()
     // hide signed col of table
     $('#variant_table td:nth-child(14),th:nth-child(14)').hide();
     //change font in table:
@@ -223,13 +224,9 @@ $('#variant_table tr').click(function () {
     var hgmdGeneLink = "https://portal.biobase-international.com/hgmd/pro/gene.php?gene=" + data.gene;
     document.getElementById("exaclink").setAttribute("href", exacLink);
     document.getElementById("hgmdgenelink").setAttribute("href", hgmdGeneLink);
-
-
   });
-
   // Fill hidden form field with variant ID for the delete variant button:
   $('#hidden_variant_ID').val(String(chrom)+'|'+String(start)+'|'+String(stop)+'|'+String(ref)+'|'+String(alt));
-
   //$('.variant_info').html(chrom + " " + start + " " + stop);
   $('#Interp_Modal').modal('show');
   $('#varid').val(String(chrom)+'|'+String(start)+'|'+String(stop)+'|'+String(ref)+'|'+String(alt))
@@ -266,8 +263,8 @@ $('#variant_table tr').click(function () {
  <table class="table" id="data">
   <thead>
     <tr>
-      <th style="padding-top: 4px;">Mean Target <br>Coverage</th>
-      <th style="padding-top: 4px; width=50%;">% bases > 20 X</th>
+      <th style="padding-top: 1px;">Mean Target</th>
+      <th style="padding-top: 4px;">% bases > 20 X</th>
       <th style="padding-top: 4px;" class="tooltip-table-header" >% bases > 30 X</th>
       <th style="padding-top: 4px;" class="tooltip-table-header" >Mean insert size</th>
       <th style="padding-top: 4px;" class="tooltip-table-header" >Median insert size</th>
