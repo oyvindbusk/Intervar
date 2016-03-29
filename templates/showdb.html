@@ -20,11 +20,6 @@
     $("p:contains('No Items')").parent().hide();
 
 
-    //find empty cols, and hide or make them grey
-    //$("dd:empty").prev().andSelf().css('opacity', '0.5');
-    //$( "dd[name|='pub']:contains('None')").parent('dl').css('opacity', '0.5');
-    //$("dd:contains('None')").prev().andSelf().css('opacity', '0.5');
-
 
    //Check if a ref & alt is letter as opposed to -. And also check if length == 1. This would mean missense.
  function isOneLetter(str) {
@@ -289,7 +284,7 @@ $('#variant_table tr').click(function () {
     <form action="{{ url_for('showdb') }}/{{ pID }}" method=POST enctype="multipart/form-data">
       {{ iform.hidden_tag() }}
       <fieldset class="form-group">
-        {{ iform.comment(class="form-control", placeholder="This should fill with info is a comment is already present") }}
+        {{ iform.comment(class="form-control", placeholder="This should fill with info is a comment is already present", rows="20") }}
       </fieldset>
       <fieldset class="form-group">
         {{ iform.submit(class="btn btn-primary") }}
@@ -297,7 +292,7 @@ $('#variant_table tr').click(function () {
       </div>
       <div class="col-sm-5">
       <h4>Filtus settings:</h4>
-      {{ iform.filtus_settings(class="form-control", placeholder="This should fill with settings info if a comment is already present") }}
+      {{ iform.filtus_settings(class="form-control", placeholder="This should fill with settings info if a comment is already present", rows="20") }}
       </div>
     </form>
 </div>

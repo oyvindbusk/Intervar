@@ -52,17 +52,17 @@
                 <small class="text-muted">Load a file containing fragment sizes for the sample.</small>
             </fieldset>
             </div>
-            <div class="col-sm-6">
-
-            <fieldset class="form-group">
-                {{ form.clinInfo.label }}
-                {{ form.clinInfo(class="form-control", placeholder="Enter clinical info about the patient") }}
-            </fieldset>
-            </div>
     </div>
-
+    <div class="row">
+      <div class="col-sm-6">
+      <fieldset class="form-group">
+          {{ form.clinInfo.label }}
+          {{ form.clinInfo(class="form-control", placeholder="Enter clinical info about the patient", rows="10") }}
+      </fieldset>
+    </div>
+  </div>
             {{ form.submit(class="btn btn-primary") }}
-        </form>
+    </form>
 
 </div>
 {% endblock %}
