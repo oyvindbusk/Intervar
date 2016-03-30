@@ -11,11 +11,12 @@
     $('#filtus_settings').autosize();
     // hide ID col of table
     $('#variant_table td:nth-child(1),th:nth-child(1)').hide();
-    $('th:first').show()
-    // hide signed col of table
+    $('th:first').show() // This is hidden by mistake, so I have to show it.
+    // hide signed and denovo col of table
     $('#variant_table td:nth-child(14),th:nth-child(14)').hide();
+    $('#variant_table td:nth-child(16),th:nth-child(16)').hide();
     //change font in table:
-    $('#variant_table').css("font-size", "9px");
+    $('#variant_table').css("font-size", "10px");
     //tooltip on classes form selector
     $('#inhouse_class').tooltip({'trigger':'focus', 'title': 'Inhouse Class', 'placement': 'right'});
     $('#acmg_class').tooltip({'trigger':'focus', 'title': 'ACMG Class', 'placement': 'right'});
@@ -114,9 +115,17 @@ $('#variant_table tr').click(function () {
   var stop = $(this).closest("tr").find('td:eq(3)').text();
   var ref = $(this).closest("tr").find('td:eq(4)').text();
   var alt = $(this).closest("tr").find('td:eq(5)').text();
-  var zyg = $(this).closest("tr").find('td:eq(6)').text()
-  var comments = $(this).closest("tr").find('td:eq(12)').text()
-
+  var zyg = $(this).closest("tr").find('td:eq(6)').text();
+  var comments = $(this).closest("tr").find('td:eq(12)').text();
+  var seenatmgm = $(this).closest("tr").find('td:eq(14)').text();
+  var denovostatus = $(this).closest("tr").find('td:eq(15)').text();
+  if (denovostatus == '0') {
+    var denovoverbatim = 'Not denovo';
+  } else if (denovostatus == '1') {
+    var denovoverbatim = 'Denovo';
+  } else {
+    var denovoverbatim = 'Undetermined';
+  };
   $('#agene').text('')
   $('#atrans').text('')
   $('#agDNA').text('')
@@ -163,8 +172,9 @@ $('#variant_table tr').click(function () {
     $('#comments').val(comments)
     $('#pub2varID').val(ID)
     $('#zygo').text(zyg)
-    $('#mgmseen').text('Kommer!')
-    $('funcStud').text('Kommer!')
+    $('#mgmseen').text(seenatmgm)
+    $('#denovostatus').text(denovoverbatim)
+    $('#funcStud').text('Kommer!')
     $('#varLocation').text(data.varLocation)
     $('#localSpliceEffect').text(data.localSpliceEffect)
     $('#rsClinicalSignificance').text(data.rsClinicalSignificance)
@@ -263,7 +273,7 @@ $('#variant_table tr').click(function () {
  <table class="table" id="data">
   <thead>
     <tr>
-      <th style="padding-top: 1px;">Mean Target</th>
+      <th style="padding-top: 1px;">Mean Target<br>coverage</th>
       <th style="padding-top: 4px;">% bases > 20 X</th>
       <th style="padding-top: 4px;" class="tooltip-table-header" >% bases > 30 X</th>
       <th style="padding-top: 4px;" class="tooltip-table-header" >Mean insert size</th>
@@ -312,8 +322,6 @@ $('#variant_table tr').click(function () {
     </form>
 </div>
 <div class="row"><hr></div>
-
-
 
 
 <div id="variant_table_div" class="row">

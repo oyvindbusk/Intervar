@@ -305,7 +305,7 @@ def showdb(pID):
     patient_items = listOfdictsFromCur(cur.fetchall(), 'patient_info')
     patient_table = PatientTable(patient_items)
     #hente ut tolkede varianter for en pasient
-    cur.execute('SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt, p2r.zygosity,\
+    cur.execute('SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt, p2r.zygosity, p2r.denovo,\
     am.ID, am.gene, am.cNomen AS cDNA, am.pNomen AS protein, am.exacAllFreq,\
     i.inhouse_class, i.comments, MAX(i.signed), sub.concat\
     FROM patient_info2raw_variants AS p2r\
@@ -356,7 +356,7 @@ def report(pID="123_15"):
     cur = get_db().cursor()
     filtus_and_comment = ''
     #hente ut tolkede varianter for en pasient Ha med alt relevant fra Alamut..
-    cur.execute('SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt, p2r.zygosity,\
+    cur.execute('SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt, p2r.zygosity, p2r.denovo,\
     am.ID, am.gene, am.gNomen AS gDNA, am.cNomen AS cDNA, am.pNomen AS protein, am.exacAllFreq, am.clinVarPhenotypes,\
     am.clinVarClinSignifs, am.transcript, am.codingEffect, am.hgmdId, am.hgmdPhenotype, am.varLocation, am.localSpliceEffect, am.rsClinicalSignificance, am.exacNFEFreq, am.espEAMAF, am.espAltEACount, am.espRefEACount, am.conservedOrthos, am.AGVGDclass, am.SIFTprediction, am.TASTERprediction, \
     am.exon, am.rsId, am.wtMaxEntScore, am.varMaxEntScore, am.wtNNSScore, am.varNNSScore, am.wtHSFScore, am.varHSFScore,\
@@ -430,7 +430,6 @@ def _return_alamut_for_variant():
     except:
         pass
 
-
     db.close()
     return jsonify(result)
 #############################
@@ -442,5 +441,5 @@ def acmg():
 ################################################################################################################################################
 
 if __name__ == '__main__':
-    #app.run('172.16.0.56')
-    app.run('0.0.0.0', port=8080)
+    app.run('172.16.0.56')
+    #app.run('0.0.0.0', port=8080)

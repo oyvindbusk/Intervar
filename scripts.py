@@ -81,6 +81,7 @@ class VariantTable(Table): # add signed as a column
     comments = Col('comments')
     signed = Col('Signed')
     concat = Col('Sample;dis;class')
+    denovo = Col('denovo')
     classes = ['table table-striped" id="variant_table'] # make sortable like in the exac-page?
 
 class SampleOverviewTable(Table):
@@ -109,9 +110,10 @@ def listOfdictsFromCur(dbcursor, type):
         if type == 'patient_info':
             list_items.append(dict(PID=i[0], clinInfo=i[1], familyID=i[2], sex=i[3] ))
         elif type == 'int_variants':
-            list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], zygosity=i[5], ID=i[6], gene=i[7], cDNA=i[8], protein=i[9], exacAll=i[10], inclass=i[11], comments=i[12], signed=i[13], concat=i[14] ))
+            list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], zygosity=i[5], denovo=i[6], ID=i[7], gene=i[8], cDNA=i[9], protein=i[10], exacAll=i[11], inclass=i[12], comments=i[13], signed=i[14], concat=i[15] ))
         elif type == 'int_variants_report':
-            list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], zygosity=i[5], ID=i[6], gene=i[7], gDNA=i[8], cDNA=i[9], protein=i[10], exacAll=i[11], clinVarPhenotypes=i[12], clinVarClinSignifs=i[13], transcript=i[14], codingEffect=i[15], hgmdId=i[16], hgmdPhenotype=i[17], varLocation=i[18], localSpliceEffect=i[19], rsClinicalSignificance=i[20], exacNFEFreq=i[21], espEAMAF=i[22], espAltEACount=i[23] , espRefEACount=i[24], conservedOrthos=i[25], AGVGDclass=i[26], SIFTprediction=i[27],TASTERprediction=i[28], exons=i[29], rsId=i[30], wtMaxEntScore=i[31], varMaxEntScore=i[32], wtNNSScore=i[33], varNNSScore=i[34], wtHSFScore=i[35], varHSFScore=i[36], interp_ID=i[37], inclass=i[38], acmg_class=i[39], interpretor=i[40], comments=i[41], signed=i[42], publications=i[43], concat=i[44] ))
+            list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], zygosity=i[5], denovo=i[6], ID=i[7], gene=i[8], gDNA=i[9], cDNA=i[10], protein=i[11], exacAll=i[12], clinVarPhenotypes=i[13], clinVarClinSignifs=i[14], transcript=i[15], codingEffect=i[16], hgmdId=i[17], hgmdPhenotype=i[18], varLocation=i[19], localSpliceEffect=i[20], rsClinicalSignificance=i[21], exacNFEFreq=i[22], espEAMAF=i[23], espAltEACount=i[24] , espRefEACount=i[25], conservedOrthos=i[26], AGVGDclass=i[27], SIFTprediction=i[28],TASTERprediction=i[29], exons=i[30], rsId=i[31], wtMaxEntScore=i[32], varMaxEntScore=i[33], wtNNSScore=i[34], varNNSScore=i[35], wtHSFScore=i[36], varHSFScore=i[37], interp_ID=i[38], inclass=i[39], acmg_class=i[40], interpretor=i[41], comments=i[42], signed=i[43], publications=i[44], concat=i[45] ))
+
         elif type == 'overview_table':
             list_items.append(dict(sbs=i[0], panel=i[1], sample_count=i[2], mean_cov=i[3] ))
 
