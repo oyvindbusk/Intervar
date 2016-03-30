@@ -30,6 +30,10 @@ class VariantForm(Form):
     combo = TextField('Combofield')
     submit = SubmitField("Submit to DB")
 
+class polyphenForm(Form):
+    polyphen = SelectField('Polyphen prediction', default='null', choices=[('probd', 'Probably damaging'), ('possd', 'Possibly damaging'), ('B', 'Bening'), ('null', 'Undetermined')])
+    submit = SubmitField("Submit Polyphen")
+
 class deleteVariantForm(Form):
     hidden_variant_ID = HiddenField("Hidden variant field")
     submit = SubmitField("Delete variant")

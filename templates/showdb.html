@@ -3,6 +3,12 @@
 
 <!-- Choose a row of a table and use some method on it. In this case, change background color. -->
 <script type=text/javascript>
+// function to send polyphenform on change of input selector:
+function polyform() {
+    // send form
+     $('input[id="submit"][value="Submit Polyphen"]').click();
+};
+
   $(function() {
     // fill comment if exists:
     $('#comment').val('{{ patient_comment[0] | replace("\r\n", "\\n") }}')
@@ -105,7 +111,16 @@
     $('#fragmentSizeUpload').val('{{ pID_patient.fragmentSizeUpload }}');
   })
 
-
+// on click of polyphen, show entry form and submit button.
+$('#ppt').click(function () {
+  if($('#pp').css('display') != 'none'){
+    $('#polyphen').show();
+    $('#pp').hide();
+  } else {
+    $('#pp').show();
+    $('#polyphen').hide();
+  }
+});
 
 //get from variant table @ click:
 $('#variant_table tr').click(function () {

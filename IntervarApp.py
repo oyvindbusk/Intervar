@@ -9,7 +9,7 @@ from datetime import datetime
 
 #importere egne scripts
 from scripts import PatientForm, VariantForm, SearchForm, PatientTable, VariantTable, listOfdictsFromCur, dictFromCur, print_file, hsmetrics_to_tuple, insert_data, get_values_from_form, insertsize_to_tuple, insert_data_is, get_variants_from_form
-from scripts import alamut_dict_to_DB, str_to_int_float, Interpret_overallForm, InterpretVariantForm, PublicationsForm, SampleOverviewTable, deleteVariantForm
+from scripts import alamut_dict_to_DB, str_to_int_float, Interpret_overallForm, InterpretVariantForm, PublicationsForm, SampleOverviewTable, deleteVariantForm, polyphenForm
 import json
 
 
@@ -242,6 +242,7 @@ def showdb(pID):
     varIntForm = InterpretVariantForm()
     pubForm = PublicationsForm()
     delform = deleteVariantForm()
+    polyphenform = polyphenForm()
     db = get_db()
     cur = get_db().cursor()
     #variabler
@@ -296,10 +297,10 @@ def showdb(pID):
             print('DELETE FROM patient_info2raw_variants WHERE patient_ID = {} AND chr = {} AND start = {} AND stop = {} AND ref = {} AND alt = {}'.format(pID, del_variant_info[0], del_variant_info[1], del_variant_info[2], del_variant_info[3], del_variant_info[4]))
             cur.execute('DELETE FROM patient_info2raw_variants WHERE patient_ID = ? AND chr = ? AND start = ? AND stop = ? AND ref = ? AND alt = ?', (pID, del_variant_info[0], del_variant_info[1], del_variant_info[2], del_variant_info[3], del_variant_info[4]))
             db.commit()
-            #remove from these tables:
-            #patient_info2raw_variants
-            #
-            #pubForm
+        elif polyphenform.validate_on_submit() and not request.is_xhr and request.form['submit'] == "Submit Polyphen":
+            print('#8')
+            print(request.form['polyphen'])
+
     #hente ut pasientinfo for alle som er kjort
     cur.execute('SELECT * FROM patient_info')
     patient_items = listOfdictsFromCur(cur.fetchall(), 'patient_info')
@@ -339,7 +340,7 @@ def showdb(pID):
         patient_comment = ''
 
     db.close()
-    return render_template('showdb.html', patient_table=patient_table, var_table=var_table, form=form, pform=pform, iform=iform, pubForm=pubForm, varIntForm=varIntForm,  pID=pID, pID_patient=pID_patient, patient_comment=patient_comment, delform=delform)
+    return render_template('showdb.html', patient_table=patient_table, var_table=var_table, form=form, pform=pform, iform=iform, pubForm=pubForm, varIntForm=varIntForm,  pID=pID, pID_patient=pID_patient, patient_comment=patient_comment, delform=delform, polyphenform=polyphenform)
 
 ################################################################################################################################################
 
@@ -441,5 +442,5 @@ def acmg():
 ################################################################################################################################################
 
 if __name__ == '__main__':
-    app.run('172.16.0.56')
-    #app.run('0.0.0.0', port=8080)
+    #app.run('172.16.0.56')
+    app.run('0.0.0.0', port=8080)
