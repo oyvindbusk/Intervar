@@ -32,6 +32,7 @@ class VariantForm(Form):
 
 class polyphenForm(Form):
     polyphen = SelectField('Polyphen prediction', default='null', choices=[('probd', 'Probably damaging'), ('possd', 'Possibly damaging'), ('B', 'Bening'), ('null', 'Undetermined')])
+    variant_id = TextField('variant_id')
     submit = SubmitField("Submit Polyphen")
 
 class deleteVariantForm(Form):

@@ -85,7 +85,9 @@
                 <dd id="pp">Test</dd>
                 <form action="{{ url_for('showdb') }}/{{ pID }}" method=POST enctype="multipart/form-data">
                   {{ polyphenform.hidden_tag() }}
-                  {{ polyphenform.polyphen(onchange="polyform();", style="display: none") }} {{ polyphenform.submit(style="display: none") }}
+                  {{ polyphenform.polyphen(onchange="polyform();", style="display: none") }}
+                  {{ polyphenform.variant_id(style="display: none") }}
+                  {{ polyphenform.submit(style="display: none") }}
                 </form>
                 <!-- -->
 
@@ -170,6 +172,8 @@
           </h5>
           <div class="collapse" id="cDNARequest_collapsible">
             <div class="well">
+              <button id="get_alamut" type="button" class="btn btn-default">Get Alamut</button>
+              <br><br>
               <input class="form-control" id="cDNARequest" name="cDNARequest" placeholder="NM_12341.4:c.234C>G" type="text" value="">
               <br>
               <input class="btn btn-primary" id="submitcDNARequest" name="cDNAsubmit" type="submit" value="submit">

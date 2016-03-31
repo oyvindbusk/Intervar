@@ -4,11 +4,11 @@
 <!-- Choose a row of a table and use some method on it. In this case, change background color. -->
 <script type=text/javascript>
 // function to send polyphenform on change of input selector:
-function polyform() {
+  function polyform() {
     // send form
-     $('input[id="submit"][value="Submit Polyphen"]').click();
-};
-
+    $('input[id="submit"][value="Submit Polyphen"]').click();
+   };
+   //document ready function - happens on page load
   $(function() {
     // fill comment if exists:
     $('#comment').val('{{ patient_comment[0] | replace("\r\n", "\\n") }}')
@@ -37,6 +37,13 @@ function polyform() {
       "data-content":"Simply copy the first 5 columns from Filtus and paste them into the field. Select zygosity and indicate denovo status, then press Submit to DB.",
       "data-trigger":"hover"
     });
+    // set a popover on the get alamut button in the interp-modal
+    $('#get_alamut').attr({
+      "data-toggle":"popover",
+      title:"What this does:",
+      "data-content":"Click this button to append the alamut-info to the variant. If this does not work, use the input field below to compose your own request.",
+      "data-trigger":"hover"
+    });
     // Initialize all popovers and set size of popover:
     $('[data-toggle="popover"]').popover({
       container: 'body'
@@ -54,17 +61,15 @@ function polyform() {
    // del
    // insertion
    // duplication -> get_alamut
+
+
+
    $('#get_alamut').click(function () {
-     var chrom = $('#chrom').val()
-     var start = $('#start').val()
-     var stop = $('#stop').val()
-     var ref = $('#ref').val()
-     var alt = $('#alt').val()
-     var assembly = "(GRCh37)"
-     var alamut_request = ""
+     var assembly = "(GRCh37)";
+     var alamut_request = "";
      // Get input
      if (isOneLetter(ref) && isOneLetter(alt)) {
-       var alamut_request = "chr" + chrom  +assembly + ":g." + start + ref + ">" + alt
+       var alamut_request = "chr" + chrom  + assembly + ":g." + start + ref + ">" + alt
      } else if (isLetter(ref) && isLetter(alt) !== true) {
        var alamut_request = "chr" + chrom + assembly + ":g." + start + "_" + stop + "del"
      } else if ( isLetter(ref) !== true && isLetter(alt)) {
@@ -72,13 +77,19 @@ function polyform() {
      }
      // get info from Alamut on click:
      $.getJSON("http://localhost:10000/show?request=" + alamut_request + "&synchronous=true", function(result){
+       // Adds the original positions from the input, in case it differs from what is used by alamut
+       result.ori_chr = chrom;
+       result.ori_start = start;
+       result.ori_stop = stop;
+       result.ori_ref = ref;
+       result.ori_alt = alt;
        $.ajax({
          type: "POST",
          contentType: "application/json; charset=utf-8",
          url: "/showdb/" + '{{ pID }}',
          data: JSON.stringify(result),
          success: function (data) {
-           alert("ferdig " + chrom +"-"+ start +" "+ stop +" "+ ref +" "+ alt)
+           alert("Succesfully retrieved data from Alamut!")
          },
          dataType: "json"
        });
@@ -90,13 +101,19 @@ function polyform() {
     var alamut_request_cDNA = $('#cDNARequest').val()
   // maa testes
   $.getJSON("http://localhost:10000/show?request=" + alamut_request_cDNA + "&synchronous=true", function(result){
+    // Adds the original positions from the input, in case it differs from what is used by alamut
+    result.ori_chr = chrom;
+    result.ori_start = start;
+    result.ori_stop = stop;
+    result.ori_ref = ref;
+    result.ori_alt = alt;
     $.ajax({
       type: "POST",
       contentType: "application/json; charset=utf-8",
       url: "/showdb/" + '{{ pID }}',
       data: JSON.stringify(result),
       success: function (data) {
-        alert("ferdig " + chrom +"-"+ start +" "+ stop +" "+ ref +" "+ alt)
+        alert("Succesfully retrieved data from Alamut!")
       },
       dataType: "json"
     });
@@ -124,14 +141,22 @@ $('#ppt').click(function () {
   }
 });
 
+// Refresh page on exit modal:
+//$('#Interp_Modal').focusout(function () {location.reload()});
+// making these variables global to the doc.ready function to be accessible in the scope of several functions.
+var chrom;
+var start;
+var stop;
+var ref;
+var alt;
 //get from variant table @ click:
 $('#variant_table tr').click(function () {
   var ID = $(this).closest("tr").find('td:eq(0)').text();
-  var chrom = $(this).closest("tr").find('td:eq(1)').text();
-  var start = $(this).closest("tr").find('td:eq(2)').text();
-  var stop = $(this).closest("tr").find('td:eq(3)').text();
-  var ref = $(this).closest("tr").find('td:eq(4)').text();
-  var alt = $(this).closest("tr").find('td:eq(5)').text();
+  chrom = $(this).closest("tr").find('td:eq(1)').text();
+  start = $(this).closest("tr").find('td:eq(2)').text();
+  stop = $(this).closest("tr").find('td:eq(3)').text();
+  ref = $(this).closest("tr").find('td:eq(4)').text();
+  alt = $(this).closest("tr").find('td:eq(5)').text();
   var zyg = $(this).closest("tr").find('td:eq(6)').text();
   var comments = $(this).closest("tr").find('td:eq(12)').text();
   var seenatmgm = $(this).closest("tr").find('td:eq(14)').text();
@@ -143,6 +168,8 @@ $('#variant_table tr').click(function () {
   } else {
     var denovoverbatim = 'Undetermined';
   };
+  //fill hidden varid field for the alamut-field with variant ID:
+  $('#variant_id').val(String(chrom)+'|'+String(start)+'|'+String(stop)+'|'+String(ref)+'|'+String(alt))
   $('#agene').text('')
   $('#atrans').text('')
   $('#agDNA').text('')
@@ -245,10 +272,6 @@ $('#variant_table tr').click(function () {
     $("dd:not(:empty)").prev().andSelf().css('opacity', '1.0');
     $("dd:empty").prev().andSelf().css('opacity', '0.5');
 
-
-
-
-
     //Fill Anchor tag of exac with link to exac variant.
     var exacLink = "http://exac.broadinstitute.org/variant/" + chrom + "-" + start + "-" + ref + "-" + alt;
     var hgmdGeneLink = "https://portal.biobase-international.com/hgmd/pro/gene.php?gene=" + data.gene;
@@ -260,7 +283,7 @@ $('#variant_table tr').click(function () {
   //$('.variant_info').html(chrom + " " + start + " " + stop);
   $('#Interp_Modal').modal('show');
   $('#varid').val(String(chrom)+'|'+String(start)+'|'+String(stop)+'|'+String(ref)+'|'+String(alt))
-  //alert(chr + "|"+ start+ "|"+stop+ "|"+ref+ "|"+alt)
+
 });
 });
 </script>
