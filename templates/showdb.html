@@ -21,13 +21,15 @@ function polyform() {
     // hide signed and denovo col of table
     $('#variant_table td:nth-child(14),th:nth-child(14)').hide();
     $('#variant_table td:nth-child(16),th:nth-child(16)').hide();
+    // Hide variant table div if variant table is empty (e.g. contains the text: No Items):
+    $("p:contains('No Items')").parent().hide();
     //change font in table:
-    $('#variant_table').css("font-size", "10px");
+
+    $('#variant_table').css("font-size", "11px");
     //tooltip on classes form selector
     $('#inhouse_class').tooltip({'trigger':'focus', 'title': 'Inhouse Class', 'placement': 'right'});
     $('#acmg_class').tooltip({'trigger':'focus', 'title': 'ACMG Class', 'placement': 'right'});
-    // Hide variant table div if variant table is empty (e.g. contains the text: No Items):
-    $("p:contains('No Items')").parent().hide();
+
     // set a popover on combo input field containing info on howto:
     $('#combo').attr({
       "data-toggle":"popover",
@@ -121,6 +123,7 @@ $('#ppt').click(function () {
     $('#polyphen').hide();
   }
 });
+
 
 //get from variant table @ click:
 $('#variant_table tr').click(function () {
@@ -240,9 +243,12 @@ $('#variant_table tr').click(function () {
         $('#varHSFScore').html(0)
     }
     //find empty cols, and hide or make them grey
+    $("dd:not(:empty)").prev().andSelf().css('opacity', '1.0');
     $("dd:empty").prev().andSelf().css('opacity', '0.5');
-    //$( "dd[name|='pub']:contains('None')").parent('dl').css('opacity', '0.5');
-    //$("dd:contains('None')").prev().andSelf().css('opacity', '0.5');
+
+
+
+
 
     //Fill Anchor tag of exac with link to exac variant.
     var exacLink = "http://exac.broadinstitute.org/variant/" + chrom + "-" + start + "-" + ref + "-" + alt;
