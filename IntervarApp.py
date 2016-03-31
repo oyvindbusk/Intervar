@@ -298,7 +298,10 @@ def showdb(pID):
             print('#8')
             print(request.form['polyphen'])
             print(request.form['variant_id'])
-            #db.commit()
+            pp_variant_info = request.form['variant_id'].split('|')
+            cur.execute('UPDATE alamut_annotation SET polyphen = ? WHERE ori_chr = ? AND ori_start = ? AND ori_stop = ? AND ori_ref = ? AND ori_alt = ?', (request.form['polyphen'], pp_variant_info[0], pp_variant_info[1], pp_variant_info[2], pp_variant_info[3], pp_variant_info[4]))
+            print("UPDATE alamut_annotation SET polyphen = {} WHERE ori_chr = {} AND ori_start = {} AND ori_stop = {} AND ori_ref = {} AND ori_alt = {}".format(request.form['polyphen'], pp_variant_info[0], pp_variant_info[1], pp_variant_info[2], pp_variant_info[3], pp_variant_info[4]))
+            db.commit()
             #INSERT OR REPLACE INTO alamut_annotation (polyphen) VALUES (?) WHERE ori_chr = ? AND ori_start = ? AND ori_stop = ? AND ori_ref = ? AND ori_alt = ?
 
     #hente ut pasientinfo for alle som er kjort
@@ -308,7 +311,7 @@ def showdb(pID):
     #hente ut tolkede varianter for en pasient
     cur.execute('SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt, p2r.zygosity, p2r.denovo,\
     am.ID, am.gene, am.cNomen AS cDNA, am.pNomen AS protein, am.exacAllFreq,\
-    i.inhouse_class, i.comments, MAX(i.signed), sub.concat\
+    i.inhouse_class, i.comments, MAX(i.signed), sub.concat, am.polyphen\
     FROM patient_info2raw_variants AS p2r\
     LEFT JOIN alamut_annotation AS am ON p2r.chr = am.chrom AND p2r.start = am.gDNAstart\
     LEFT JOIN interpretations AS i ON p2r.patient_ID = i.SAMPLE_NAME AND p2r.chr=i.chr AND p2r.start=i.start\
@@ -321,7 +324,7 @@ def showdb(pID):
     WHERE patient_ID = ?\
     GROUP BY p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt', (pID, pID ))
     var_items = listOfdictsFromCur(cur.fetchall(), 'int_variants')
-    #print(var_items[0])
+    print(var_items)
     var_table = VariantTable(var_items,)
     #get patientinfo for a single patient assigned by pID
     cur.execute('SELECT pat.patient_ID, pat.clinical_info, pat.family_ID, pat.sex, pat.disease_category, pan.panel_name, QC.MEAN_TARGET_COVERAGE,\

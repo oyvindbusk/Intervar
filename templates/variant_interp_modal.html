@@ -82,7 +82,7 @@
                 <dd id="denovostatus"></dd>
                 <!-- -->
                 <dt id="ppt">polyphen</dt>
-                <dd id="pp">Test</dd>
+                <dd id="pp"></dd>
                 <form action="{{ url_for('showdb') }}/{{ pID }}" method=POST enctype="multipart/form-data">
                   {{ polyphenform.hidden_tag() }}
                   {{ polyphenform.polyphen(onchange="polyform();", style="display: none") }}

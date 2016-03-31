@@ -77,6 +77,7 @@ class VariantTable(Table): # add signed as a column
     stop = Col('stop')
     ref = Col('ref')
     alt = Col('alt')
+
     zygosity = Col('Zygosity')
     gene = Col('gene')
     cDNA = Col('cDNA')
@@ -87,6 +88,7 @@ class VariantTable(Table): # add signed as a column
     signed = Col('Signed')
     concat = Col('Sample;dis;class')
     denovo = Col('denovo')
+    polyphen = Col('polyphen')
     classes = ['table table-striped" id="variant_table'] # make sortable like in the exac-page?
 
 class SampleOverviewTable(Table):
@@ -115,7 +117,7 @@ def listOfdictsFromCur(dbcursor, type):
         if type == 'patient_info':
             list_items.append(dict(PID=i[0], clinInfo=i[1], familyID=i[2], sex=i[3] ))
         elif type == 'int_variants':
-            list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], zygosity=i[5], denovo=i[6], ID=i[7], gene=i[8], cDNA=i[9], protein=i[10], exacAll=i[11], inclass=i[12], comments=i[13], signed=i[14], concat=i[15] ))
+            list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], zygosity=i[5], denovo=i[6], ID=i[7], gene=i[8], cDNA=i[9], protein=i[10], exacAll=i[11], inclass=i[12], comments=i[13], signed=i[14], concat=i[15], polyphen=i[16] ))
         elif type == 'int_variants_report':
             list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], zygosity=i[5], denovo=i[6], ID=i[7], gene=i[8], gDNA=i[9], cDNA=i[10], protein=i[11], exacAll=i[12], clinVarPhenotypes=i[13], clinVarClinSignifs=i[14], transcript=i[15], codingEffect=i[16], hgmdId=i[17], hgmdPhenotype=i[18], varLocation=i[19], localSpliceEffect=i[20], rsClinicalSignificance=i[21], exacNFEFreq=i[22], espEAMAF=i[23], espAltEACount=i[24] , espRefEACount=i[25], conservedOrthos=i[26], AGVGDclass=i[27], SIFTprediction=i[28],TASTERprediction=i[29], exons=i[30], rsId=i[31], wtMaxEntScore=i[32], varMaxEntScore=i[33], wtNNSScore=i[34], varNNSScore=i[35], wtHSFScore=i[36], varHSFScore=i[37], interp_ID=i[38], inclass=i[39], acmg_class=i[40], interpretor=i[41], comments=i[42], signed=i[43], publications=i[44], concat=i[45] ))
 

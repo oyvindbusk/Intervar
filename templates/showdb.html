@@ -21,6 +21,7 @@
     // hide signed and denovo col of table
     $('#variant_table td:nth-child(14),th:nth-child(14)').hide();
     $('#variant_table td:nth-child(16),th:nth-child(16)').hide();
+    $('#variant_table td:nth-child(17),th:nth-child(17)').hide();
     // Hide variant table div if variant table is empty (e.g. contains the text: No Items):
     $("p:contains('No Items')").parent().hide();
     //change font in table:
@@ -61,9 +62,6 @@
    // del
    // insertion
    // duplication -> get_alamut
-
-
-
    $('#get_alamut').click(function () {
      var assembly = "(GRCh37)";
      var alamut_request = "";
@@ -140,7 +138,6 @@ $('#ppt').click(function () {
     $('#polyphen').hide();
   }
 });
-
 // Refresh page on exit modal:
 //$('#Interp_Modal').focusout(function () {location.reload()});
 // making these variables global to the doc.ready function to be accessible in the scope of several functions.
@@ -168,6 +165,9 @@ $('#variant_table tr').click(function () {
   } else {
     var denovoverbatim = 'Undetermined';
   };
+
+  var polyphen = $(this).closest("tr").find('td:eq(15)').text();
+  console.log(polyphen)
   //fill hidden varid field for the alamut-field with variant ID:
   $('#variant_id').val(String(chrom)+'|'+String(start)+'|'+String(stop)+'|'+String(ref)+'|'+String(alt))
   $('#agene').text('')
@@ -229,6 +229,7 @@ $('#variant_table tr').click(function () {
     $('#AGVDclass').text(data.AGVGDclass)
     $('#SIFTPrediction').text(data.SIFTprediction)
     $('#TASTERprediction').text(data.TASTERprediction)
+    $('pp').val(polyphen)
     // only show if present
     if (data.publications) {
         $('#pubs').show()
