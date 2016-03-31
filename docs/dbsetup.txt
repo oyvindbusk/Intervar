@@ -275,6 +275,7 @@ ori_start INT,
 ori_stop INT,
 ori_ref VARCHAR(50),
 ori_alt VARCHAR(50),
+polyphen VARCHAR(50),
 UNIQUE (chrom, gDNAstart, gDNAend, wtNuc, varNuc),
 FOREIGN KEY(ori_chr, ori_start, ori_stop, ori_ref, ori_alt) REFERENCES raw_variants(chr, start, stop, ref, alt)
 );
