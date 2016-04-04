@@ -4,6 +4,20 @@ function polyform() {
  }
  //document ready function - happens on page load
 $(function() {
+console.log("tesing");
+  // fill comment if exists:
+  $('#comment').val('{{ patient_comment[0] | replace("\r\n", "\\n") }}');
+  $('#filtus_settings').html(' {{ patient_comment[1] | replace("\r\n", "\\n")    }}' );
+  //fill the patient info modal with info on the specific patient in case you want to alter some values.
+  $('#pID_Modal').on('shown.bs.modal', function (e) {
+    $('#sex').val('{{ pID_patient.sex }}');
+    $('#panel').val('{{ pID_patient.panel_name }}');
+    $('#clinInfo').val('{{ pID_patient.clinInfo }}');
+    $('#familyID').val('{{ pID_patient.familyID }}');
+    $('#hsmFileUpload').val('{{ pID_patient.hsmFileUpload }}');
+    $('#fragmentSizeUpload').val('{{ pID_patient.fragmentSizeUpload }}');
+    });
+
 
   $('#filtus_settings').autosize();
   // hide ID col of table
