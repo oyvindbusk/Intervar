@@ -86,6 +86,7 @@ console.log("tesing");
      result.ori_stop = stop;
      result.ori_ref = ref;
      result.ori_alt = alt;
+
      $.ajax({
        type: "POST",
        contentType: "application/json; charset=utf-8",
@@ -96,6 +97,10 @@ console.log("tesing");
        },
        dataType: "json"
      });
+     // Could the above be replaced by something like?:
+     //$.getJSON('/showdb/' + '{{ pID }}', JSON.stringify(result), function(data) {alert("Succesfully retrieved data from Alamut!");} );
+     //
+
    })
    .fail(function() {alert('Somethings off with the request, no data fetched. Try the a cDNA-request with the input box instead.');});
  });
