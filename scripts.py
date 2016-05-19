@@ -12,7 +12,7 @@ class PatientForm(Form):
     sex = SelectField('Sex', choices=[('M', 'Male'),('F', 'Female')])
     panel = SelectField('Panel', choices=[('PV2-1', 'PV2-1'),('F', 'Filtex'), ('E', 'Exome')])
     clinInfo = TextAreaField("Clinical info")
-    dis_category = SelectField('Disease category', choices=[('Atax', 'Ataxia'),('CMT', 'CMT'), ('EDS', 'EDS'), ('APN', 'APN'), ('HSP', 'HSP'), ('Noonan_Marfan', 'Noonan Marfan'), ('Skeletal', 'Skeletal'), ('ALS', 'ALS'), ('NF', 'NF')])
+    dis_category = SelectField('Disease category', choices=[('Other','Other'),('Syndrome','Syndrome'),('LQTP','LQT project'),('PIDD','Immunodeficiency'),('Atax', 'Ataxia'),('CMT', 'CMT'), ('EDS', 'EDS'), ('APN', 'APN'), ('HSP', 'HSP'), ('Noonan_Marfan', 'Noonan Marfan'), ('Skeletal', 'Skeletal'), ('ALS', 'ALS'), ('NF', 'NF')])
     familyID = TextField('Family ID')
     hsmFileUpload = FileField("Hsmetrics file")
     fragmentSizeUpload = FileField("Fragment size file")

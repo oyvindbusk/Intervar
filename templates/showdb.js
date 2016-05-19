@@ -4,7 +4,7 @@ function polyform() {
  }
  //document ready function - happens on page load
 $(function() {
-console.log("tesing");
+
   // fill comment if exists:
   $('#comment').val('{{ patient_comment[0] | replace("\r\n", "\\n") }}');
   $('#filtus_settings').html(' {{ patient_comment[1] | replace("\r\n", "\\n")    }}' );
@@ -86,7 +86,7 @@ console.log("tesing");
      result.ori_stop = stop;
      result.ori_ref = ref;
      result.ori_alt = alt;
-
+     console.log(JSON.stringify(result));
      $.ajax({
        type: "POST",
        contentType: "application/json; charset=utf-8",
@@ -96,13 +96,15 @@ console.log("tesing");
          alert("Succesfully retrieved data from Alamut!");
        },
        dataType: "json"
-     });
-     // Could the above be replaced by something like?:
+     }).always(function() {location.reload(forceGet=true);console.log('Finito ajax POST to fLASK');});
+
+
+          // Could the above be replaced by something like?:
      //$.getJSON('/showdb/' + '{{ pID }}', JSON.stringify(result), function(data) {alert("Succesfully retrieved data from Alamut!");} );
      //
 
-   })
-   .fail(function() {alert('Somethings off with the request, no data fetched. Try the a cDNA-request with the input box instead.');});
+   }).fail(function() {console.log('something went amiss with the GET');});
+
  });
 
 //on click of: submitcDNARequest get value from: cDNARequest
@@ -145,7 +147,8 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request_cDNA + "&synch
     },
     dataType: "json"
   });
-});
+}).fail(function() {alert('test');});
+
 });
 //Then run request
 
