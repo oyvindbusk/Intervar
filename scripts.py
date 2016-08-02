@@ -62,6 +62,11 @@ class PublicationsForm(Form):
     pub2varID = HiddenField("pub2varID") # to get the variant ID from the table to insert into the publications2variants-table
     submit = SubmitField("Submit publication")
 
+class GeneInfoForm(Form):
+    gene_name = TextField("gene_name")
+    gene_info = TextAreaField("gene_info")
+    submit = SubmitField("Submit gene info")
+
 # Declare your table
 class PatientTable(Table):
     PID = Col('Patient ID')
@@ -77,7 +82,6 @@ class VariantTable(Table): # add signed as a column
     stop = Col('stop')
     ref = Col('ref')
     alt = Col('alt')
-
     zygosity = Col('Zygosity')
     gene = Col('gene')
     cDNA = Col('cDNA')

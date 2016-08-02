@@ -152,7 +152,6 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request_cDNA + "&synch
 });
 //Then run request
 
-
 // on click of polyphen, show entry form and submit button.
 $('#ppt').click(function () {
 if($('#pp').css('display') != 'none'){
@@ -304,6 +303,16 @@ $.getJSON($SCRIPT_ROOT + '/_return_alamut_for_variant', {
   var hgmdGeneLink = "https://portal.biobase-international.com/hgmd/pro/gene.php?gene=" + data.gene;
   document.getElementById("exaclink").setAttribute("href", exacLink);
   document.getElementById("hgmdgenelink").setAttribute("href", hgmdGeneLink);
+
+  // Add a well for entering gene info, and a
+
+  $('#agene').attr("Title", "here comes info from the well if any, or something else..");
+
+
+
+
+
+
 });
 // Fill hidden form field with variant ID for the delete variant button:
 $('#hidden_variant_ID').val(String(chrom)+'|'+String(start)+'|'+String(stop)+'|'+String(ref)+'|'+String(alt));

@@ -9,7 +9,7 @@ from datetime import datetime
 
 #importere egne scripts
 from scripts import PatientForm, VariantForm, SearchForm, PatientTable, VariantTable, listOfdictsFromCur, dictFromCur, print_file, hsmetrics_to_tuple, insert_data, get_values_from_form, insertsize_to_tuple, insert_data_is, get_variants_from_form
-from scripts import alamut_dict_to_DB, str_to_int_float, Interpret_overallForm, InterpretVariantForm, PublicationsForm, SampleOverviewTable, deleteVariantForm, polyphenForm
+from scripts import alamut_dict_to_DB, str_to_int_float, Interpret_overallForm, InterpretVariantForm, PublicationsForm, SampleOverviewTable, deleteVariantForm, polyphenForm, GeneInfoForm
 import json
 
 
@@ -153,6 +153,8 @@ def testinput():
             return abort(404)
     elif request.method == "GET":
         return render_template('testinput.html', form=form)
+
+
 
 ################################################################################################################################################
 

@@ -8,22 +8,8 @@ LEFT JOIN interpretations AS i ON p2r.patient_ID = i.SAMPLE_NAME AND p2r.chr = i
 WHERE patient_ID = '123_15'
 
 
-
-
-
-
-
-1st pri:
-Flask og google charts eksempel:
-https://pythonspot.com/flask-json-and-the-google-charts-api/
-
-Skal jeg lage en stor form (modal eller egen site?) for Alamut, hente JSON, populate med Jquery, og ha en submit-knapp i bunn??
-
-Hvordan skal tolkningsvinduet se ut??
-
-
 Så forbanna enkelt er det å fylle forms med Jquery:
-  $("#search").val("Det er da vel ikke så forbanna enkelt?"); 
+  $("#search").val("Det er da vel ikke så forbanna enkelt?");
 
 legge til ori_chr, ori_start, ori_stop, ori_ref, ori_alt fra raw_variants i alamuttabellen (disse skal være like med det som er i raw_variants, og som er det som er submitted), siden de kan være forskjellige.
 flask -> request.get_json(force=False, silent=False, cache=True)¶
@@ -53,7 +39,7 @@ make overview-page
 add field clinical_category to form and db
 legge innearch-h-window ett eller annet sted for aa teste ut
 Lage variant-html
-db: 
+db:
 teknisk godkjenning
 teknisk kontroll
 dato analysesvar??
@@ -66,7 +52,7 @@ Overview:
 Table for overwiew grouped by analysis and SBS:
  		MEAN_T_COV 	PCT_TARGET_BASES_20X
 		count 	mean 	mean
-SBS 	Panel_type 			
+SBS 	Panel_type
 NS0014 	e 	12 	106.765594 	0.926867
 NS0015 	filtex 	10 	114.572177 	0.935647
 NS0016 	filtex 	10 	105.138737 	0.923380

@@ -11,7 +11,14 @@
             <div class="col-sm-6">
               <dl class="dl-horizontal">
                 <dt>Gene</dt>
-                <dd id="agene"></dd>
+                <dd id="agene" data-toggle="collapse" href="#gene_info_collapsible" aria-expanded="false" aria-controls="collapsegene_info_collapsible"></dd>
+                <!-- Collapsible for entering gene info -->
+                <div class="collapse" id="gene_info_collapsible">
+                  <div class="well">
+                    <h5>Testing</h5>
+                  </div>
+                </div>
+                <!-- -->
                 <dt>Transcript</dt>
                 <dd id="atrans"></dd>
                 <dt>gDNA</dt>
@@ -229,9 +236,11 @@
           </div>
           <div class="col-sm-1 col-sm-offset-1">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
           </div>
 </div>
         </div>
+
       </div>
     </div>
   </div>

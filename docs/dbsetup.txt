@@ -27,6 +27,11 @@ sex CHAR(1) CHECK(Sex in ('M', 'F')),
 disase_category TEXT
 );
 
+CREATE TABLE gene_info(
+gene_name VARCHAR(30) PRIMARY KEY,
+gene_info TEXT,
+FOREIGN KEY(gene_name) REFERENCES alamut_annotation(gene)
+);
 
 CREATE TABLE panels(
 panel_name VARCHAR(30) PRIMARY KEY
