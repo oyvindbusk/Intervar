@@ -23,10 +23,11 @@ $(function() {
   // hide ID col of table
   $('#variant_table td:nth-child(1),th:nth-child(1)').hide();
   $('th:first').show(); // This is hidden by mistake, so I have to show it.
-  // hide signed and denovo col of table
+  // hide signed and denovo col of table and gene info
   $('#variant_table td:nth-child(14),th:nth-child(14)').hide();
   $('#variant_table td:nth-child(16),th:nth-child(16)').hide();
   $('#variant_table td:nth-child(17),th:nth-child(17)').hide();
+  $('#variant_table td:nth-child(18),th:nth-child(18)').hide();
   // Hide variant table div if variant table is empty (e.g. contains the text: No Items):
   $("p:contains('No Items')").parent().hide();
   //change font in table:
@@ -170,7 +171,7 @@ var start;
 var stop;
 var ref;
 var alt;
-//get from variant table @ click:
+//get from variant table @ click to have in interp modal:
 $('#variant_table tr').click(function () {
 var ID = $(this).closest("tr").find('td:eq(0)').text();
 chrom = $(this).closest("tr").find('td:eq(1)').text();
@@ -192,7 +193,10 @@ if (denovostatus == '0') {
 }
 
 var polyphen = $(this).closest("tr").find('td:eq(15)').text();
+var gene_info = $(this).closest("tr").find('td:eq(17)').text();
 console.log(polyphen);
+console.log('ts');
+console.log(gene_info);
 //fill hidden varid field for the alamut-field with variant ID:
 $('#variant_id').val(String(chrom)+'|'+String(start)+'|'+String(stop)+'|'+String(ref)+'|'+String(alt));
 $('#agene').text('');
@@ -304,15 +308,15 @@ $.getJSON($SCRIPT_ROOT + '/_return_alamut_for_variant', {
   document.getElementById("exaclink").setAttribute("href", exacLink);
   document.getElementById("hgmdgenelink").setAttribute("href", hgmdGeneLink);
 
-  // Add a well for entering gene info, and a
-
-  $('#agene').attr("Title", "here comes info from the well if any, or something else..");
-
-
-
-
-
-
+  // Add an attr for showing info on the gene on hover. Fill with relevant info if any relevant info is present. else use something generic. Also fill form entry field
+  if (gene_info){
+    $('#agene').attr("Title", gene_info);
+    $('#gene_info').val(gene_info);
+  } else {
+    $('#agene').attr("Title", "No gene info entered.");
+  }
+  //fill hidden gene name field with value.
+  $('#hidden_gene_name').val(data.gene);
 });
 // Fill hidden form field with variant ID for the delete variant button:
 $('#hidden_variant_ID').val(String(chrom)+'|'+String(start)+'|'+String(stop)+'|'+String(ref)+'|'+String(alt));

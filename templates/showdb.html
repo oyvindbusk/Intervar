@@ -1,11 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
 
-
 <script type="text/javascript">
 {% include 'showdb.js' %}
 </script>
-
 
 <div class="container">
 	<div class="row">
@@ -21,7 +19,7 @@
     <dt>Family ID</dt>
     <dd>{{ pID_patient.familyID }}</dd>
     <dt>Panel</dt>
-    <dd>{{ pID_patient.panel_name }}</dd>
+    <dd id="panel_name">{{ pID_patient.panel_name }}</dd>
     <dt>Disease category</dt>
     <dd>{{ pID_patient.disease_category }}</dd>
     <dt>Sex</dt>

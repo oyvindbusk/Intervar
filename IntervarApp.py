@@ -245,6 +245,7 @@ def showdb(pID):
     pubForm = PublicationsForm()
     delform = deleteVariantForm()
     polyphenform = polyphenForm()
+    geneinfoForm = GeneInfoForm()
     db = get_db()
     cur = get_db().cursor()
     #variabler
@@ -291,7 +292,7 @@ def showdb(pID):
             cur.execute('INSERT OR REPLACE INTO publications2variants (PMID, varID) VALUES (?, ?)',(request.form['PMID'], int(request.form['pub2varID']) ))
             db.commit()
         elif delform.validate_on_submit() and not request.is_xhr and request.form['submit'] == 'Delete variant':
-            print('#7# - oh yeah')
+            print('#7#')
             del_variant_info = []
             del_variant_info = request.form['hidden_variant_ID'].split('|')
             cur.execute('DELETE FROM patient_info2raw_variants WHERE patient_ID = ? AND chr = ? AND start = ? AND stop = ? AND ref = ? AND alt = ?', (pID, del_variant_info[0], del_variant_info[1], del_variant_info[2], del_variant_info[3], del_variant_info[4]))
@@ -305,6 +306,12 @@ def showdb(pID):
             print("UPDATE alamut_annotation SET polyphen = {} WHERE ori_chr = {} AND ori_start = {} AND ori_stop = {} AND ori_ref = {} AND ori_alt = {}".format(request.form['polyphen'], pp_variant_info[0], pp_variant_info[1], pp_variant_info[2], pp_variant_info[3], pp_variant_info[4]))
             db.commit()
             #INSERT OR REPLACE INTO alamut_annotation (polyphen) VALUES (?) WHERE ori_chr = ? AND ori_start = ? AND ori_stop = ? AND ori_ref = ? AND ori_alt = ?
+        elif geneinfoForm.validate_on_submit() and not request.is_xhr and request.form['submit'] == 'Submit gene info':
+            print('#9')
+            print(request.form['hidden_gene_name'])
+            print(request.form['gene_info'])
+            cur.execute('INSERT OR REPLACE INTO gene_info (gene_name, gene_info) VALUES (?, ?)',(request.form['hidden_gene_name'], request.form['gene_info'], ))
+            db.commit()
 
     #hente ut pasientinfo for alle som er kjort
     cur.execute('SELECT * FROM patient_info')
@@ -313,10 +320,11 @@ def showdb(pID):
     #hente ut tolkede varianter for en pasient
     cur.execute('SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt, p2r.zygosity, p2r.denovo,\
     am.ID, am.gene, am.cNomen AS cDNA, am.pNomen AS protein, am.exacAllFreq,\
-    i.inhouse_class, i.comments, MAX(i.signed), sub.concat, am.polyphen\
+    i.inhouse_class, i.comments, MAX(i.signed), sub.concat, am.polyphen, gi.gene_info\
     FROM patient_info2raw_variants AS p2r\
     LEFT JOIN alamut_annotation AS am ON p2r.chr = am.ori_chr AND p2r.start = am.ori_start AND p2r.stop = am.ori_stop\
     LEFT JOIN interpretations AS i ON p2r.patient_ID = i.SAMPLE_NAME AND p2r.chr=i.chr AND p2r.start=i.start\
+    LEFT JOIN gene_info as gi on gi.gene_name=am.gene\
     LEFT JOIN (SELECT GROUP_CONCAT(DISTINCT p2r.patient_ID||";"||pi.disease_category||";"||i.inhouse_class) AS concat,am.ID AS ID\
     FROM (SELECT * FROM patient_info2raw_variants WHERE patient_ID != ?) AS p2r\
     LEFT JOIN alamut_annotation AS am ON p2r.chr = am.ori_chr AND p2r.start = am.ori_start\
@@ -345,7 +353,7 @@ def showdb(pID):
         patient_comment = ''
 
     db.close()
-    return render_template('showdb.html', patient_table=patient_table, var_table=var_table, form=form, pform=pform, iform=iform, pubForm=pubForm, varIntForm=varIntForm,  pID=pID, pID_patient=pID_patient, patient_comment=patient_comment, delform=delform, polyphenform=polyphenform)
+    return render_template('showdb.html', patient_table=patient_table, var_table=var_table, form=form, pform=pform, iform=iform, pubForm=pubForm, varIntForm=varIntForm, geneinfoForm=geneinfoForm,  pID=pID, pID_patient=pID_patient, patient_comment=patient_comment, delform=delform, polyphenform=polyphenform)
 
 ################################################################################################################################################
 

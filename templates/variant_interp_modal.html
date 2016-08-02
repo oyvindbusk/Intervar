@@ -15,7 +15,17 @@
                 <!-- Collapsible for entering gene info -->
                 <div class="collapse" id="gene_info_collapsible">
                   <div class="well">
-                    <h5>Testing</h5>
+                  <h5>Enter info for gene:</h5>
+                    <form action="{{ url_for('showdb') }}/{{ pID }}" method=POST enctype="multipart/form-data">
+                      {{ geneinfoForm.hidden_tag() }}
+                      <fieldset class="form-group">
+                        {{ geneinfoForm.gene_info(class="form-control", placeholder="Gene info") }}
+                      </fieldset>
+                      <fieldset class="form-group">
+                        {{ hidden_gene_name }}
+                        {{ geneinfoForm.submit(class="btn btn-primary") }}
+                      </fieldset>
+                    </form>
                   </div>
                 </div>
                 <!-- -->
