@@ -108,7 +108,7 @@ def dictFromCur(dbcursor, type):
     patient_dict = {}
     for i in dbcursor:
         if type == 'pID_patient':
-            patient_dict = {"PID" : i[0], "clinInfo": i[1], "familyID" : i[2], "sex" : i[3], "disease_category" : i[4],"panel_name" : i[5],   "mean_target_cov" : i[6], "pct_target_20" : i[7], "pct_target_30": i[8], "median_is" : i[9], "mean_is" : i[10]}
+            patient_dict = {"PID" : i[0], "clinInfo": i[1], "familyID" : i[2], "sex" : i[3], "disease_category" : i[4],"panel_name" : i[5],   "mean_target_cov" : i[6], "pct_target_20" : i[7], "pct_target_30": i[8], "median_is" : i[9], "mean_is" : i[10], "sbs" : i[11]}
     return patient_dict
 
 
