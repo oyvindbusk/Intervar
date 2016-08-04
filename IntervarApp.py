@@ -408,9 +408,10 @@ def report(pID="123_15"):
         pass
     #get patientinfo for a single patient assigned by pID
     cur.execute('SELECT pat.patient_ID, pat.clinical_info, pat.family_ID, pat.sex, pat.disease_category, pan.panel_name, QC.MEAN_TARGET_COVERAGE,\
-    QC.PCT_TARGET_BASES_20X, QC.PCT_TARGET_BASES_30X, ins.median_insert_size, ins.mean_insert_size\
+    QC.PCT_TARGET_BASES_20X, QC.PCT_TARGET_BASES_30X, ins.median_insert_size, ins.mean_insert_size, runs.sbs\
     FROM patient_info AS pat JOIN patient_info2panels AS pan ON pat.patient_ID=pan.patient_ID\
     JOIN QC ON pat.patient_ID=QC.SAMPLE_NAME LEFT JOIN insert_size AS ins ON pat.patient_ID=ins.SAMPLE_NAME\
+    LEFT JOIN runs ON pat.patient_ID=runs.patient_ID\
     WHERE pat.patient_ID = ?', (pID, ))
     pID_patient = dictFromCur(cur.fetchall(), 'pID_patient')
     db.close()
