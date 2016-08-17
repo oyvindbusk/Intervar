@@ -34,8 +34,8 @@ $(function() {
 
   $('#variant_table').css("font-size", "11px");
   //tooltip on classes form selector
-  $('#inhouse_class').tooltip({'trigger':'focus', 'title': 'Inhouse Class', 'placement': 'right'});
-  $('#acmg_class').tooltip({'trigger':'focus', 'title': 'ACMG Class', 'placement': 'right'});
+  $('#inhouse_class').attr({"data-toggle" : "popover", title:"Inhouse class", "data-content": "This is the inhouse class", "data-trigger": "hover" });
+  $('#acmg_class').attr({"data-toggle" : "popover", title:"ACMG class", "data-content": "This is the ACMG class", "data-trigger": "hover" });
 
   // set a popover on combo input field containing info on howto:
   $('#combo').attr({
@@ -95,14 +95,11 @@ $(function() {
        data: JSON.stringify(result),
        success: function (data) {
          alert("Succesfully retrieved data from Alamut!");
+         location = location; // reloader siden
        },
        dataType: "json"
-     }).always(function() {location.reload(forceGet=true);console.log('Finito ajax POST to fLASK');});
+     }).always(function() {console.log('Finito ajax POST to fLASK');});
 
-
-          // Could the above be replaced by something like?:
-     //$.getJSON('/showdb/' + '{{ pID }}', JSON.stringify(result), function(data) {alert("Succesfully retrieved data from Alamut!");} );
-     //
 
    }).fail(function() {console.log('something went amiss with the GET');});
 
@@ -145,6 +142,7 @@ $.getJSON("http://localhost:10000/show?request=" + alamut_request_cDNA + "&synch
     data: JSON.stringify(result),
     success: function (data) {
       alert("Succesfully retrieved data from Alamut!");
+      location = location; // reloader siden
     },
     dataType: "json"
   });
@@ -311,6 +309,8 @@ $.getJSON($SCRIPT_ROOT + '/_return_alamut_for_variant', {
   // Add an attr for showing info on the gene on hover. Fill with relevant info if any relevant info is present. else use something generic. Also fill form entry field
   if (gene_info){
     $('#agene').attr("Title", gene_info);
+
+
     $('#gene_info').val(gene_info);
   } else {
     $('#agene').attr("Title", "No gene info entered.");

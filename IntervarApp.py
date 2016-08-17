@@ -131,6 +131,8 @@ def testinput():
             cur.execute("INSERT INTO patient_info (patient_ID, family_ID, clinical_info, sex, disease_category) VALUES (?, ?, ?, ?, ?)", (request.form['patient_ID'], request.form['familyID'], request.form['clinInfo'], request.form['sex'], request.form['dis_category']))
             cur.execute("INSERT INTO patient_info2panels (patient_ID, panel_name) VALUES (?, ?)", (request.form['patient_ID'], request.form['panel']))
             cur.execute("INSERT INTO runs (patient_ID, sbs, date) VALUES (?, ?, ?)", (request.form['patient_ID'], request.form['sbs_run'], str(datetime.now()).split(' ')[0]))
+            cur.execute("INSERT INTO QC (SAMPLE_NAME) VALUES (?)", request.form['patient_ID'])
+            cur.execute("INSERT INTO insert_size (SAMPLE_NAME) VALUES (?)", request.form['patient_ID'])
             hsm_file = request.files['hsmFileUpload']
             if hsm_file and allowed_file(hsm_file.filename):
                 filename = secure_filename(hsm_file.filename)
@@ -147,7 +149,8 @@ def testinput():
             db.commit()
             db.close()
             flash('Success inserting sample {0}'.format(request.form['patient_ID']))
-            return redirect(url_for('testinput'))
+            return redirect(url_for('showdb', pID=request.form['patient_ID'])) # herttt
+
 
         else:
             return abort(404)
@@ -174,21 +177,6 @@ def overview():
     overview_dict.update({'F_patients': cur.fetchall()[0][0]})
     cur.execute('SELECT COUNT(*) FROM patient_info WHERE sex = "M"')
     overview_dict.update({'M_patients': cur.fetchall()[0][0]})
-
-    #get number of samples PASS QC
-    #SELECT COUNT(*) FROM patient_info
-    #LEFT JOIN QC
-    #ON patient_info.patient_ID=QC.SAMPLE_NAME
-    #WHERE MEAN_TARGET_COVERAGE >= 60 AND PCT_TARGET_BASES_20X > 0.8;
-    #get total number of variants
-    #SELECT COUNT(*) FROM raw_variants;
-    #get total number of variants in each class
-    #SELECT COUNT(*) FROM raw_variants
-    #JOIN interpretations
-    #ON raw_variants.chr = interpretations.chr AND raw_variants.start = interpretations.start AND raw_variants.stop = interpretations.stop AND raw_variants.ref = interpretations.ref AND raw_variants.alt = interpretations.alt
-    #WHERE interpretations.inhouse_class = "3"
-    #get mean coverage for alle samples
-    #SELECT AVG(MEAN_TARGET_COVERAGE) FROM QC;
 
 
     # get data for plot of coverage pr run
@@ -317,6 +305,7 @@ def showdb(pID):
     cur.execute('SELECT * FROM patient_info')
     patient_items = listOfdictsFromCur(cur.fetchall(), 'patient_info')
     patient_table = PatientTable(patient_items)
+
     #hente ut tolkede varianter for en pasient
     cur.execute('SELECT p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt, p2r.zygosity, p2r.denovo,\
     am.ID, am.gene, am.cNomen AS cDNA, am.pNomen AS protein, am.exacAllFreq,\
@@ -334,7 +323,6 @@ def showdb(pID):
     WHERE patient_ID = ?\
     GROUP BY p2r.chr, p2r.start, p2r.stop, p2r.ref, p2r.alt', (pID, pID ))
     var_items = listOfdictsFromCur(cur.fetchall(), 'int_variants')
-    print(var_items)
     var_table = VariantTable(var_items,)
     #get patientinfo for a single patient assigned by pID
     cur.execute('SELECT pat.patient_ID, pat.clinical_info, pat.family_ID, pat.sex, pat.disease_category, pan.panel_name, QC.MEAN_TARGET_COVERAGE,\
@@ -344,6 +332,7 @@ def showdb(pID):
     LEFT JOIN runs ON pat.patient_ID=runs.patient_ID\
     WHERE pat.patient_ID = ?', (pID, ))
     pID_patient = dictFromCur(cur.fetchall(), 'pID_patient')
+
     #get comments for the interpretations of one patient:
     cur.execute('SELECT comments, filtus_settings FROM interpretations_pr_patient WHERE patient_ID = ?', (pID, ))
     try:
@@ -357,7 +346,18 @@ def showdb(pID):
     return render_template('showdb.html', patient_table=patient_table, var_table=var_table, form=form, pform=pform, iform=iform, pubForm=pubForm, varIntForm=varIntForm, geneinfoForm=geneinfoForm,  pID=pID, pID_patient=pID_patient, patient_comment=patient_comment, delform=delform, polyphenform=polyphenform)
 
 ################################################################################################################################################
+# test av pdfkit
+#import pdfkit
+@app.route('/<name>/<location>/')
+def pdf_template(name, location):
+    rendered = render_template('pdf_template.html', name=name, location=location)
+    pdf = pdfkit.from_string(rendered, False)
 
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'inline; filename=output.pdf'
+
+    return response
 
 ################################################################################################################################################
 
@@ -377,7 +377,7 @@ def report(pID="123_15"):
     am.exon, am.rsId, am.wtMaxEntScore, am.varMaxEntScore, am.wtNNSScore, am.varNNSScore, am.wtHSFScore, am.varHSFScore,\
     i.ID, i.inhouse_class, i.acmg_class, i.interpretor, i.comments, MAX(i.signed), GROUP_CONCAT(DISTINCT "PMID:"||p.PMID||"\tRef:"||reference||"\tYear:"||year||"\tComment:"||comment||"<br>") AS publications, sub.concat\
     FROM patient_info2raw_variants AS p2r\
-    LEFT JOIN alamut_annotation AS am ON p2r.chr = am.chrom AND p2r.start = am.gDNAstart\
+    LEFT JOIN alamut_annotation AS am ON p2r.chr = am.chrom AND p2r.start = am.ori_start AND p2r.stop = am.ori_stop\
     LEFT JOIN interpretations AS i ON p2r.patient_ID = i.SAMPLE_NAME AND p2r.chr = i.chr AND p2r.start =i.start\
     LEFT JOIN publications2variants AS p2v ON p2v.varID = am.ID\
     LEFT JOIN publications AS p ON p.PMID = p2v.PMID\
