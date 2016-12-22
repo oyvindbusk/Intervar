@@ -125,9 +125,8 @@ def listOfdictsFromCur(dbcursor, type):
             list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], zygosity=i[5], denovo=i[6], ID=i[7], gene=i[8], cDNA=i[9], protein=i[10], exacAll=i[11], inclass=i[12], comments=i[13], signed=i[14], concat=i[15], polyphen=i[16], gene_info=i[17]))
         elif type == 'int_variants_report':
             list_items.append(dict(chrom=i[0], start=i[1], stop=i[2], ref=i[3], alt=i[4], zygosity=i[5], denovo=i[6], ID=i[7], gene=i[8], gDNA=i[9], cDNA=i[10], protein=i[11], exacAll=i[12], clinVarPhenotypes=i[13], clinVarClinSignifs=i[14], transcript=i[15], codingEffect=i[16], hgmdId=i[17], hgmdPhenotype=i[18], varLocation=i[19], localSpliceEffect=i[20], rsClinicalSignificance=i[21], exacNFEFreq=i[22], espEAMAF=i[23], espAltEACount=i[24] , espRefEACount=i[25], conservedOrthos=i[26], AGVGDclass=i[27], SIFTprediction=i[28],TASTERprediction=i[29], exons=i[30], rsId=i[31], wtMaxEntScore=i[32], varMaxEntScore=i[33], wtNNSScore=i[34], varNNSScore=i[35], wtHSFScore=i[36], varHSFScore=i[37], interp_ID=i[38], inclass=i[39], acmg_class=i[40], interpretor=i[41], comments=i[42], signed=i[43], publications=i[44], concat=i[45] ))
-
         elif type == 'overview_table':
-            list_items.append(dict(sbs=i[0], panel=i[1], sample_count=i[2], mean_cov=i[3] ))
+            list_items.append(dict(sbs=i[0], sample_count=i[1], panel=i[2], mean_cov=i[3] ))
 
     return list_items
 
@@ -175,7 +174,7 @@ def insert_data(cursor, table, tuple_with_data):
     c = cursor
     t = tuple_with_data
     try:
-        c.execute("INSERT INTO " + table + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )", t)
+        c.execute("INSERT OR REPLACE INTO " + table + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )", t)
     except Exception as e:
         raise e
 
@@ -183,7 +182,7 @@ def insert_data_is(cursor, table, tuple_with_data):
     c = cursor
     t = tuple_with_data
     try:
-        c.execute("INSERT INTO " + table + " VALUES (?, ?, ?)", t)
+        c.execute("INSERT OR REPLACE INTO " + table + " VALUES (?, ?, ?)", t)
     except Exception as e:
         raise e
 
@@ -248,3 +247,94 @@ def str_to_int_float(input, type):
         except:
             output = str(input)
     return output
+
+
+def generate_report_csv(outfile, patient_info):
+    #importere det som trengs
+    #Lese inn fra en templat. For hver linje, hvis dict inneholder verdi. Bytt ut <> med verdi.
+    #Iterere over varianter
+    #Lage fil aa skrive til
+    print(patient_info)
+    reader = csv.reader(open('static/template.csv','r'),delimiter = '\t')
+    writer = csv.writer(open(outfile, 'wb'), dialect='excel')
+    for count, line in enumerate(reader):
+        if count <= 1:
+            line = [l.replace('<>', patient_info.get('PID')) for l in line]
+            writer.writerow(line)
+        if count == 2 and patient_info.get('familyID') is not None:
+            line = [l.replace('<>', str(patient_info.get('familyID'))) for l in line]
+            writer.writerow(line)
+        if count == 3 and patient_info.get('panel_name') is not None:
+            line = [l.replace('<>', str(patient_info.get('panel_name'))) for l in line]
+            writer.writerow(line)
+        if count == 4 and patient_info.get('sex') is not None:
+            line = [l.replace('<>', str(patient_info.get('sex'))) for l in line]
+            writer.writerow(line)
+        if count == 5 and patient_info.get('sbs') is not None:
+            line = [l.replace('<>', str(patient_info.get('sbs'))) for l in line]
+            writer.writerow(line)
+        if count == 6 and patient_info.get('clinInfo') is not None:
+            line = [l.replace('<>', str(patient_info.get('clinInfo'))) for l in line]
+            writer.writerow(line)
+        if count == 7 and patient_info.get('mean_target_cov') is not None:
+            line = [l.replace('<>', str(patient_info.get('mean_target_cov'))) for l in line]
+            writer.writerow(line)
+        if count == 8 and patient_info.get('pct_target_20') is not None:
+            line = [l.replace('<>', str(patient_info.get('pct_target_20'))) for l in line]
+            writer.writerow(line)
+        if count == 9 and patient_info.get('pct_target_30') is not None:
+            line = [l.replace('<>', str(patient_info.get('pct_target_30'))) for l in line]
+            writer.writerow(line)
+        if count == 10 and patient_info.get('mean_is') is not None:
+            line = [l.replace('<>', str(patient_info.get('mean_is'))) for l in line]
+            writer.writerow(line)
+        if count == 11 and patient_info.get('median_is') is not None:
+            line = [l.replace('<>', str(patient_info.get('median_is'))) for l in line]
+            writer.writerow(line)
+
+        elif count > 11:
+            writer.writerow(line)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    #outCoverageFile.writerow(i)
+#{'clinInfo': u'osteogenesis imperfecta. This field could potentially contain a lot a lot a lot a lot a lot a lot of text. Oh yeah. A man walks in to a bar......', 'sbs': u'SBS123', 'panel_name': u'F', 'sex': u'F', 'familyID': 1001, 'mean_is': 203.032147, 'median_is': 189.0, 'PID': u'123_15', 'mean_target_cov': 121.12406, 'pct_target_20': 0.935804, 'pct_target_30': 0.902611, 'disease_category': u'CMT'}

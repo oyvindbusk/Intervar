@@ -59,6 +59,13 @@
   <a href="{{ url_for('showdb') }}/{{ pID }}">
   <button type="button" class="btn btn-primary">Back to interpretation</button>
   </a>
+
+<!-- -->
+<hr>
+<form action="/report" method="post">
+    <button type="submit" value="Send Email" class="btn btn-primary">Make report</button>
+</form>
+<!-- -->
 </div>
 
 </div>
@@ -84,7 +91,7 @@
 
 {% for item in var_items|sort(attribute='inclass')|reverse %}
 <div class="row">
-  
+
   <div class="panel panel-primary">
     <div class="panel-heading">{{ item.transcript }}:c.{{ item.cDNA }} {{ item.protein }}</div>
     <div class="panel-body">

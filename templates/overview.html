@@ -1,135 +1,43 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
-  google.charts.load('current', {'packages':['corechart']});
-  google.charts.setOnLoadCallback(drawChart);
-  function drawChart() {
-    var data = google.visualization.arrayToDataTable([
-    ['Samples', 'Mean coverage'],
-      [ '8',      12],
-      [ '4',      5.5],
-      [ '11',     14],
-      [ '42',      5],
-      [ '3',      3.5],
-      [ '6.5',    7]
-      ]);
-
-    var options = {
-      title: 'Samples vs. Mean coverage comparison',
-      hAxis: {title: 'Samples', minValue: 0, maxValue: 15},
-      vAxis: {title: 'Mean coverage', minValue: 0, maxValue: 15},
-      legend: 'none'
-    };
-    
-    var data2 = google.visualization.arrayToDataTable([
-    ['Samples', 'Mean coverage'],
-      {% for item in coverage_data %}
-      ['{{ item[3] }}', {{ item[2] }}],
-      {% endfor %}
-      ]);
-
-    var options2 = {
-      title: 'Samples vs. Mean coverage comparison for SBS321',
-      hAxis: {title: '', minValue: 0, maxValue: 15, slantedText: true, slantedTextAngle: 315},
-      vAxis: {title: 'Mean coverage', minValue: 0, maxValue: 15},
-      legend: 'none'
-    };
-    var chart = new google.visualization.ScatterChart(document.getElementById('chart_div'));
-    chart.draw(data, options);
-    var chart2 = new google.visualization.ScatterChart(document.getElementById('chart_div2'));
-    chart2.draw(data2, options2);
-  }
-  
-  
+{% include 'overview.js' %}
 </script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
+<!--              -->
 <div class="container">
 	<div class="row">
-   <div class="col-md-10 col-xs-offset-1 col-md-offset-1">        
+   <div class="col-md-10 col-xs-offset-1 col-md-offset-1">
      <h1>Overview of InterVar database</h1>
-     <hr>
+
    </div>
  </div>
- <div class="row">
-  <div class="col-sm-6">
-   <dl class="dl-horizontal">
-    <dt>Number of samples</dt>
-    <dd>{{ overview_dict.total_patients }}</dd>
-    <dt>Samples PASS QC</dt>
-    <dd>100</dd>
-    <dt># class 5 variants</dt>
-    <dd>23</dd>
-    <dt># class 4 variants</dt>
-    <dd>12</dd>
-  </dl>
-
-</div>
-
-<div class="col-sm-1">
-</div>
-
-<div class="col-sm-4">
- <table class="table">
-  <thead>
-    <tr>
-      <th style="padding-top: 4px;">Mean Target <br>Coverage</th>
-      <th style="padding-top: 4px; width=50%;">% bases > 20 X</th>
-      <th style="padding-top: 4px;" class="tooltip-table-header" >% bases > 30 X</th>
-      <th style="padding-top: 4px;" class="tooltip-table-header" >Mean insert size</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>100</td>
-      <td>27.9 %</td>
-      <td>29 %</td>
-      <td>150</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
 <hr>
 <div class="row">
 <div class=col-md-5>
-<h5>Table with some data</h5>
+<h3>Run statistics</h3>
 {{ overview_table }}
 </div>
 <div class="col-md-7">
+  <h3>Mean coverage pr. selected run.</h3>
 <div id="chart_div2" style="width: 650px; height: 350px;"></div>
 </div>
 </div>
 <hr>
 <div class="row">
- 
  <div class="col-sm-8">
-   <h3>Test to see if we can show a google chart</h3>
-   {{ var_table }}
-   <div id="chart_div" style="width: 900px; height: 500px;"></div>
+   <h3>Some more charts</h3>
+   <!-- {{ var_table }} -->
+   <div id="chart_pie" style="width: 900px; height: 500px;"></div>
    <hr>
-   
+   <div id="chart_div" style="width: 900px; height: 500px;"></div>
 
  </div>
 </div>
-
 </div>
 </div>
-
-<!-- 
-
-['Samples', 'Mean coverage'],
-      [ 8,      12],
-      [ 4,      5.5],
-      [ 11,     14],
-      [ 4,      5],
-      [ 3,      3.5],
-      [ 6.5,    7]
-
--->
-
-
 
 
 {% endblock %}

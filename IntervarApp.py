@@ -10,6 +10,7 @@ from datetime import datetime
 #importere egne scripts
 from scripts import PatientForm, VariantForm, SearchForm, PatientTable, VariantTable, listOfdictsFromCur, dictFromCur, print_file, hsmetrics_to_tuple, insert_data, get_values_from_form, insertsize_to_tuple, insert_data_is, get_variants_from_form
 from scripts import alamut_dict_to_DB, str_to_int_float, Interpret_overallForm, InterpretVariantForm, PublicationsForm, SampleOverviewTable, deleteVariantForm, polyphenForm, GeneInfoForm
+from scripts import generate_report_csv
 import json
 
 
@@ -131,13 +132,14 @@ def testinput():
             cur.execute("INSERT INTO patient_info (patient_ID, family_ID, clinical_info, sex, disease_category) VALUES (?, ?, ?, ?, ?)", (request.form['patient_ID'], request.form['familyID'], request.form['clinInfo'], request.form['sex'], request.form['dis_category']))
             cur.execute("INSERT INTO patient_info2panels (patient_ID, panel_name) VALUES (?, ?)", (request.form['patient_ID'], request.form['panel']))
             cur.execute("INSERT INTO runs (patient_ID, sbs, date) VALUES (?, ?, ?)", (request.form['patient_ID'], request.form['sbs_run'], str(datetime.now()).split(' ')[0]))
-            cur.execute("INSERT INTO QC (SAMPLE_NAME) VALUES (?)", request.form['patient_ID'])
-            cur.execute("INSERT INTO insert_size (SAMPLE_NAME) VALUES (?)", request.form['patient_ID'])
+            cur.execute("INSERT INTO QC (SAMPLE_NAME) VALUES (?)", (request.form['patient_ID'], ))
+            cur.execute("INSERT INTO insert_size (SAMPLE_NAME) VALUES (?)", (request.form['patient_ID'], ))
             hsm_file = request.files['hsmFileUpload']
             if hsm_file and allowed_file(hsm_file.filename):
                 filename = secure_filename(hsm_file.filename)
                 hsm_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 insert_data(cur, 'QC', hsmetrics_to_tuple(os.path.join(app.config['UPLOAD_FOLDER'], filename), patient_form_tuple[0]))
+                #print(cur, 'QC', hsmetrics_to_tuple(os.path.join(app.config['UPLOAD_FOLDER'], filename), patient_form_tuple[0]))
             #upload insertsizemetrics-file:
             is_file = request.files['fragmentSizeUpload']
             if is_file and allowed_file(is_file.filename):
@@ -170,43 +172,43 @@ def overview():
     #get number of total patients
     cur.execute('SELECT COUNT(*) FROM patient_info')
     samples = cur.fetchall()
-    overview_dict.update({'total_patients': samples[0][0] })
-    print(overview_dict)
+    overview_dict.update({'total_patients': samples[0][0]})
+
+
+
+    #Get data for the overview table:
+    cur.execute('SELECT runs.sbs AS SBS, COUNT(runs.patient_ID) AS "Sample count", p2p.panel_name, AVG(QC.MEAN_TARGET_COVERAGE) AS "Mean target coverage" FROM runs \
+    LEFT JOIN patient_info2panels AS p2p ON p2p.patient_ID = runs.patient_ID \
+    LEFT JOIN QC ON QC.SAMPLE_NAME = runs.patient_ID \
+    GROUP BY runs.sbs, p2p.panel_name')
+    overview_items = listOfdictsFromCur(cur.fetchall(), 'overview_table')
+    overview_table = SampleOverviewTable(overview_items,)
+
+
+    #Everything below is just kladd
+
     #pr gender
     cur.execute('SELECT COUNT(*) FROM patient_info WHERE sex = "F"')
     overview_dict.update({'F_patients': cur.fetchall()[0][0]})
     cur.execute('SELECT COUNT(*) FROM patient_info WHERE sex = "M"')
     overview_dict.update({'M_patients': cur.fetchall()[0][0]})
 
-
     # get data for plot of coverage pr run
     cur.execute('SELECT runs.sbs, pi2p.panel_name, qc.MEAN_TARGET_COVERAGE, qc.SAMPLE_NAME FROM QC AS qc \
     JOIN runs ON runs.patient_ID=qc.SAMPLE_NAME \
-    JOIN patient_info2panels AS pi2p ON pi2p.patient_ID=qc.SAMPLE_NAME WHERE runs.sbs = "SBS321"')
+    JOIN patient_info2panels AS pi2p ON pi2p.patient_ID=qc.SAMPLE_NAME')
     coverage_data = cur.fetchall()
     # get overall data on number of samples and mean coverage grouped on run and panel:
-    cur.execute("SELECT r.sbs, pi2p.panel_name AS 'Panel name', COUNT(qc.SAMPLE_NAME) AS 'Number of samples', AVG(qc.MEAN_TARGET_COVERAGE) AS 'Average coverage' FROM QC as qc JOIN runs AS r ON r.patient_ID=qc.SAMPLE_NAME JOIN patient_info2panels AS pi2p ON pi2p.patient_ID=qc.SAMPLE_NAME GROUP BY r.sbs, pi2p.panel_name")
-    overview_items = listOfdictsFromCur(cur.fetchall(), 'overview_table')
-    overview_table = SampleOverviewTable(overview_items,)
-
-    '''
-    Select for the average coverage grouped by panel and run.
-    SELECT runs.sbs, pi2p.panel_name, AVG(qc.MEAN_TARGET_COVERAGE) FROM QC AS qc
-    JOIN runs ON runs.patient_ID=qc.SAMPLE_NAME
-    JOIN patient_info2panels AS pi2p ON pi2p.patient_ID=qc.SAMPLE_NAME
-    GROUP BY runs.sbs, pi2p.panel_name
+    #cur.execute("SELECT r.sbs, pi2p.panel_name AS 'Panel name', COUNT(qc.SAMPLE_NAME) AS 'Number of samples', AVG(qc.MEAN_TARGET_COVERAGE) AS 'Average coverage' FROM QC as qc JOIN runs AS r ON r.patient_ID=qc.SAMPLE_NAME JOIN patient_info2panels AS pi2p ON pi2p.patient_ID=qc.SAMPLE_NAME GROUP BY r.sbs, pi2p.panel_name")
+    #overview_items = listOfdictsFromCur(cur.fetchall(), 'overview_table')
+    #overview_table = SampleOverviewTable(overview_items,)
 
 
-    SELECT r.sbs, pi2p.panel_name AS "Panel name", COUNT(qc.SAMPLE_NAME) AS "Number of samples", AVG(qc.MEAN_TARGET_COVERAGE) AS "Average coverage" FROM QC as qc
-    JOIN runs AS r ON r.patient_ID=qc.SAMPLE_NAME
-    JOIN patient_info2panels AS pi2p ON pi2p.patient_ID=qc.SAMPLE_NAME
-    GROUP BY r.sbs, pi2p.panel_name
-    listOfdictsFromCur(cur.fetchall,overview_table)
 
-    '''
+
 
     db.close()
-    return render_template('overview.html', overview_dict=overview_dict, coverage_data=coverage_data, overview_table=overview_table)
+    return render_template('overview.html', overview_dict=overview_dict, overview_table=overview_table, coverage_data=coverage_data)
 
 ################################################################################################################################################
 
@@ -346,18 +348,7 @@ def showdb(pID):
     return render_template('showdb.html', patient_table=patient_table, var_table=var_table, form=form, pform=pform, iform=iform, pubForm=pubForm, varIntForm=varIntForm, geneinfoForm=geneinfoForm,  pID=pID, pID_patient=pID_patient, patient_comment=patient_comment, delform=delform, polyphenform=polyphenform)
 
 ################################################################################################################################################
-# test av pdfkit
-#import pdfkit
-@app.route('/<name>/<location>/')
-def pdf_template(name, location):
-    rendered = render_template('pdf_template.html', name=name, location=location)
-    pdf = pdfkit.from_string(rendered, False)
 
-    response = make_response(pdf)
-    response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = 'inline; filename=output.pdf'
-
-    return response
 
 ################################################################################################################################################
 
@@ -416,7 +407,19 @@ def report(pID="123_15"):
     pID_patient = dictFromCur(cur.fetchall(), 'pID_patient')
     db.close()
     variant_dict = {}
+
+    #Generate report
+    if request.method == 'POST':
+        print('Making the repoort!!!')
+        generate_report_csv('outfile.csv', pID_patient)
+
+
+
     return render_template('report.html', var_items=var_items, pID=pID, pID_patient=pID_patient, filtus_and_comment=filtus_and_comment)
+
+################################################################################################################################################
+
+
 
 ################################################################################################################################################
 

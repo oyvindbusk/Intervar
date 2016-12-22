@@ -5,6 +5,11 @@ function polyform() {
  //document ready function - happens on page load
 $(function() {
 
+
+
+
+
+
   // fill comment if exists:
   $('#comment').val('{{ patient_comment[0] | replace("\r\n", "\\n") }}');
   $('#filtus_settings').html(' {{ patient_comment[1] | replace("\r\n", "\\n")    }}' );

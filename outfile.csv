@@ -1,0 +1,15 @@
+Report for patient: 123_15
+Patient ID: 123_15
+Family: 1001
+Panel:  F
+Sex:    F
+SBS:    SBS123
+Clinical Info:  osteogenesis imperfecta. This field could potentially contain a lot a lot a lot a lot a lot a lot of text. Oh yeah. A man walks in to a bar......
+Mean target coverage:   121.12406 
+% bases > 20 X: 0.935804
+% bases > 30 X: 0.902611
+Mean insert size:   203.032147
+Median insert size: 189.0
+-----------------------------------------------------
+Interpreted variants:
+Variant: <>
